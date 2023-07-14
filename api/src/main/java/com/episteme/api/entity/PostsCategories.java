@@ -17,11 +17,11 @@ public class PostsCategories {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id",referencedColumnName = "category_id", insertable = false, updatable = false)
     Categories category;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id",referencedColumnName = "post_id", insertable = false, updatable = false)
     Post post;
 }

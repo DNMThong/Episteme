@@ -12,17 +12,11 @@ import lombok.*;
 @Table(name = "social_network")
 public class SocialNetwork {
     @Id
-    @Column(name = "followers")
-    private String followers;
-
-    @Id
-    @Column(name = "following")
-    private String following;
-
     @ManyToOne
     @JoinColumn(name = "followers", referencedColumnName = "user_id", insertable = false, updatable = false)
     private Users followerUser;
 
+    @Id
     @ManyToOne
     @JoinColumn(name = "following", referencedColumnName = "user_id", insertable = false, updatable = false)
     private Users followingUser;
