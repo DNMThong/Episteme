@@ -17,7 +17,7 @@ public class Categories {
     @Column(name = "category_id", nullable = false)
     private int categoryId;
 
-    @Column(name = "title", nullable = true, length = 100)
+    @Column(name = "name", nullable = true, length = 100)
     private String title;
 
     @Column(name = "slug", nullable = true, length = 100)

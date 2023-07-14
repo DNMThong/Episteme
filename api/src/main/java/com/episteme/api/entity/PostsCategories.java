@@ -12,15 +12,16 @@ import java.util.List;
 @Setter
 @ToString
 @Entity
+@Table(name = "posts_categories")
 public class PostsCategories {
-    @EmbeddedId
-    private PostsCategoriesPK id;
 
+    @Id
     @ManyToOne
-    @JoinColumn(name = "post_id", insertable = false, updatable = false)
-    private Post post;
+    @JoinColumn(name = "category_id")
+    Categories category;
 
+    @Id
     @ManyToOne
-    @JoinColumn(name = "category_id", insertable = false, updatable = false)
-    private Categories category;
+    @JoinColumn(name = "post_id")
+    Post post;
 }

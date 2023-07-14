@@ -9,17 +9,21 @@ import lombok.*;
 @Setter
 @ToString
 @Entity
+@Table(name = "social_network")
 public class SocialNetwork {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private long id;
+    @Column(name = "followers")
+    private String followers;
+
+    @Id
+    @Column(name = "following")
+    private String following;
 
     @ManyToOne
-    @JoinColumn(name = "followers")
-    private Users followers;
+    @JoinColumn(name = "followers", referencedColumnName = "user_id", insertable = false, updatable = false)
+    private Users followerUser;
 
     @ManyToOne
-    @JoinColumn(name = "following")
-    private Users following;
+    @JoinColumn(name = "following", referencedColumnName = "user_id", insertable = false, updatable = false)
+    private Users followingUser;
 }

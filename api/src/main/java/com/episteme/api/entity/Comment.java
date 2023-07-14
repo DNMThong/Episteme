@@ -1,9 +1,12 @@
 package com.episteme.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +18,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id", nullable = false)
-    private long commentId;
+    private Long commentId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -34,6 +37,12 @@ public class Comment {
     @Column(name = "update_at", nullable = true)
     private LocalDateTime updateAt;
 
-    @Column(name = "comment_parent_id", nullable = true)
-    private Long commentParentId;
+    @OneToMany(mappedBy = "invitedBy", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Comment> comments;
+
+    @ManyToOne
+    @JoinColumn(name = "comment_parent_id")
+    @JsonBackReference
+    private Comment parentComment;
 }

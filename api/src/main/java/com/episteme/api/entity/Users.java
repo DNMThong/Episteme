@@ -57,9 +57,9 @@ public class Users {
     @OneToMany(mappedBy = "user")
     List<Post> posts;
 
-    @OneToMany(mappedBy = "followers")
-    List<SocialNetwork> followersList;
+    @OneToMany(mappedBy = "followerUser")
+    List<SocialNetwork> followerList;
 
-    @OneToMany(mappedBy = "following")
+    @OneToMany(mappedBy = "followingUser")
     List<SocialNetwork> followingList;
 }

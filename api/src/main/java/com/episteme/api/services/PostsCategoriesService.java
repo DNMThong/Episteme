@@ -1,7 +1,6 @@
 package com.episteme.api.services;
 
 import com.episteme.api.entity.PostsCategories;
-import com.episteme.api.entity.PostsCategoriesPK;
 import com.episteme.api.repository.PostsCategoriesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
