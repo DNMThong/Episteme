@@ -22,22 +22,22 @@ public class Post {
     @JoinColumn(name = "user_id")
     private Users user;
 
-    @Column(name = "title", nullable = true, length = 255)
+    @Column(name = "title", nullable = false, length = 255)
     private String title;
-
-    @Column(name = "slug", nullable = true, length = 255)
-    private String slug;
-
-    @Column(name = "content", nullable = true, length = -1)
-    private String content;
 
     @Column(name = "summary", nullable = true, length = 255)
     private String summary;
 
-    @Column(name = "create_at", nullable = true)
+    @Column(name = "content", nullable = false, length = -1)
+    private String content;
+
+    @Column(name = "slug", nullable = false, length = 255)
+    private String slug;
+
+    @Column(name = "create_at", nullable = false)
     private LocalDateTime createAt;
 
-    @Column(name = "update_at", nullable = true)
+    @Column(name = "update_at", nullable = false)
     private LocalDateTime updateAt;
 
     @Column(name = "status", nullable = true, length = -1)

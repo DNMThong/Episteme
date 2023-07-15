@@ -11,13 +11,14 @@ import lombok.*;
 @Entity
 @Table(name = "social_network")
 public class SocialNetwork {
-    @Id
+    @EmbeddedId
+    private SocialNetworkPK id;
+
     @ManyToOne
-    @JoinColumn(name = "followers", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "followers", insertable = false, updatable = false)
     private Users followerUser;
 
-    @Id
     @ManyToOne
-    @JoinColumn(name = "following", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "following", insertable = false, updatable = false)
     private Users followingUser;
 }
