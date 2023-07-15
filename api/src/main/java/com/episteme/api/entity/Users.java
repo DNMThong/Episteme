@@ -18,35 +18,35 @@ public class Users {
     @Column(name = "user_id", nullable = false, length = 18)
     private String userId;
 
-    @Column(name = "fullname", nullable = true, length = 255)
+    @Column(name = "fullname", nullable = false, length = 255)
     private String fullname;
 
-    @Column(name = "email", nullable = true, length = 100)
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "password", nullable = true, length = -1)
+    @Column(name = "password", nullable = false, length = -1)
     private String password;
-
-    @Column(name = "birthday", nullable = true)
-    private LocalDate birthday;
-
-    @Column(name = "registered_at", nullable = true)
-    private LocalDateTime registeredAt;
-
-    @Column(name = "last_login", nullable = true)
-    private LocalDateTime lastLogin;
 
     @Column(name = "image", nullable = true, length = -1)
     private String image;
 
-    @Column(name = "description", nullable = true, length = 255)
+    @Column(name = "birthday", nullable = true)
+    private LocalDate birthday;
+
+    @Column(name = "description", nullable = true, length = -1)
     private String description;
+
+    @Column(name = "registered_at", nullable = false)
+    private LocalDateTime registeredAt;
+
+    @Column(name = "last_login", nullable = false)
+    private LocalDateTime lastLogin;
 
     @Column(name = "token", nullable = true, length = -1)
     private String token;
 
-    @Column(name = "role", nullable = true)
-    private Boolean role;
+    @Column(name = "role", nullable = false)
+    private boolean role;
 
     @Column(name = "status", nullable = true, length = -1)
     private String status;
@@ -62,4 +62,5 @@ public class Users {
 
     @OneToMany(mappedBy = "followingUser")
     List<SocialNetwork> followingList;
+
 }

@@ -1,9 +1,8 @@
 package com.episteme.api.services;
 
 import com.episteme.api.entity.SocialNetwork;
-import com.episteme.api.entity.Users;
+import com.episteme.api.entity.SocialNetworkPK;
 import com.episteme.api.repository.SocialNetworkRepository;
-import com.episteme.api.repository.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class SocialNetworkService implements SocialNetworkServiceImpl {
     }
 
     @Override
-    public boolean delete(Long id) {
+    public boolean delete(SocialNetworkPK id) {
         try {
             repository.deleteById(id);
             repository.flush();
@@ -61,7 +60,7 @@ public class SocialNetworkService implements SocialNetworkServiceImpl {
     }
 
     @Override
-    public SocialNetwork findById(Long id) {
+    public SocialNetwork findById(SocialNetworkPK id) {
         Optional<SocialNetwork> users = repository.findById(id);
         return users.orElse(null);
     }

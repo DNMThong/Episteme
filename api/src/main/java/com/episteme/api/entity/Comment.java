@@ -18,7 +18,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id", nullable = false)
-    private Long commentId;
+    private long commentId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -31,13 +31,13 @@ public class Comment {
     @Column(name = "content", nullable = true, length = -1)
     private String content;
 
-    @Column(name = "create_at", nullable = true)
+    @Column(name = "create_at", nullable = false)
     private LocalDateTime createAt;
 
-    @Column(name = "update_at", nullable = true)
+    @Column(name = "update_at", nullable = false)
     private LocalDateTime updateAt;
 
-    @OneToMany(mappedBy = "invitedBy", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Comment> comments;
 

@@ -18,13 +18,13 @@ public class Bookmark {
     private long bookmarkId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private Users user;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    @Column(name = "save_time", nullable = true)
+    @Column(name = "save_time", nullable = false)
     private LocalDateTime saveTime;
 }
