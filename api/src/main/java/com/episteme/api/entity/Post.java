@@ -1,5 +1,7 @@
 package com.episteme.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +22,7 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private Users user;
 
     @Column(name = "title", nullable = false, length = 255)
@@ -44,5 +47,18 @@ public class Post {
     private String status;
 
     @OneToMany(mappedBy = "post")
+    @JsonManagedReference
     private List<PostsCategories> categoriesList;
+
+    public Post(long postId, Users user, String title, String summary, String content, String slug, LocalDateTime createAt, LocalDateTime updateAt, String status) {
+        this.postId = postId;
+        this.user = user;
+        this.title = title;
+        this.summary = summary;
+        this.content = content;
+        this.slug = slug;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.status = status;
+    }
 }

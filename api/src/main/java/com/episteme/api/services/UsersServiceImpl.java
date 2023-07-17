@@ -21,9 +21,10 @@ public class UsersServiceImpl implements UsersService {
     UsersRepository usersRepository;
     @Autowired
     ModelMapper modelMapper;
+
     @Override
     public UsersDto save(UsersDto usersDto) {
-        Users users=this.dtoToUsers(usersDto);
+        Users users = this.dtoToUsers(usersDto);
         Users saveUsers = this.usersRepository.save(users);
         return this.usersToDto(saveUsers);
     }
@@ -35,7 +36,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public void delete(String Id) {
-        Users users=this.usersRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Users","Id",String.valueOf(Id)));
+        Users users = this.usersRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("Users", "Id", String.valueOf(Id)));
         this.usersRepository.delete(users);
 
     }
@@ -43,20 +44,22 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public List<UsersDto> findAll() {
         List<Users> users = this.usersRepository.findAll();
-        List<UsersDto> usersDtos =users.stream().map(bookmark -> this.usersToDto(bookmark)).collect(Collectors.toList());
+        List<UsersDto> usersDtos = users.stream().map(bookmark -> this.usersToDto(bookmark)).collect(Collectors.toList());
         return usersDtos;
     }
 
     @Override
     public UsersDto findById(String Id) {
-        Users users=this.usersRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Users","Id",String.valueOf(Id)));
+        Users users = this.usersRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("Users", "Id", String.valueOf(Id)));
         return this.usersToDto(users);
     }
-    public Users dtoToUsers(UsersDto usersDto){
-        return this.modelMapper.map(usersDto,Users.class);
+
+    public Users dtoToUsers(UsersDto usersDto) {
+        return this.modelMapper.map(usersDto, Users.class);
     }
-    public UsersDto usersToDto(Users users){
-        return this.modelMapper.map(users,UsersDto.class);
+
+    public UsersDto usersToDto(Users users) {
+        return this.modelMapper.map(users, UsersDto.class);
     }
 
 }

@@ -1,15 +1,15 @@
 package com.episteme.api.entity.dto;
 
-import com.episteme.api.entity.Categories;
-import com.episteme.api.entity.Post;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
+@ToString
 public class PostsCategoriesDto {
-    Categories category;
-    Post post;
+    private CategoriesDto categoriesDto;
+    @JsonIgnore
+    private PostDto postDto;
 }

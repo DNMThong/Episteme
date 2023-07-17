@@ -1,14 +1,12 @@
 package com.episteme.api.entity.dto;
 
-import com.episteme.api.entity.Users;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class SocialNetworkDto {
-    private Users followerUser;
-    private Users followingUser;
+    private UsersDto followerUser;
+    private UsersDto followingUser;
 }

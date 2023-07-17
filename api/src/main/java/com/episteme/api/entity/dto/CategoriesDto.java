@@ -1,14 +1,12 @@
 package com.episteme.api.entity.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
+@ToString
 public class CategoriesDto {
-    private int categoryId;
-    private String title;
-    private String slug;
+    private String nameCategories;
 }

@@ -22,10 +22,12 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private Users user;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
+    @JsonBackReference
     private Post post;
 
     @Column(name = "content", nullable = true, length = -1)
@@ -41,7 +43,7 @@ public class Comment {
     @JsonManagedReference
     private List<Comment> comments;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_parent_id")
     @JsonBackReference
     private Comment parentComment;

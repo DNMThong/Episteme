@@ -1,5 +1,8 @@
 package com.episteme.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -52,15 +55,33 @@ public class Users {
     private String status;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     List<Bookmark> users;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     List<Post> posts;
 
     @OneToMany(mappedBy = "followerUser")
+    @JsonManagedReference
     List<SocialNetwork> followerList;
 
     @OneToMany(mappedBy = "followingUser")
+    @JsonManagedReference
     List<SocialNetwork> followingList;
 
+    public Users(String userId, String fullname, String email, String password, String image, LocalDate birthday, String description, LocalDateTime registeredAt, LocalDateTime lastLogin, String token, boolean role, String status) {
+        this.userId = userId;
+        this.fullname = fullname;
+        this.email = email;
+        this.password = password;
+        this.image = image;
+        this.birthday = birthday;
+        this.description = description;
+        this.registeredAt = registeredAt;
+        this.lastLogin = lastLogin;
+        this.token = token;
+        this.role = role;
+        this.status = status;
+    }
 }

@@ -21,9 +21,10 @@ public class SocialNetworkServiceImpl implements SocialNetworkService {
     SocialNetworkRepository socialNetworkRepository;
     @Autowired
     ModelMapper modelMapper;
+
     @Override
     public SocialNetworkDto save(SocialNetworkDto socialNetworkDto) {
-        SocialNetwork socialNetwork=this.dtoToSocialNetwork(socialNetworkDto);
+        SocialNetwork socialNetwork = this.dtoToSocialNetwork(socialNetworkDto);
         SocialNetwork saveSocialNetwork = this.socialNetworkRepository.save(socialNetwork);
         return this.socialNetworkToDto(saveSocialNetwork);
     }
@@ -35,27 +36,29 @@ public class SocialNetworkServiceImpl implements SocialNetworkService {
 
     @Override
     public void delete(SocialNetworkPK Id) {
-        SocialNetwork socialNetwork=this.socialNetworkRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("SocialNetwork","Id",String.valueOf(Id)));
+        SocialNetwork socialNetwork = this.socialNetworkRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("SocialNetwork", "Id", String.valueOf(Id)));
         this.socialNetworkRepository.delete(socialNetwork);
     }
 
     @Override
     public List<SocialNetworkDto> findAll() {
         List<SocialNetwork> socialNetworks = this.socialNetworkRepository.findAll();
-        List<SocialNetworkDto> socialNetworkDtos =socialNetworks.stream().map(socialNetwork -> this.socialNetworkToDto(socialNetwork)).collect(Collectors.toList());
+        List<SocialNetworkDto> socialNetworkDtos = socialNetworks.stream().map(socialNetwork -> this.socialNetworkToDto(socialNetwork)).collect(Collectors.toList());
         return socialNetworkDtos;
     }
 
     @Override
     public SocialNetworkDto findById(SocialNetworkPK Id) {
-        SocialNetwork socialNetwork=this.socialNetworkRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("SocialNetwork","Id",String.valueOf(Id)));
+        SocialNetwork socialNetwork = this.socialNetworkRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("SocialNetwork", "Id", String.valueOf(Id)));
         return this.socialNetworkToDto(socialNetwork);
     }
-    public SocialNetwork dtoToSocialNetwork(SocialNetworkDto socialNetworkDto){
-        return this.modelMapper.map(socialNetworkDto,SocialNetwork.class);
+
+    public SocialNetwork dtoToSocialNetwork(SocialNetworkDto socialNetworkDto) {
+        return this.modelMapper.map(socialNetworkDto, SocialNetwork.class);
     }
-    public SocialNetworkDto socialNetworkToDto(SocialNetwork socialNetwork){
-        return this.modelMapper.map(socialNetwork,SocialNetworkDto.class);
+
+    public SocialNetworkDto socialNetworkToDto(SocialNetwork socialNetwork) {
+        return modelMapper.map(socialNetwork, SocialNetworkDto.class);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.episteme.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,9 +18,11 @@ public class SocialNetwork {
 
     @ManyToOne
     @JoinColumn(name = "followers", insertable = false, updatable = false)
+    @JsonBackReference
     private Users followerUser;
 
     @ManyToOne
     @JoinColumn(name = "following", insertable = false, updatable = false)
+    @JsonBackReference
     private Users followingUser;
 }

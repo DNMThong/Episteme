@@ -1,22 +1,17 @@
 package com.episteme.api.entity.dto;
 
-import com.episteme.api.entity.Bookmark;
-import com.episteme.api.entity.Post;
-import com.episteme.api.entity.Users;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-
+@Getter
+@Setter
 public class BookmarkDto {
     private long bookmarkId;
-    private Users user;
-    private Post post;
     private LocalDateTime saveTime;
-
-
+    private UsersDto usersDto;
+    private PostDto postDto;
 }
+

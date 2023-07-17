@@ -2,8 +2,7 @@ package com.episteme.api.services;
 
 import com.episteme.api.entity.Bookmark;
 import com.episteme.api.entity.Post;
-import com.episteme.api.entity.dto.BookmarkDto;
-import com.episteme.api.entity.dto.PostDto;
+import com.episteme.api.entity.dto.*;
 import com.episteme.api.exceptions.ResourceNotFoundException;
 import com.episteme.api.repository.BookmarkRepository;
 import com.episteme.api.repository.PostRepository;
@@ -20,9 +19,16 @@ public class PostServiceImpl implements PostService {
     PostRepository postRepository;
     @Autowired
     ModelMapper modelMapper;
+    @Autowired
+    private UsersServiceImpl usersService;
+    @Autowired
+    private PostsCategoriesServiceImpl postsCategoriesService;
+    @Autowired
+    private CategoriesServiceImpl categoriesService;
+
     @Override
     public PostDto save(PostDto postDto) {
-        Post post=this.dtoToPost(postDto);
+        Post post = this.dtoToPost(postDto);
         Post savePost = this.postRepository.save(post);
         return this.postDto(savePost);
     }
@@ -34,7 +40,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void delete(Long Id) {
-        Post post=this.postRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Post","Id",String.valueOf(Id)));
+        Post post = this.postRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("Post", "Id", String.valueOf(Id)));
         this.postRepository.delete(post);
 
     }
@@ -42,20 +48,28 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDto> findAll() {
         List<Post> posts = this.postRepository.findAll();
-        List<PostDto> postDtos =posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+        List<PostDto> postDtos = posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
         return postDtos;
     }
 
     @Override
     public PostDto findById(Long Id) {
-        Post post=this.postRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Post","Id",String.valueOf(Id)));
+        Post post = this.postRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("Post", "Id", String.valueOf(Id)));
         return this.postDto(post);
     }
-    public Post dtoToPost(PostDto postDto){
-        return this.modelMapper.map(postDto,Post.class);
+
+    public Post dtoToPost(PostDto postDto) {
+        return this.modelMapper.map(postDto, Post.class);
     }
-    public PostDto postDto(Post post){
-        return this.modelMapper.map(post,PostDto.class);
+
+    public PostDto postDto(Post post) {
+        PostDto postDto = this.modelMapper.map(post, PostDto.class);
+        UsersDto usersDto = this.usersService.findById(post.getUser().getUserId());
+        postDto.setUsersDto(usersDto);
+
+        List<CategoriesDto> categoriesDtoList = this.postsCategoriesService.findAllByPostId(post.getPostId());
+        postDto.setCategoriesDtoList(categoriesDtoList);
+        return postDto;
     }
 
 }

@@ -21,9 +21,10 @@ public class CategoriesServiceImpl implements CategoriesService {
     CategoriesRepository categoriesRepository;
     @Autowired
     ModelMapper modelMapper;
+
     @Override
     public CategoriesDto save(CategoriesDto categoriesDto) {
-        Categories categories=this.dtoToCategories(categoriesDto);
+        Categories categories = this.dtoToCategories(categoriesDto);
         Categories saveCategory = this.categoriesRepository.save(categories);
         return this.categoriesToDto(saveCategory);
 
@@ -37,7 +38,7 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     @Override
     public void delete(Integer Id) {
-        Categories categories=this.categoriesRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Category","Id",String.valueOf(Id)));
+        Categories categories = this.categoriesRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("Category", "Id", String.valueOf(Id)));
         this.categoriesRepository.delete(categories);
 
     }
@@ -45,21 +46,25 @@ public class CategoriesServiceImpl implements CategoriesService {
     @Override
     public List<CategoriesDto> findAll() {
         List<Categories> categories = this.categoriesRepository.findAll();
-        List<CategoriesDto> categoriesDtos =categories.stream().map(category -> this.categoriesToDto(category)).collect(Collectors.toList());
+        List<CategoriesDto> categoriesDtos = categories.stream().map(category -> this.categoriesToDto(category)).collect(Collectors.toList());
         return categoriesDtos;
     }
 
     @Override
     public CategoriesDto findById(Integer Id) {
-        Categories categories=this.categoriesRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Category","Id",String.valueOf(Id)));
+        Categories categories = this.categoriesRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("Category", "Id", String.valueOf(Id)));
         return this.categoriesToDto(categories);
+    }
 
+    public Categories dtoToCategories(CategoriesDto categoriesDto) {
+        return this.modelMapper.map(categoriesDto, Categories.class);
     }
-    public Categories dtoToCategories(CategoriesDto categoriesDto){
-        return this.modelMapper.map(categoriesDto,Categories.class);
+
+    public CategoriesDto categoriesToDto(Categories category) {
+        CategoriesDto categoryDto = new CategoriesDto();
+        categoryDto.setNameCategories(category.getName());
+        return categoryDto;
     }
-    public CategoriesDto categoriesToDto(Categories categories){
-        return this.modelMapper.map(categories,CategoriesDto.class);
-    }
+
 
 }
