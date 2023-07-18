@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BookmarkDto {
-    private long bookmarkId;
+    private long id;
     private LocalDateTime saveTime;
-    private UsersDto usersDto;
-    private PostDto postDto;
+    private UsersDto user;
+    private PostDto post;
 }
 

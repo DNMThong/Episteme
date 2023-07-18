@@ -8,5 +8,6 @@ import lombok.*;
 @Setter
 @ToString
 public class CategoriesDto {
-    private String nameCategories;
+    private int id;
+    private String name;
 }

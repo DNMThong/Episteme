@@ -1,11 +1,10 @@
 package com.episteme.api.services;
 
-import com.episteme.api.entity.Bookmark;
 import com.episteme.api.entity.Post;
 import com.episteme.api.entity.dto.*;
 import com.episteme.api.exceptions.ResourceNotFoundException;
-import com.episteme.api.repository.BookmarkRepository;
 import com.episteme.api.repository.PostRepository;
+import com.episteme.api.repository.PostsCategoriesRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +23,7 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostsCategoriesServiceImpl postsCategoriesService;
     @Autowired
-    private CategoriesServiceImpl categoriesService;
+    PostsCategoriesRepository postsCategoriesRepository;
 
     @Override
     public PostDto save(PostDto postDto) {
@@ -65,11 +64,22 @@ public class PostServiceImpl implements PostService {
     public PostDto postDto(Post post) {
         PostDto postDto = this.modelMapper.map(post, PostDto.class);
         UsersDto usersDto = this.usersService.findById(post.getUser().getUserId());
-        postDto.setUsersDto(usersDto);
+        postDto.setUser(usersDto);
 
-        List<CategoriesDto> categoriesDtoList = this.postsCategoriesService.findAllByPostId(post.getPostId());
-        postDto.setCategoriesDtoList(categoriesDtoList);
+        List<CategoriesDto> categoriesDtoList = this.postsCategoriesService.findAllCategoriesNameByPostId(post.getPostId());
+        postDto.setCategories(categoriesDtoList);
         return postDto;
     }
 
+    public List<PostDto> findAllPostByCategoriesSlug(String slug) {
+        List<Post> posts = this.postsCategoriesRepository.findPostByCategoriesSlug(slug);
+        List<PostDto> postDtoList = posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+        return postDtoList;
+    }
+
+    public List<PostDto> findAllPostByUserId(String userId) {
+        List<Post> posts = this.postRepository.findAllPostByUserId(userId);
+        List<PostDto> postDtoList = posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+        return postDtoList;
+    }
 }

@@ -1,12 +1,11 @@
 package com.episteme.api.services;
 
-import com.episteme.api.entity.Bookmark;
 import com.episteme.api.entity.SocialNetwork;
 import com.episteme.api.entity.SocialNetworkPK;
-import com.episteme.api.entity.dto.BookmarkDto;
+import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.SocialNetworkDto;
+import com.episteme.api.entity.dto.UsersDto;
 import com.episteme.api.exceptions.ResourceNotFoundException;
-import com.episteme.api.repository.PostRepository;
 import com.episteme.api.repository.SocialNetworkRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +20,13 @@ public class SocialNetworkServiceImpl implements SocialNetworkService {
     SocialNetworkRepository socialNetworkRepository;
     @Autowired
     ModelMapper modelMapper;
+    @Autowired
+    private UsersServiceImpl usersService;
 
-    @Override
     public SocialNetworkDto save(SocialNetworkDto socialNetworkDto) {
         SocialNetwork socialNetwork = this.dtoToSocialNetwork(socialNetworkDto);
         SocialNetwork saveSocialNetwork = this.socialNetworkRepository.save(socialNetwork);
         return this.socialNetworkToDto(saveSocialNetwork);
-    }
-
-    @Override
-    public SocialNetworkDto update(SocialNetworkDto socialNetworkDto, SocialNetworkPK Id) {
-        return null;
     }
 
     @Override
@@ -40,17 +35,16 @@ public class SocialNetworkServiceImpl implements SocialNetworkService {
         this.socialNetworkRepository.delete(socialNetwork);
     }
 
-    @Override
-    public List<SocialNetworkDto> findAll() {
-        List<SocialNetwork> socialNetworks = this.socialNetworkRepository.findAll();
-        List<SocialNetworkDto> socialNetworkDtos = socialNetworks.stream().map(socialNetwork -> this.socialNetworkToDto(socialNetwork)).collect(Collectors.toList());
-        return socialNetworkDtos;
+    public List<UsersDto> findAllFollowerByUserId(String userId) {
+        List<Users> users = socialNetworkRepository.findAllFollowerNetworkByUserId(userId);
+        List<UsersDto> usersDtoList = users.stream().map(post -> usersService.usersToDto(post)).collect(Collectors.toList());
+        return usersDtoList;
     }
 
-    @Override
-    public SocialNetworkDto findById(SocialNetworkPK Id) {
-        SocialNetwork socialNetwork = this.socialNetworkRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("SocialNetwork", "Id", String.valueOf(Id)));
-        return this.socialNetworkToDto(socialNetwork);
+    public List<UsersDto> findAllFollowingByUserId(String userId) {
+        List<Users> users = socialNetworkRepository.findAllFollowingNetworkByUserId(userId);
+        List<UsersDto> usersDtoList = users.stream().map(post -> usersService.usersToDto(post)).collect(Collectors.toList());
+        return usersDtoList;
     }
 
     public SocialNetwork dtoToSocialNetwork(SocialNetworkDto socialNetworkDto) {
@@ -61,4 +55,18 @@ public class SocialNetworkServiceImpl implements SocialNetworkService {
         return modelMapper.map(socialNetwork, SocialNetworkDto.class);
     }
 
+    @Override
+    public SocialNetworkDto update(SocialNetworkDto socialNetworkDto, SocialNetworkPK socialNetworkPK) {
+        return null;
+    }
+
+    @Override
+    public List<SocialNetworkDto> findAll() {
+        return null;
+    }
+
+    @Override
+    public SocialNetworkDto findById(SocialNetworkPK socialNetworkPK) {
+        return null;
+    }
 }

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class UsersDto {
-    private String userId;
+    private String id;
     private String fullname;
     private String email;
     private LocalDate birthday;

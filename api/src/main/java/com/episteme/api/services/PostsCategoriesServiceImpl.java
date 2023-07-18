@@ -1,18 +1,12 @@
 package com.episteme.api.services;
 
-import com.episteme.api.entity.Bookmark;
 import com.episteme.api.entity.Categories;
 import com.episteme.api.entity.PostsCategories;
-import com.episteme.api.entity.dto.BookmarkDto;
 import com.episteme.api.entity.dto.CategoriesDto;
 import com.episteme.api.entity.dto.PostsCategoriesDto;
-import com.episteme.api.exceptions.ResourceNotFoundException;
-import com.episteme.api.repository.BookmarkRepository;
-import com.episteme.api.repository.CategoriesRepository;
 import com.episteme.api.repository.PostsCategoriesRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,9 +57,9 @@ public class PostsCategoriesServiceImpl implements PostsCategoriesService {
         return this.modelMapper.map(postsCategories, PostsCategoriesDto.class);
     }
 
-    public List<CategoriesDto> findAllByPostId(Long postId) {
-        List<Categories> postsCategoriesList = this.postsCategoriesRepository.findCategoriesByPostId(postId);
-        List<CategoriesDto> categoriesDtoList = postsCategoriesList.stream().map(category -> this.categoriesService.categoriesToDto(category)).collect(Collectors.toList());
+    public List<CategoriesDto> findAllCategoriesNameByPostId(Long postId) {
+        List<Categories> categoriesList = this.postsCategoriesRepository.findCategoriesByPostId(postId);
+        List<CategoriesDto> categoriesDtoList = categoriesList.stream().map(category -> this.categoriesService.categoriesToDto(category)).collect(Collectors.toList());
         return categoriesDtoList;
     }
 }

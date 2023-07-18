@@ -1,15 +1,11 @@
 package com.episteme.api.services;
 
-import com.episteme.api.entity.Bookmark;
 import com.episteme.api.entity.Categories;
-import com.episteme.api.entity.dto.BookmarkDto;
 import com.episteme.api.entity.dto.CategoriesDto;
 import com.episteme.api.exceptions.ResourceNotFoundException;
-import com.episteme.api.repository.BookmarkRepository;
 import com.episteme.api.repository.CategoriesRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,7 +58,8 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     public CategoriesDto categoriesToDto(Categories category) {
         CategoriesDto categoryDto = new CategoriesDto();
-        categoryDto.setNameCategories(category.getName());
+        categoryDto.setId(category.getCategoryId());
+        categoryDto.setName(category.getName());
         return categoryDto;
     }
 

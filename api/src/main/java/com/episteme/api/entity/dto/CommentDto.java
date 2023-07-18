@@ -1,8 +1,5 @@
 package com.episteme.api.entity.dto;
 
-import com.episteme.api.entity.Comment;
-import com.episteme.api.entity.Post;
-import com.episteme.api.entity.Users;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -15,9 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 public class CommentDto {
-    private Long commentId;
-    private UsersDto usersDto;
-    private PostDto postDto;
+    private Long id;
+    private UsersDto user;
     private String content;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

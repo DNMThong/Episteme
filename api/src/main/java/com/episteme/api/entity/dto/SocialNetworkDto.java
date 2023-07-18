@@ -7,6 +7,5 @@ import lombok.*;
 @Getter
 @Setter
 public class SocialNetworkDto {
-    private UsersDto followerUser;
-    private UsersDto followingUser;
+    private UsersDto user;
 }

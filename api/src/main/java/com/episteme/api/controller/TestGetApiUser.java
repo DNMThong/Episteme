@@ -4,10 +4,10 @@ import com.episteme.api.entity.Comment;
 import com.episteme.api.entity.dto.*;
 import com.episteme.api.repository.CommentRepository;
 import com.episteme.api.services.*;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,11 +27,7 @@ public class TestGetApiUser {
     @Autowired
     private SocialNetworkServiceImpl socialNetworkService;
     @Autowired
-    private PostsCategoriesServiceImpl postsCategoriesService;
-    @Autowired
     private CommentServiceImpl commentService;
-    @Autowired
-    private CommentRepository commentRepository;
 
     @GetMapping("/users")
     public ResponseEntity<?> getListUser() {
@@ -39,9 +35,9 @@ public class TestGetApiUser {
         return ResponseEntity.ok(usersDtoList);
     }
 
-    @GetMapping("/bookmarks")
-    public ResponseEntity<?> getListBookmark() {
-        List<BookmarkDto> bookmarkDTOList = bookmarkService.findAll();
+    @GetMapping("/{userId}/bookmarks")
+    public ResponseEntity<?> getListBookmarkByUser(@PathVariable String userId) {
+        List<BookmarkDto> bookmarkDTOList = bookmarkService.findBookmarkByUserId(userId);
         return ResponseEntity.ok(bookmarkDTOList);
     }
 
@@ -51,21 +47,39 @@ public class TestGetApiUser {
         return ResponseEntity.ok(postDtoList);
     }
 
+    @GetMapping("/{userId}/posts")
+    public ResponseEntity<?> getPostByUserId(@PathVariable String userId) {
+        List<PostDto> postDtoList = postService.findAllPostByUserId(userId);
+        return ResponseEntity.ok(postDtoList);
+    }
+
+    @GetMapping("/danh-muc/{slug}")
+    public ResponseEntity<?> getAllPostByCategoriesId(@PathVariable String slug) {
+        List<PostDto> postDtoList = postService.findAllPostByCategoriesSlug(slug);
+        return ResponseEntity.ok(postDtoList);
+    }
+
     @GetMapping("/categories")
     public ResponseEntity<?> getListCategories() {
         List<CategoriesDto> postDtoList = categoriesService.findAll();
         return ResponseEntity.ok(postDtoList);
     }
 
-    @GetMapping("/socialNetwork")
-    public ResponseEntity<?> getListSocialNetwork() {
-        List<SocialNetworkDto> socialNetworkDtoList = socialNetworkService.findAll();
+    @GetMapping("/{userId}/follower")
+    public ResponseEntity<?> getListFollower(@PathVariable String userId) {
+        List<UsersDto> socialNetworkDtoList = socialNetworkService.findAllFollowingByUserId(userId);
         return ResponseEntity.ok(socialNetworkDtoList);
     }
 
-    @GetMapping("/comment")
-    public ResponseEntity<?> getListComment() {
-        List<Comment> commentDtoList = commentRepository.findAll();
+    @GetMapping("/{userId}/following")
+    public ResponseEntity<?> getListFollowing(@PathVariable String userId) {
+        List<UsersDto> socialNetworkDtoList = socialNetworkService.findAllFollowerByUserId(userId);
+        return ResponseEntity.ok(socialNetworkDtoList);
+    }
+
+    @GetMapping("/{postId}/comment")
+    public ResponseEntity<?> getListComment(@PathVariable Long postId) {
+        List<CommentDto> commentDtoList = commentService.findAllCommentByPostId(postId);
         return ResponseEntity.ok(commentDtoList);
     }
 }

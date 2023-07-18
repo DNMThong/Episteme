@@ -32,27 +32,15 @@ public class BookmarkServiceImpl implements BookmarkService {
     }
 
     @Override
-    public BookmarkDto update(BookmarkDto bookmarkDto, Long bookmarkId) {
-        return null;
-    }
-
-    @Override
     public void delete(Long bookmarkId) {
         Bookmark bookmark = this.bookmarkRepository.findById(bookmarkId).orElseThrow(() -> new ResourceNotFoundException("Bookmark", "Id", String.valueOf(bookmarkId)));
         this.bookmarkRepository.delete(bookmark);
     }
 
-    @Override
-    public List<BookmarkDto> findAll() {
-        List<Bookmark> bookmarks = this.bookmarkRepository.findAll();
-        List<BookmarkDto> bookmarkDtos = bookmarks.stream().map(bookmark -> this.bookmarkToDto(bookmark)).collect(Collectors.toList());
-        return bookmarkDtos;
-    }
-
-    @Override
-    public BookmarkDto findById(Long bookmarkId) {
-        Bookmark bookmark = this.bookmarkRepository.findById(bookmarkId).orElseThrow(() -> new ResourceNotFoundException("Bookmark", "Id", String.valueOf(bookmarkId)));
-        return this.bookmarkToDto(bookmark);
+    public List<BookmarkDto> findBookmarkByUserId(String userId) {
+        List<Bookmark> bookmarkList = bookmarkRepository.findBookmarkByUserId(userId);
+        List<BookmarkDto> bookmarkDtoList = bookmarkList.stream().map(bookmark -> bookmarkToDto(bookmark)).collect(Collectors.toList());
+        return bookmarkDtoList;
     }
 
     public Bookmark dtoToBookmark(BookmarkDto bookmarkDto) {
@@ -63,12 +51,27 @@ public class BookmarkServiceImpl implements BookmarkService {
         BookmarkDto bookmarkDto = this.modelMapper.map(bookmark, BookmarkDto.class);
         // Nạp và đặt giá trị cho usersDto
         UsersDto usersDto = this.usersService.findById(bookmark.getUser().getUserId()); // Ví dụ: userService là service để lấy thông tin users
-        bookmarkDto.setUsersDto(usersDto);
+        bookmarkDto.setUser(usersDto);
 
         // Nạp và đặt giá trị cho postDto
         PostDto postDto = this.postService.findById(bookmark.getPost().getPostId()); // Ví dụ: postService là service để lấy thông tin post
-        bookmarkDto.setPostDto(postDto);
+        bookmarkDto.setPost(postDto);
 
         return bookmarkDto;
+    }
+
+    @Override
+    public BookmarkDto update(BookmarkDto bookmarkDto, Long aLong) {
+        return null;
+    }
+
+    @Override
+    public List<BookmarkDto> findAll() {
+        return null;
+    }
+
+    @Override
+    public BookmarkDto findById(Long aLong) {
+        return null;
     }
 }

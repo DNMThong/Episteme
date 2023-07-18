@@ -1,18 +1,14 @@
 package com.episteme.api.services;
 
-import com.episteme.api.entity.Bookmark;
 import com.episteme.api.entity.Comment;
-import com.episteme.api.entity.dto.BookmarkDto;
 import com.episteme.api.entity.dto.CommentDto;
+import com.episteme.api.entity.dto.UsersDto;
 import com.episteme.api.exceptions.ResourceNotFoundException;
-import com.episteme.api.repository.BookmarkRepository;
 import com.episteme.api.repository.CommentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +49,12 @@ public class CommentServiceImpl implements CommentService {
         return commentDtos;
     }
 
+    public List<CommentDto> findAllCommentByPostId(Long postId) {
+        List<Comment> comments = commentRepository.findAllCommentByPostId(postId);
+        List<CommentDto> commentDtoList = comments.stream().map(comment -> commentToDto(comment)).collect(Collectors.toList());
+        return commentDtoList;
+    }
+
     @Override
     public CommentDto findById(Long Id) {
         Comment comment = this.commentRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("Comment", "Id", String.valueOf(Id)));
@@ -64,7 +66,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     public CommentDto commentToDto(Comment comment) {
-        CommentDto commentDto = this.modelMapper.map(comment, CommentDto.class);
+        CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
+        UsersDto usersDto = usersService.findById(comment.getUser().getUserId());
+        commentDto.setUser(usersDto);
         return commentDto;
     }
 
