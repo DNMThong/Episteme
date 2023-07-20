@@ -3,7 +3,7 @@ package com.episteme.api.services;
 import com.episteme.api.entity.Comment;
 import com.episteme.api.entity.dto.CommentDto;
 import com.episteme.api.entity.dto.UsersDto;
-import com.episteme.api.exceptions.ResourceNotFoundException;
+import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.CommentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class CommentServiceImpl implements CommentService {
     @Autowired
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     @Autowired
     private UsersServiceImpl usersService;
-    @Autowired
-    private PostServiceImpl postService;
 
     @Override
     public CommentDto save(CommentDto commentDto) {
@@ -31,14 +29,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto update(CommentDto comment, Long aLong) {
-        // Chua thong nhat Dto nhu nao chua code
+    public CommentDto update(CommentDto comment, Long commentId) {
         return null;
     }
 
     @Override
-    public void delete(Long Id) {
-        Comment comment = this.commentRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("Comment", "Id", String.valueOf(Id)));
+    public void delete(Long id) {
+        Comment comment = this.commentRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find comment id: " + id));
         this.commentRepository.delete(comment);
     }
 
@@ -56,8 +53,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto findById(Long Id) {
-        Comment comment = this.commentRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("Comment", "Id", String.valueOf(Id)));
+    public CommentDto findById(Long id) {
+        Comment comment = this.commentRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find comment id: " + id));
         return this.commentToDto(comment);
     }
 

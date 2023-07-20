@@ -1,6 +1,8 @@
 package com.episteme.api.services;
 
 import com.episteme.api.entity.dto.BookmarkDto;
+import org.springframework.stereotype.Component;
 
-public interface BookmarkService extends IService<BookmarkDto,Long>{
+@Component
+public interface BookmarkService extends IService<BookmarkDto, Long> {
 }

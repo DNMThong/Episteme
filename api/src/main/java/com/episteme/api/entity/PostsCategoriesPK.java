@@ -11,7 +11,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @Embeddable
 public class PostsCategoriesPK implements Serializable {
     @ManyToOne

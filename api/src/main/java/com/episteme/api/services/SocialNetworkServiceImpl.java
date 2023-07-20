@@ -5,21 +5,21 @@ import com.episteme.api.entity.SocialNetworkPK;
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.SocialNetworkDto;
 import com.episteme.api.entity.dto.UsersDto;
-import com.episteme.api.exceptions.ResourceNotFoundException;
+import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.SocialNetworkRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class SocialNetworkServiceImpl implements SocialNetworkService {
     @Autowired
-    SocialNetworkRepository socialNetworkRepository;
+    private SocialNetworkRepository socialNetworkRepository;
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     @Autowired
     private UsersServiceImpl usersService;
 
@@ -31,7 +31,7 @@ public class SocialNetworkServiceImpl implements SocialNetworkService {
 
     @Override
     public void delete(SocialNetworkPK Id) {
-        SocialNetwork socialNetwork = this.socialNetworkRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("SocialNetwork", "Id", String.valueOf(Id)));
+        SocialNetwork socialNetwork = this.socialNetworkRepository.findById(Id).orElseThrow(() -> new NotFoundException("Can't find Social Network"));
         this.socialNetworkRepository.delete(socialNetwork);
     }
 

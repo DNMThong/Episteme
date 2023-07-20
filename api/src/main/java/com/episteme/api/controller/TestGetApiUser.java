@@ -1,10 +1,17 @@
 package com.episteme.api.controller;
 
 import com.episteme.api.entity.Comment;
+import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.*;
+import com.episteme.api.exceptions.ErrorResponse;
+import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.CommentRepository;
+import com.episteme.api.repository.UsersRepository;
 import com.episteme.api.services.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +23,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 public class TestGetApiUser {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UsersServiceImpl usersService;
     @Autowired
@@ -33,6 +42,21 @@ public class TestGetApiUser {
     public ResponseEntity<?> getListUser() {
         List<UsersDto> usersDtoList = usersService.findAll();
         return ResponseEntity.ok(usersDtoList);
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable String id) {
+        try {
+            UsersDto usersDto = usersService.findById(id);
+            return ResponseEntity.ok(usersDto);
+        } catch (NotFoundException ex) {
+            String errorMessage = "Can't not find user id: " + id;
+            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, errorMessage);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        } catch (Exception exception) {
+            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @GetMapping("/{userId}/bookmarks")

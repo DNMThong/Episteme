@@ -2,28 +2,28 @@ package com.episteme.api.services;
 
 import com.episteme.api.entity.Post;
 import com.episteme.api.entity.dto.*;
-import com.episteme.api.exceptions.ResourceNotFoundException;
+import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.PostRepository;
 import com.episteme.api.repository.PostsCategoriesRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class PostServiceImpl implements PostService {
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     @Autowired
     private UsersServiceImpl usersService;
     @Autowired
     private PostsCategoriesServiceImpl postsCategoriesService;
     @Autowired
-    PostsCategoriesRepository postsCategoriesRepository;
+    private PostsCategoriesRepository postsCategoriesRepository;
 
     @Override
     public PostDto save(PostDto postDto) {
@@ -38,10 +38,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void delete(Long Id) {
-        Post post = this.postRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("Post", "Id", String.valueOf(Id)));
+    public void delete(Long id) {
+        Post post = this.postRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find post id: " + id));
         this.postRepository.delete(post);
-
     }
 
     @Override
@@ -52,8 +51,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDto findById(Long Id) {
-        Post post = this.postRepository.findById(Id).orElseThrow(() -> new ResourceNotFoundException("Post", "Id", String.valueOf(Id)));
+    public PostDto findById(Long id) {
+        Post post = this.postRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find post id: " + id));
         return this.postDto(post);
     }
 
@@ -62,13 +61,25 @@ public class PostServiceImpl implements PostService {
     }
 
     public PostDto postDto(Post post) {
-        PostDto postDto = this.modelMapper.map(post, PostDto.class);
-        UsersDto usersDto = this.usersService.findById(post.getUser().getUserId());
-        postDto.setUser(usersDto);
-
-        List<CategoriesDto> categoriesDtoList = this.postsCategoriesService.findAllCategoriesNameByPostId(post.getPostId());
-        postDto.setCategories(categoriesDtoList);
-        return postDto;
+        try {
+            PostDto postDto = new PostDto();
+            postDto.setId(post.getPostId());
+            postDto.setTitle(post.getTitle());
+            postDto.setSlug(post.getSlug());
+            postDto.setContent(post.getContent());
+            postDto.setSummary(post.getSummary());
+            postDto.setCreateAt(post.getCreateAt());
+            postDto.setUpdateAt(post.getUpdateAt());
+            postDto.setStatus(post.getStatus());
+            UsersDto usersDto = this.usersService.findById(post.getUser().getUserId());
+            postDto.setUser(usersDto);
+            List<CategoriesDto> categoriesDtoList = this.postsCategoriesService.findAllCategoriesNameByPostId(post.getPostId());
+            postDto.setCategories(categoriesDtoList);
+            return postDto;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public List<PostDto> findAllPostByCategoriesSlug(String slug) {

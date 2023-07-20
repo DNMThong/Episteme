@@ -4,7 +4,7 @@ import com.episteme.api.entity.Bookmark;
 import com.episteme.api.entity.dto.BookmarkDto;
 import com.episteme.api.entity.dto.PostDto;
 import com.episteme.api.entity.dto.UsersDto;
-import com.episteme.api.exceptions.ResourceNotFoundException;
+import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.BookmarkRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 @Service
 public class BookmarkServiceImpl implements BookmarkService {
     @Autowired
-    BookmarkRepository bookmarkRepository;
+    private BookmarkRepository bookmarkRepository;
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     @Autowired
     private UsersServiceImpl usersService;
     @Autowired
@@ -33,7 +33,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 
     @Override
     public void delete(Long bookmarkId) {
-        Bookmark bookmark = this.bookmarkRepository.findById(bookmarkId).orElseThrow(() -> new ResourceNotFoundException("Bookmark", "Id", String.valueOf(bookmarkId)));
+        Bookmark bookmark = this.bookmarkRepository.findById(bookmarkId).orElseThrow(() -> new NotFoundException("Can't find bookmark id: " + bookmarkId));
         this.bookmarkRepository.delete(bookmark);
     }
 
@@ -48,7 +48,9 @@ public class BookmarkServiceImpl implements BookmarkService {
     }
 
     public BookmarkDto bookmarkToDto(Bookmark bookmark) {
-        BookmarkDto bookmarkDto = this.modelMapper.map(bookmark, BookmarkDto.class);
+        BookmarkDto bookmarkDto = new BookmarkDto();
+        bookmarkDto.setId(bookmark.getBookmarkId());
+        bookmarkDto.setSaveTime(bookmark.getSaveTime());
         // Nạp và đặt giá trị cho usersDto
         UsersDto usersDto = this.usersService.findById(bookmark.getUser().getUserId()); // Ví dụ: userService là service để lấy thông tin users
         bookmarkDto.setUser(usersDto);
