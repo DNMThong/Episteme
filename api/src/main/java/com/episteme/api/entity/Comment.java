@@ -37,7 +37,7 @@ public class Comment {
     @Column(name = "update_at", nullable = true)
     private LocalDateTime updateAt;
 
-    @OneToMany(mappedBy = "invitedBy", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "comment_parent_id", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Comment> comments;
 
