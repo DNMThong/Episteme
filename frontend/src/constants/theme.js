@@ -5,7 +5,9 @@ export const tokens = (mode) =>
         blueAccent: "#38b6ff",
         greenAccent: "#48ca7d",
         background: "#161923",
-        paper: "#161923",
+        paper: "#23242E",
+        greyAccent: "#e0e0e0",
+        text: "#fff",
       }
     : {
         primary: "#01212e",
@@ -13,6 +15,8 @@ export const tokens = (mode) =>
         greenAccent: "#48ca7d",
         background: "#F8F8FF",
         paper: "#F8F8FF",
+        greyAccent: "#141414",
+        text: "#000",
       };
 
 export const themeSettings = (mode) => {
@@ -31,7 +35,7 @@ export const themeSettings = (mode) => {
             },
             background: {
               default: colors.background,
-              paper: colors.paper,
+              paper: colors.background,
             },
           }
         : {
@@ -43,7 +47,7 @@ export const themeSettings = (mode) => {
             },
             background: {
               default: colors.background,
-              paper: colors.paper,
+              paper: colors.background,
             },
           }),
     },
@@ -84,6 +88,11 @@ export const themeSettings = (mode) => {
         fontFamily: ["Inter", "sans-serif"].join(","),
         fontSize: 14,
         color: mode === "dark" ? "#94a3b8" : "#111729",
+      },
+      subtitle2: {
+        fontFamily: ["Inter", "sans-serif"].join(","),
+        fontSize: 12,
+        color: mode === "dark" ? "#94a3b8" : "#333",
       },
     },
   };

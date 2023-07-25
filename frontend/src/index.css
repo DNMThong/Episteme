@@ -32,6 +32,10 @@ a {
   font-size: 16px;
 }
 
+a {
+  text-decoration: none;
+}
+
 .cdx-notifies {
   color: #000;
 }
