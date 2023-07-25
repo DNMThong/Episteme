@@ -5,10 +5,16 @@ import com.episteme.api.entity.dto.*;
 import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.PostRepository;
 import com.episteme.api.repository.PostsCategoriesRepository;
+import com.episteme.api.response.PostResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,6 +61,42 @@ public class PostServiceImpl implements PostService {
         Post post = this.postRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find post id: " + id));
         return this.postDto(post);
     }
+
+    @Override
+    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        // get content for page object
+        List<Post> listOfPosts = posts.getContent();
+
+        List<PostDto> content= listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+
+        PostResponse postResponse = new PostResponse();
+        postResponse.setContent(content);
+        postResponse.setPageNumber(posts.getNumber());
+        postResponse.setPageSize(posts.getSize());
+        postResponse.setTotalElements(posts.getTotalElements());
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setLastPage(posts.isLast());
+        return postResponse;
+    }
+
+
+    public List<PostDto> findByKeywords(String keywords) {
+        if (keywords!=null){
+            List<Post> posts=postRepository.findByKeywords(keywords);
+            List<PostDto> content= posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+            return content;
+        }
+        return null;
+    }
+
 
     public Post dtoToPost(PostDto postDto) {
         return this.modelMapper.map(postDto, Post.class);

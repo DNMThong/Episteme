@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,10 +38,14 @@ public class Post {
     @Column(name = "slug", nullable = false, length = 255)
     private String slug;
 
+
+
     @Column(name = "create_at", nullable = false)
+//    @CreatedDate
     private LocalDateTime createAt;
 
     @Column(name = "update_at", nullable = false)
+//    @LastModifiedDate
     private LocalDateTime updateAt;
 
     @Column(name = "status", nullable = true, length = -1)

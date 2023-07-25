@@ -3,9 +3,16 @@ package com.episteme.api.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
@@ -13,7 +20,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Users {
+@Builder
+public class Users implements UserDetails {
     @Id
     @Column(name = "user_id", nullable = false, length = 18)
     private String userId;
@@ -36,20 +44,24 @@ public class Users {
     @Column(name = "description", nullable = true, length = -1)
     private String description;
 
-    @Column(name = "registered_at", nullable = false)
+    @Column(name = "registered_at", nullable = true)
+    @CreatedDate
     private LocalDateTime registeredAt;
 
-    @Column(name = "last_login", nullable = false)
+    @Column(name = "last_login", nullable = true)
+    @LastModifiedDate
     private LocalDateTime lastLogin;
 
     @Column(name = "token", nullable = true, length = -1)
     private String token;
 
-    @Column(name = "role", nullable = false)
+    @Column(name = "role", nullable = true)
     private boolean role;
 
     @Column(name = "status", nullable = true, length = -1)
     private String status;
+    @Enumerated(EnumType.STRING)
+    private Role roles;
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
@@ -80,5 +92,43 @@ public class Users {
         this.token = token;
         this.role = role;
         this.status = status;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(roles.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return password ;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    // Tài khoản chưa hết hạn ?
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    // Tài khoản chưa bị khóa ?
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    // Thông tin đăng nhập chưa hết hạn ?
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

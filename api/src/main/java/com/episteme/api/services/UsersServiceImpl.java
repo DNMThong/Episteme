@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,6 +87,10 @@ public class UsersServiceImpl implements UsersService {
     public UsersDto findById(String id) {
         Users users = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find user id: " + id));
         return usersToDto(users);
+    }
+    public Optional<Users> findUerByEmail(String email){
+        Optional<Users> user = usersRepository.findByEmail(email);
+        return user;
     }
 
     public Users dtoToUsers(UsersDto usersDto) {
