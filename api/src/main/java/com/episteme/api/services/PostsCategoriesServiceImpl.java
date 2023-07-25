@@ -1,6 +1,7 @@
 package com.episteme.api.services;
 
 import com.episteme.api.entity.Categories;
+import com.episteme.api.entity.Post;
 import com.episteme.api.entity.PostsCategories;
 import com.episteme.api.entity.PostsCategoriesPK;
 import com.episteme.api.entity.dto.CategoriesDto;
@@ -25,7 +26,9 @@ public class PostsCategoriesServiceImpl implements PostsCategoriesService {
 
     @Override
     public PostsCategoriesDto save(PostsCategoriesDto postsCategoriesDto) {
-        return null;
+        PostsCategories postsCategories = this.dtoToPostsCategories(postsCategoriesDto);
+        PostsCategories savePostsCategories = this.postsCategoriesRepository.save(postsCategories);
+        return this.postsCategoriesToDto(savePostsCategories);
     }
 
     @Override
@@ -63,5 +66,16 @@ public class PostsCategoriesServiceImpl implements PostsCategoriesService {
         List<Categories> categoriesList = this.postsCategoriesRepository.findCategoriesByPostId(postId);
         List<CategoriesDto> categoriesDtoList = categoriesList.stream().map(category -> this.categoriesService.categoriesToDto(category)).collect(Collectors.toList());
         return categoriesDtoList;
+    }
+
+    public List<PostsCategories> saveAllPostCategories(List<PostsCategories> postCategories) {
+        return postsCategoriesRepository.saveAll(postCategories);
+    }
+    public void deleteAllByPost(Post post) {
+        // Truy vấn tất cả các liên kết giữa bài đăng và danh mục dựa trên bài đăng cụ thể
+        List<PostsCategories> postCategories = postsCategoriesRepository.findByPost(post);
+
+        // Xóa tất cả các liên kết trong danh sách postCategories
+        postsCategoriesRepository.deleteAll(postCategories);
     }
 }

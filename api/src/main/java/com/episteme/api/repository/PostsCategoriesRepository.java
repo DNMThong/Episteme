@@ -18,4 +18,5 @@ public interface PostsCategoriesRepository extends JpaRepository<PostsCategories
 
     @Query("SELECT pc.post FROM PostsCategories pc WHERE pc.category.slug = ?1")
     List<Post> findPostByCategoriesSlug(String slug);
+    List<PostsCategories> findByPost(Post post);
 }

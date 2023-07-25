@@ -50,11 +50,20 @@ public class CategoriesServiceImpl implements CategoriesService {
         return this.categoriesToDto(categories);
     }
 
+    public Categories findByIdCategories(Integer id) {
+        return this.categoriesRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find category id: " + id));
+    }
+
     public Categories dtoToCategories(CategoriesDto categoriesDto) {
         return this.modelMapper.map(categoriesDto, Categories.class);
     }
 
     public CategoriesDto categoriesToDto(Categories category) {
         return this.modelMapper.map(category, CategoriesDto.class);
+    }
+
+    @Override
+    public List<Categories> findAllById(List<Integer> categoryIds) {
+        return categoriesRepository.findAllById(categoryIds);
     }
 }

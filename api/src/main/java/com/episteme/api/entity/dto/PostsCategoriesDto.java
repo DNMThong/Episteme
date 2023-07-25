@@ -1,5 +1,7 @@
 package com.episteme.api.entity.dto;
 
+import com.episteme.api.entity.Categories;
+import com.episteme.api.entity.Post;
 import lombok.*;
 
 @NoArgsConstructor
@@ -7,5 +9,6 @@ import lombok.*;
 @Getter
 @Setter
 public class PostsCategoriesDto {
-    private CategoriesDto categoriesDto;
+    private Post post;
+    private Categories categories;
 }
