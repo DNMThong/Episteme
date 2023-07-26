@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -36,6 +37,9 @@ public class Post {
     @Column(name = "slug", nullable = false, length = 255)
     private String slug;
 
+    @Column(name = "image", nullable = true)
+    private String image;
+
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createAt;
 
@@ -45,9 +49,9 @@ public class Post {
     @Column(name = "status", nullable = true, length = -1)
     private String status;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<PostsCategories> categoriesList;
+    private List<PostsCategories> postCategories = new ArrayList<>();
 
     public Post(long postId, Users user, String title, String summary, String content, String slug, LocalDateTime createAt, LocalDateTime updateAt, String status) {
         this.postId = postId;

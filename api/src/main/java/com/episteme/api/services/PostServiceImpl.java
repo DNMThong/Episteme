@@ -41,6 +41,7 @@ public class PostServiceImpl implements PostService {
         }
         Post post = dtoToPost(postDto);
                     post.setCreateAt(LocalDateTime.now());
+                    post.setUpdateAt(LocalDateTime.now());
                     post.setUser(userId);
         Post savePost = this.postRepository.save(post);
         List<Categories> categories = new ArrayList<>();
@@ -63,6 +64,7 @@ public class PostServiceImpl implements PostService {
         existingPost.setSlug(postDto.getSlug());
         existingPost.setContent(postDto.getContent());
         existingPost.setSummary(postDto.getSummary());
+        existingPost.setImage(postDto.getImage());
         existingPost.setCreateAt(postDto.getCreateAt());
         existingPost.setUpdateAt(LocalDateTime.now());
         existingPost.setStatus(postDto.getStatus());
@@ -77,10 +79,9 @@ public class PostServiceImpl implements PostService {
     }
     public void deletePost(Long postId, String userId) {
         // Kiểm tra nếu bài đăng không tồn tại thì không tiến hành xóa
-        Post existingPost = postRepository.findById(postId).orElse(null);
-        if (existingPost == null) {
+        Post existingPost = postRepository.findById(postId).orElseThrow(() -> {
             throw new NotFoundException("Không tìm thấy bài đăng với ID: " + postId);
-        }
+        });
 
         if (!existingPost.getUser().getUserId().equals(userId)) {
             throw new RuntimeException("Bạn không có quyền xóa bài đăng này.");
@@ -138,6 +139,7 @@ public class PostServiceImpl implements PostService {
             postDto.setSlug(post.getSlug());
             postDto.setContent(post.getContent());
             postDto.setSummary(post.getSummary());
+            postDto.setImage(post.getImage());
             postDto.setCreateAt(post.getCreateAt());
             postDto.setUpdateAt(post.getUpdateAt());
             postDto.setStatus(post.getStatus());

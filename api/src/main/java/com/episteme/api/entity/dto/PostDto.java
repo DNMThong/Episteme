@@ -16,6 +16,7 @@ public class PostDto {
     private String slug;
     private String content;
     private String summary;
+    private String image;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private String status;

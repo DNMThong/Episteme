@@ -8,6 +8,6 @@ import java.util.List;
 
 @Component
 public interface CategoriesService extends IService<CategoriesDto, Integer> {
-    List<Categories> findAllById(List<Integer> categoryIds);
+
 }
 

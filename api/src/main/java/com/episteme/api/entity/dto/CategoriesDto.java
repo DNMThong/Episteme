@@ -9,4 +9,5 @@ import lombok.*;
 public class CategoriesDto {
     private int id;
     private String name;
+    private String slug;
 }
