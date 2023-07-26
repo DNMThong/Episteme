@@ -91,7 +91,7 @@ public class PostServiceImpl implements PostService {
     public List<PostDto> findByKeywords(String keywords) {
         if (keywords!=null){
             List<Post> posts=postRepository.findByKeywords(keywords);
-            List<PostDto> content= posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+            List<PostDto> content= posts.stream().map(post -> modelMapper.map(post,PostDto.class)).collect(Collectors.toList());
             return content;
         }
         return null;

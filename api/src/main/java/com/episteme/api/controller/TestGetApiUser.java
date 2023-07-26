@@ -1,12 +1,8 @@
 package com.episteme.api.controller;
 
-import com.episteme.api.entity.Comment;
-import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.*;
-import com.episteme.api.exceptions.ErrorResponse;
+import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.exceptions.NotFoundException;
-import com.episteme.api.repository.CommentRepository;
-import com.episteme.api.repository.UsersRepository;
 import com.episteme.api.response.PostResponse;
 import com.episteme.api.services.*;
 import org.slf4j.Logger;
@@ -43,18 +39,10 @@ public class TestGetApiUser {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable String id) {
-        try {
-            UsersDto usersDto = usersService.findById(id);
-            return ResponseEntity.ok(usersDto);
-        } catch (NotFoundException ex) {
-            String errorMessage = "Can't not find user id: " + id;
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, errorMessage);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-        } catch (Exception exception) {
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-        }
+    public ApiResponse<UsersDto> getUserById(@PathVariable String id) {
+
+        UsersDto usersDto = usersService.findById(id);
+        return ApiResponse.success(HttpStatus.OK, "success", usersDto);
     }
 
     @GetMapping("/{userId}/bookmarks")

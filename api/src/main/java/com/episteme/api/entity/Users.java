@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +22,8 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
-public class Users implements UserDetails {
+@EntityListeners(AuditingEntityListener.class)
+public class Users  implements UserDetails {
     @Id
     @Column(name = "user_id", nullable = false, length = 18)
     private String userId;
@@ -78,6 +80,8 @@ public class Users implements UserDetails {
     @OneToMany(mappedBy = "followingUser")
     @JsonManagedReference
     List<SocialNetwork> followingList;
+
+
 
     public Users(String userId, String fullname, String email, String password, String image, LocalDate birthday, String description, LocalDateTime registeredAt, LocalDateTime lastLogin, String token, boolean role, String status) {
         this.userId = userId;
