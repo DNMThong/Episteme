@@ -31,7 +31,7 @@ export const uploadFile = async (file) => {
     const size = convertToMB(file.size);
     if (size > 16) {
       return {
-        error: "Upload size must be less than 16MB",
+        error: "Tệp tin phải nhỏ hơn 16MB",
       };
     }
     const filePath = uuidv4() + file.name;

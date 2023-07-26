@@ -1,12 +1,5 @@
-import {
-  Box,
-  Button,
-  Container,
-  CssBaseline,
-  ThemeProvider,
-} from "@mui/material";
+import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { useMode } from "./context/mode-context";
-import Editor from "./components/editor";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Route, Routes } from "react-router-dom";

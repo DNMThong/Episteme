@@ -44,7 +44,7 @@ const FormAddCategoryPage = () => {
                   fullWidth
                   type="text"
                   name="name"
-                  label="Tên đường dẫn"
+                  label="Tên danh mục"
                   variant="outlined"
                   onChange={handleChange}
                   onBlur={handleBlur}
