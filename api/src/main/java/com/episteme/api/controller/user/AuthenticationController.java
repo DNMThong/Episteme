@@ -1,20 +1,17 @@
-package com.episteme.api.controller;
+package com.episteme.api.controller.user;
 
-import com.episteme.api.config.AuthenticationService;
+import com.episteme.api.services.AuthenticationService;
 import com.episteme.api.request.AuthenticationRequest;
 import com.episteme.api.request.RegisterRequest;
 import com.episteme.api.response.AuthenticationResponse;
-import com.episteme.api.services.UsersServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/account")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -31,5 +28,13 @@ public class AuthenticationController {
     ){
 
         return ResponseEntity.ok(service.authenticate(request));
+    }
+    @GetMapping("/success")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        // Xóa thông tin đăng nhập khỏi SecurityContextHolder (Spring Security)
+
+
+        // Trả về thông báo thành công hoặc mã lỗi nếu cần
+        return ResponseEntity.ok("Logout thành công!");
     }
 }

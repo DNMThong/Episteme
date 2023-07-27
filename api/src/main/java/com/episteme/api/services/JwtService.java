@@ -1,4 +1,4 @@
-package com.episteme.api.config;
+package com.episteme.api.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

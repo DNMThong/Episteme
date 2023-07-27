@@ -1,6 +1,7 @@
 package com.episteme.api.config;
 
 import com.episteme.api.repository.UsersRepository;
+import com.episteme.api.services.AuditorAwareImpl;
 import com.episteme.api.services.UsersServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,6 @@ public class ApplicationConfig {
     }
     @Bean
     public AuditorAware<String> auditorProvider(){
-        return (AuditorAware<String>) new UsersServiceImpl();
+        return new AuditorAwareImpl();
     }
 }

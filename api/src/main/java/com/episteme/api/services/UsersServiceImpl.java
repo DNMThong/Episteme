@@ -22,8 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,11 +34,17 @@ public class UsersServiceImpl implements UsersService {
     private UsersRepository usersRepository;
     @Autowired
     private ModelMapper modelMapper;
+    public static String shortUUID() {
+        UUID uuid = UUID.randomUUID();
+        long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
+        return Long.toString(l, Character.MAX_RADIX);
+    }
 
     @Override
     public UsersDto save(UsersDto usersDto) {
         try {
             Users users = this.dtoToUsers(usersDto);
+            users.setUserId(shortUUID());
             Users saveUsers = this.usersRepository.save(users);
             return this.usersToDto(saveUsers);
         } catch (DataIntegrityViolationException ex) {
@@ -88,7 +96,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public List<UsersDto> findAll() {
         List<Users> users = this.usersRepository.findAll();
-        List<UsersDto> usersDtos = users.stream().map(bookmark -> this.usersToDto(bookmark)).collect(Collectors.toList());
+        List<UsersDto> usersDtos = users.stream().map(user -> this.usersToDto(user)).collect(Collectors.toList());
         return usersDtos;
     }
 

@@ -1,8 +1,8 @@
 package com.episteme.api.controller;
 
+import com.episteme.api.controller.admin.UserController;
 import com.episteme.api.entity.dto.*;
 import com.episteme.api.exceptions.ApiResponse;
-import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.response.PostResponse;
 import com.episteme.api.services.*;
 import org.slf4j.Logger;
@@ -40,7 +40,6 @@ public class TestGetApiUser {
 
     @GetMapping("/users/{id}")
     public ApiResponse<UsersDto> getUserById(@PathVariable String id) {
-
         UsersDto usersDto = usersService.findById(id);
         return ApiResponse.success(HttpStatus.OK, "success", usersDto);
     }

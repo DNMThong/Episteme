@@ -1,4 +1,4 @@
-package com.episteme.api.controller;
+package com.episteme.api.controller.admin;
 
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.UsersDto;
@@ -46,4 +46,8 @@ public class UserController {
         usersService.delete(id);
         return  ApiResponse.success(HttpStatus.OK,"success",null);
     }
+//    @PutMapping("/update/{id}")
+//    public ApiResponse<UsersDto> updateStatus (@RequestBody UsersDto usersDto,@PathVariable String id){
+//        return ApiResponse.success(HttpStatus.OK,"success",usersService.update(usersDto,id));
+//    }
 }

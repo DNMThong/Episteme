@@ -1,4 +1,4 @@
-package com.episteme.api.config;
+package com.episteme.api.services;
 
 import com.episteme.api.entity.Role;
 import com.episteme.api.entity.Users;
@@ -12,6 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.ByteBuffer;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -22,10 +25,13 @@ public class AuthenticationService {
     private  final AuthenticationManager authenticationManager;
     public AuthenticationResponse register(RegisterRequest request) {
         var users= Users.builder()
-                .userId(request.getId())
-                .fullname(request.getUsername())
+                .userId(shortUUID())
+                .fullname(request.getFullname())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
+                .birthday(request.getBirthday())
+                .image(request.getImage())
+                .description(request.getDescription())
                 .roles(Role.USER)
                 .build();
         repository.save(users);
@@ -43,5 +49,10 @@ public class AuthenticationService {
 
         String jwtToken =jwtService.generateToken(users);
         return AuthenticationResponse.builder().token(jwtToken).build();
+    }
+    public static String shortUUID() {
+        UUID uuid = UUID.randomUUID();
+        long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
+        return Long.toString(l, Character.MAX_RADIX);
     }
 }

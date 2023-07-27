@@ -31,7 +31,7 @@ public class Users  implements UserDetails {
     @Column(name = "fullname", nullable = false, length = 255)
     private String fullname;
 
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", nullable = false, length = 100,unique = true)
     private String email;
 
     @Column(name = "password", nullable = false, length = -1)
@@ -48,6 +48,7 @@ public class Users  implements UserDetails {
 
     @Column(name = "registered_at", nullable = true)
     @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime registeredAt;
 
     @Column(name = "last_login", nullable = true)

@@ -13,12 +13,12 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class UsersDto {
-    private String userId;
     private String fullname;
     private String password;
     private String email;
     private LocalDate birthday;
     private String image;
+    private String status;
     private String description;
     private Role roles;
 }
