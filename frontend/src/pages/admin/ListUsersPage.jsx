@@ -21,12 +21,7 @@ const ListUserPost = () => {
       headerName: "Thông tin",
       width: 200,
       renderCell: ({ row: { image, fullname, birthday } }) => (
-        <InfoUserTable
-          avatar={image}
-          title={fullname}
-          subtitle={birthday}
-          online={true}
-        />
+        <InfoUserTable avatar={image} title={fullname} subtitle={birthday} />
       ),
     },
     {

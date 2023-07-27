@@ -32,18 +32,22 @@ const StyledBadge = styled(Badge)(({ theme, online }) => ({
   },
 }));
 
-const InfoUserTable = ({ avatar, title, subtitle, online = false }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  return (
-    <Box display="flex" gap="8px" alignItems="center">
-      <StyledBadge
+{
+  /* <StyledBadge
         overlap="circular"
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         variant="dot"
         online={online}>
         <Avatar alt={name} src={avatar} />
-      </StyledBadge>
+      </StyledBadge> */
+}
+
+const InfoUserTable = ({ avatar, title, subtitle, online = false }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  return (
+    <Box display="flex" gap="8px" alignItems="center">
+      <Avatar alt={name} src={avatar} />
       <Box>
         <Typography variant="h6" color={colors.text}>
           {title}
