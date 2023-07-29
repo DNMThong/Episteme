@@ -2,12 +2,12 @@ package com.episteme.api.services;
 
 import com.episteme.api.entity.*;
 import com.episteme.api.entity.dto.*;
-import com.episteme.api.exceptions.CustomExceptionHandler;
-import com.episteme.api.exceptions.DuplicateRecordException;
+import com.episteme.api.entity.enums.PostStatus;
 import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.PostRepository;
 import com.episteme.api.repository.PostsCategoriesRepository;
-import org.apache.catalina.User;
+import com.github.slugify.Slugify;
+import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,50 +33,89 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostsCategoriesRepository postsCategoriesRepository;
 
+    @Autowired
+    private HttpSession session;
 
 
-    public PostDto savePostWithCategories(PostDto postDto, Users userId) {
-        if(checkForDuplicateRecordSave(postDto)) {
-            throw new DuplicateRecordException("Có vẻ slug của bạn đã bị trùng với slug của một bài đăng nào đó!!");
-        }
+    public PostDto savePostWithCategories(PostDto postDto, String userId) {
         Post post = dtoToPost(postDto);
-                    post.setCreateAt(LocalDateTime.now());
-                    post.setUpdateAt(LocalDateTime.now());
-                    post.setUser(userId);
+        Users user = usersService.findByIdUser(userId);
+            post.setCreateAt(LocalDateTime.now());
+            post.setUpdateAt(LocalDateTime.now());
+            post.setSlug("slug");
+            post.setStatus(PostStatus.NORMAL);
+            post.setView(0L);
+            post.setTotal_bookmark(0);
+            post.setTotal_comment(0);
+            post.setUser(user);
+
         Post savePost = this.postRepository.save(post);
+        convertSlugAndSave(post, savePost);
+
         List<Categories> categories = new ArrayList<>();
         postDto.getCategories().forEach(c -> categories.add(categoriesService.findByIdCategories(c.getId())));
         savePostCategoriesForPost(categories, savePost);
         return this.postDto(savePost);
     }
 
-    public PostDto updatePostWithCategories(PostDto postDto, Users userId, Long postId) {
+    public PostDto updatePostWithCategories(PostDto postDto, Long postId) {
         // Kiểm tra nếu bài đăng không tồn tại thì không tiến hành cập nhật
-        Post existingPost = postRepository.findById(postId).orElse(null);
-        if (existingPost == null) {
-            throw new NotFoundException("Không tìm thấy bài đăng với ID: " + postId);
-        }
-        if(checkForDuplicateRecordUpdate(postDto, postId)) {
-            throw new DuplicateRecordException("Có vẻ slug của bạn đã bị trùng với slug của một bài đăng nào đó!!");
-        }
+        Post existingPost = postRepository.findById(postId).orElseThrow(() ->
+            new NotFoundException("Không tìm thấy bài đăng với ID: " + postId)
+        );
         // Cập nhật thông tin bài đăng từ PostDto
-        existingPost.setTitle(postDto.getTitle());
-        existingPost.setSlug(postDto.getSlug());
-        existingPost.setContent(postDto.getContent());
-        existingPost.setSummary(postDto.getSummary());
-        existingPost.setImage(postDto.getImage());
-        existingPost.setCreateAt(postDto.getCreateAt());
-        existingPost.setUpdateAt(LocalDateTime.now());
-        existingPost.setStatus(postDto.getStatus());
-        existingPost.setUser(userId);
-        // Lưu bài đăng đã cập nhật vào cơ sở dữ liệu
+            existingPost.setTitle(postDto.getTitle());
+            existingPost.setContent(postDto.getContent());
+            existingPost.setSummary(postDto.getSummary());
+            existingPost.setUpdateAt(LocalDateTime.now());
+            existingPost.setStatus(postDto.getStatus());
+
         Post updatedPost = postRepository.save(existingPost);
+        convertSlugAndSave(existingPost, updatedPost);
+
         List<Categories> categories = new ArrayList<>();
         postDto.getCategories().forEach(c -> categories.add(categoriesService.findByIdCategories(c.getId())));
         postsCategoriesService.deleteAllByPost(updatedPost);
         savePostCategoriesForPost(categories, existingPost);
         return this.postDto(updatedPost);
     }
+
+    public PostDto createDraft(Long postId) {
+        Post existingPost = this.postRepository.findById(postId).orElseThrow(() ->
+            new NotFoundException("Không tìm thấy bài đăng với ID: " + postId)
+        );
+        existingPost.setStatus(PostStatus.DRAFT);
+        Post postDraft = this.postRepository.save(existingPost);
+
+        return this.postDto(postDraft);
+    }
+
+    public PostDto updateDraftToNormal(PostDto postDto, Long postId) {
+        Post existingPost = postRepository.findById(postId).orElseThrow(() ->
+                new NotFoundException("Không tìm thấy bài đăng với ID: " + postId)
+        );
+        existingPost.setTitle(postDto.getTitle());
+        existingPost.setContent(postDto.getContent());
+        existingPost.setSummary(postDto.getSummary());
+        existingPost.setUpdateAt(LocalDateTime.now());
+        existingPost.setStatus(PostStatus.NORMAL);
+
+        Post updatedDraftPost = postRepository.save(existingPost);
+        convertSlugAndSave(existingPost, updatedDraftPost);
+
+        List<Categories> categories = new ArrayList<>();
+        postDto.getCategories().forEach(c -> categories.add(categoriesService.findByIdCategories(c.getId())));
+        postsCategoriesService.deleteAllByPost(updatedDraftPost);
+        savePostCategoriesForPost(categories, existingPost);
+        return this.postDto(updatedDraftPost);
+    }
+
+    public List<PostDto> findALlDraftPost() {
+        List<Post> posts = this.postRepository.findByStatus(PostStatus.DRAFT);
+        List<PostDto> postDtos = posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+        return postDtos;
+    }
+
     public void deletePost(Long postId, String userId) {
         // Kiểm tra nếu bài đăng không tồn tại thì không tiến hành xóa
         Post existingPost = postRepository.findById(postId).orElseThrow(() -> {
@@ -143,8 +182,11 @@ public class PostServiceImpl implements PostService {
             postDto.setCreateAt(post.getCreateAt());
             postDto.setUpdateAt(post.getUpdateAt());
             postDto.setStatus(post.getStatus());
-            UsersDto usersDto = this.usersService.findById(post.getUser().getUserId());
-            postDto.setUser(usersDto);
+            postDto.setView(post.getView());
+            postDto.setTotal_comment(post.getTotal_comment());
+            postDto.setTotal_bookmark(post.getTotal_bookmark());
+//            UsersDto usersDto = this.usersService.findById(post.getUser().getUserId());
+            postDto.setUserId(post.getUser().getUserId());
             List<CategoriesDto> categoriesDtoList = this.postsCategoriesService.findAllCategoriesNameByPostId(post.getPostId());
             postDto.setCategories(categoriesDtoList);
             return postDto;
@@ -166,17 +208,20 @@ public class PostServiceImpl implements PostService {
         return postDtoList;
     }
     public void savePostCategoriesForPost(List<Categories> categories, Post post) {
-        List<PostsCategories> postCategories = new ArrayList<>();
+        if (categories == null || post == null) {
+            throw new NotFoundException("Không tìm thấy: " + categories + post);
+        }
+        List<PostsCategories> postsCategories = new ArrayList<>();
         // Tạo danh sách các liên kết giữa post và category
         for (Categories category : categories) {
             PostsCategoriesDto postCategoryDto = new PostsCategoriesDto();
             postCategoryDto.setPost(post);
             postCategoryDto.setCategories(category);
-            PostsCategories postsCategories = new PostsCategories(new PostsCategoriesPK(post, category), post, category);
-            postCategories.add(postsCategories);
+            PostsCategories postCategories = new PostsCategories(new PostsCategoriesPK(post, category), post, category);
+            postsCategories.add(postCategories);
         }
         // Lưu tất cả liên kết vào bảng "postcategories" một lần
-        postsCategoriesService.saveAllPostCategories(postCategories);
+        postsCategoriesService.saveAllPostCategories(postsCategories);
     }
 
     private boolean checkForDuplicateRecordSave(PostDto postDto) {
@@ -201,5 +246,41 @@ public class PostServiceImpl implements PostService {
 
         // Nếu không có slug nào bị trùng hoặc chỉ trùng với chính bài post hiện tại
         return false;
+    }
+
+    public static String convertToSlug(String title, Long id) {
+        Slugify slugify = new Slugify();
+        String slugTitle = slugify.slugify(title);
+        String slugId = slugify.slugify(String.valueOf(id));
+        return slugTitle + "-" + slugId;
+    }
+
+    public void convertSlugAndSave(Post post, Post savePost) {
+        String slug = convertToSlug(post.getTitle(), post.getPostId());
+        System.out.println(slug);
+        savePost.setSlug(slug);
+        // Cập nhật bài viết lại để lưu slug mới
+        this.postRepository.save(savePost);
+    }
+
+    public void autoIncreaseViews(Long postId) {
+        List<Long> historyPost = (List<Long>) session.getAttribute("historyPost");
+        if (historyPost == null) {
+            historyPost = new ArrayList<>();
+        }
+
+        boolean postExists = false;
+        for (Long id : historyPost) {
+            if (id.equals(postId)) {
+                postExists = true;
+                break;
+            }
+        }
+
+        if (!postExists) {
+            historyPost.add(postId);
+            session.setAttribute("historyPost", historyPost);
+            postRepository.autoIncreaseViews(postId);
+        }
     }
 }

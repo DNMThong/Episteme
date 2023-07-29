@@ -1,5 +1,6 @@
 package com.episteme.api.entity;
 
+import com.episteme.api.entity.enums.PostStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -47,13 +48,23 @@ public class Post {
     private LocalDateTime updateAt;
 
     @Column(name = "status", nullable = true, length = -1)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private PostStatus status;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "view", nullable = false)
+    private Long view;
+
+    @Column(name = "total_comment", nullable = false)
+    private Integer total_comment;
+
+    @Column(name = "total_bookmark", nullable = false)
+    private Integer total_bookmark;
+
+    @OneToMany(mappedBy = "post")
     @JsonManagedReference
     private List<PostsCategories> postCategories = new ArrayList<>();
 
-    public Post(long postId, Users user, String title, String summary, String content, String slug, LocalDateTime createAt, LocalDateTime updateAt, String status) {
+    public Post(long postId, Users user, String title, String summary, String content, String slug, LocalDateTime createAt, LocalDateTime updateAt, PostStatus status) {
         this.postId = postId;
         this.user = user;
         this.title = title;

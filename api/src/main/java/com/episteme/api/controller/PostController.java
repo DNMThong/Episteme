@@ -24,17 +24,16 @@ public class PostController {
 
     @PostMapping("/users/{userId}/posts")
     public ApiResponse<PostDto> addPost(@RequestBody PostDto postDto,
-                               @PathVariable Users userId) {
+                                        @PathVariable String userId) {
         PostDto savedPost = postService.savePostWithCategories(postDto, userId);
         String successMessage = "Thêm bài đăng thành công!";
         return ApiResponse.success(HttpStatus.CREATED,successMessage, savedPost);
     }
 
-    @PutMapping("/users/{userId}/posts/{postId}")
+    @PutMapping("/posts/{postId}")
     public  ApiResponse<PostDto> updatePost(@RequestBody PostDto postDto,
-                                        @PathVariable("userId") Users userId,
-                                        @PathVariable("postId") Long id) {
-        PostDto updatePost = postService.updatePostWithCategories(postDto, userId, id);
+                                        @PathVariable Long postId) {
+        PostDto updatePost = postService.updatePostWithCategories(postDto, postId);
         String successMessage = "Cập nhật bài đăng thành công!";
         return  ApiResponse.success(HttpStatus.CREATED,successMessage, updatePost);
     }
@@ -45,4 +44,20 @@ public class PostController {
         String successMessage = "Xóa bài đăng thành công!";
         return  ApiResponse.success(HttpStatus.CREATED,successMessage, null);
     }
+
+    //PostDraft: Bản nháp của bài đăng
+    @PutMapping("/draft/{postId}")
+    public ApiResponse<?> addDraft(@PathVariable Long postId) {
+        PostDto postDto = this.postService.createDraft(postId);
+        String successMessage = "Lưu bản nháp bài đăng thành công!";
+        return ApiResponse.success(HttpStatus.OK, successMessage, postDto);
+    }
+
+    @GetMapping("/draft")
+    public ApiResponse<?> getAllDraftPost() {
+        List<PostDto> postDto = this.postService.findALlDraftPost();
+        return ApiResponse.success(HttpStatus.OK, "", postDto);
+    }
+
+
 }

@@ -3,7 +3,6 @@ package com.episteme.api.services;
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.UsersDto;
 import com.episteme.api.exceptions.DuplicateRecordException;
-import com.episteme.api.exceptions.ErrorResponse;
 import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.UsersRepository;
 import org.modelmapper.ModelMapper;
@@ -30,16 +29,16 @@ public class UsersServiceImpl implements UsersService {
         return this.usersToDto(saveUsers);
     }
 
-    public UsersDto saveResp(UsersDto usersDto) {
-        try {
-            Users users = this.dtoToUsers(usersDto);
-            Users saveUsers = this.usersRepository.save(users);
-            return this.usersToDto(saveUsers);
-        } catch (DataIntegrityViolationException ex) {
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT, "Duplicate record: " + ex.getMessage());
-            throw new DuplicateRecordException(errorResponse.getMessage());
-        }
-    }
+//    public UsersDto saveResp(UsersDto usersDto) {
+//        try {
+//            Users users = this.dtoToUsers(usersDto);
+//            Users saveUsers = this.usersRepository.save(users);
+//            return this.usersToDto(saveUsers);
+//        } catch (DataIntegrityViolationException ex) {
+//            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT, "Duplicate record: " + ex.getMessage());
+//            throw new DuplicateRecordException(errorResponse.getMessage());
+//        }
+//    }
 
     @Override
     public UsersDto update(UsersDto usersDto, String Id) {
@@ -52,17 +51,17 @@ public class UsersServiceImpl implements UsersService {
         this.usersRepository.delete(users);
     }
 
-    public ResponseEntity<ErrorResponse> deleteResp(String id) {
-        try {
-            Users users = this.usersRepository.findById(id)
-                    .orElseThrow(() -> new NotFoundException("Can't find user id: " + id));
-            this.usersRepository.delete(users);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (NotFoundException ex) {
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-        }
-    }
+//    public ResponseEntity<ErrorResponse> deleteResp(String id) {
+//        try {
+//            Users users = this.usersRepository.findById(id)
+//                    .orElseThrow(() -> new NotFoundException("Can't find user id: " + id));
+//            this.usersRepository.delete(users);
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        } catch (NotFoundException ex) {
+//            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+//            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     @Override
     public List<UsersDto> findAll() {
@@ -83,11 +82,13 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public UsersDto findById(String id) {
+    public UsersDto findById(String id) { //nhận UsersDto
         Users users = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find user id: " + id));
         return usersToDto(users);
     }
-
+    public Users findByIdUser(String id) { // nhận Users
+        return this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find user id: " + id));
+    }
     public Users dtoToUsers(UsersDto usersDto) {
         return this.modelMapper.map(usersDto, Users.class);
     }
