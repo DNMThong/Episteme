@@ -5,30 +5,33 @@ import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.services.CategoriesServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1/categories")
 public class CategoriesController {
     @Autowired
     CategoriesServiceImpl categoriesService;
 
-    @GetMapping("/admin/getAllCategory")
+    @GetMapping("")
     public ApiResponse<List<CategoriesDto>> getAllCategory() {
         List<CategoriesDto> categoriesDto = categoriesService.findAll();
         return ApiResponse.success(HttpStatus.OK, "", categoriesDto);
     }
 
-    @PostMapping("/admin/createCategory")
+    @PostMapping("")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ApiResponse<?> createCategory(@RequestBody CategoriesDto categoriesDto) {
         CategoriesDto categories = categoriesService.save(categoriesDto);
         String messageSuccess = "Thêm danh mục thành công!!";
         return ApiResponse.success(HttpStatus.CREATED ,messageSuccess, categories);
     }
 
-    @PutMapping("/admin/{categoryId}")
+    @PutMapping("/{categoryId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ApiResponse<?> updateCategory(@RequestBody CategoriesDto categoriesDto,
                                          @PathVariable Integer categoryId ) {
         CategoriesDto categories = categoriesService.update(categoriesDto, categoryId);
@@ -36,23 +39,24 @@ public class CategoriesController {
         return ApiResponse.success(HttpStatus.OK ,messageSuccess, categories);
     }
 
-    @DeleteMapping("/admin/{categoryId}")
+    @DeleteMapping("/{categoryId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ApiResponse<?> deleteCategory(@PathVariable Integer categoryId) {
         categoriesService.deleteCategoryById(categoryId);
         String messageSuccess = "Xóa danh mục thành công!!";
         return ApiResponse.success(HttpStatus.OK ,messageSuccess, null);
     }
 
-    @GetMapping("/admin/{categoryId}")
+    @GetMapping("/{categoryId}")
     public ApiResponse<CategoriesDto> findByIdCategory(@PathVariable Integer categoryId) {
         CategoriesDto categoriesDto = categoriesService.findById(categoryId);
         String messageSuccess = "Tìm thấy danh mục với ID: " + categoryId;
         return ApiResponse.success(HttpStatus.OK, messageSuccess, categoriesDto);
     }
 
-    @GetMapping("/admin/category/{kw}")
-    public ApiResponse<List<CategoriesDto>> findByCategoryName(@PathVariable String kw) {
-        List<CategoriesDto> categoriesDto = categoriesService.findByNameCategories(kw);
+    @GetMapping("/search")
+    public ApiResponse<List<CategoriesDto>> findByCategoryName(@RequestParam("name") String name) {
+        List<CategoriesDto> categoriesDto = categoriesService.findByNameCategories(name);
         return ApiResponse.success(HttpStatus.OK, "", categoriesDto);
     }
 }

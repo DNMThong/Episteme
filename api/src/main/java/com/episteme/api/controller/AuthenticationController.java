@@ -1,4 +1,4 @@
-package com.episteme.api.controller.user;
+package com.episteme.api.controller;
 
 import com.episteme.api.services.AuthenticationService;
 import com.episteme.api.request.AuthenticationRequest;
@@ -26,15 +26,12 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ){
-
         return ResponseEntity.ok(service.authenticate(request));
     }
-    @GetMapping("/success")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-        // Xóa thông tin đăng nhập khỏi SecurityContextHolder (Spring Security)
 
-
-        // Trả về thông báo thành công hoặc mã lỗi nếu cần
-        return ResponseEntity.ok("Logout thành công!");
+    @GetMapping("/test")
+    public String test() {
+        return "Test";
     }
+
 }

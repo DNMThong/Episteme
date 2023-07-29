@@ -46,17 +46,19 @@ public class PostServiceImpl implements PostService {
     public PostDto savePostWithCategories(PostDto postDto, String userId) {
         Post post = dtoToPost(postDto);
         Users user = usersService.findByIdUser(userId);
-            post.setCreateAt(LocalDateTime.now());
-            post.setUpdateAt(LocalDateTime.now());
-            post.setSlug("slug");
-            post.setStatus(PostStatus.NORMAL);
-            post.setView(0L);
-            post.setTotal_bookmark(0);
-            post.setTotal_comment(0);
-            post.setUser(user);
+        post.setCreateAt(LocalDateTime.now());
+        post.setUpdateAt(LocalDateTime.now());
+        post.setSlug("slug");
+        post.setStatus(PostStatus.Published);
+        post.setUser(user);
 
         Post savePost = this.postRepository.save(post);
         return this.postDto(savePost);
+    }
+
+    @Override
+    public PostDto save(PostDto postDto) {
+        return null;
     }
 
     @Override
@@ -141,8 +143,8 @@ public class PostServiceImpl implements PostService {
             postDto.setUpdateAt(post.getUpdateAt());
             postDto.setStatus(post.getStatus());
             postDto.setView(post.getView());
-            postDto.setTotal_comment(post.getTotal_comment());
-            postDto.setTotal_bookmark(post.getTotal_bookmark());
+            postDto.setTotal_comment(post.getCommentList().size());
+            postDto.setTotal_bookmark(post.getBookmarkList().size());
 //            UsersDto usersDto = this.usersService.findById(post.getUser().getUserId());
             postDto.setUserId(post.getUser().getUserId());
             List<CategoriesDto> categoriesDtoList = this.postsCategoriesService.findAllCategoriesNameByPostId(post.getPostId());
@@ -213,6 +215,28 @@ public class PostServiceImpl implements PostService {
         return slugTitle + "-" + slugId;
     }
 
+    public PostDto updatePostWithCategories(PostDto postDto, Long postId) {
+        // Kiểm tra nếu bài đăng không tồn tại thì không tiến hành cập nhật
+        Post existingPost = postRepository.findById(postId).orElseThrow(() ->
+                new NotFoundException("Không tìm thấy bài đăng với ID: " + postId)
+        );
+        // Cập nhật thông tin bài đăng từ PostDto
+        existingPost.setTitle(postDto.getTitle());
+        existingPost.setContent(postDto.getContent());
+        existingPost.setSummary(postDto.getSummary());
+        existingPost.setUpdateAt(LocalDateTime.now());
+        existingPost.setStatus(postDto.getStatus());
+
+        Post updatedPost = postRepository.save(existingPost);
+        convertSlugAndSave(existingPost, updatedPost);
+
+        List<Categories> categories = new ArrayList<>();
+        postDto.getCategories().forEach(c -> categories.add(categoriesService.findByIdCategories(c.getId())));
+        postsCategoriesService.deleteAllByPost(updatedPost);
+        savePostCategoriesForPost(categories, existingPost);
+        return this.postDto(updatedPost);
+    }
+
     public void convertSlugAndSave(Post post, Post savePost) {
         String slug = convertToSlug(post.getTitle(), post.getPostId());
         System.out.println(slug);
@@ -241,4 +265,11 @@ public class PostServiceImpl implements PostService {
             postRepository.autoIncreaseViews(postId);
         }
     }
+
+    public List<PostDto> findALlDraftPost() {
+        List<Post> posts = this.postRepository.findByStatus(PostStatus.Draft);
+        List<PostDto> postDtos = posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+        return postDtos;
+    }
+
 }

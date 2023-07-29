@@ -1,6 +1,6 @@
 package com.episteme.api.entity.dto;
 
-import com.episteme.api.entity.Role;
+import com.episteme.api.entity.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

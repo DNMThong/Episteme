@@ -1,4 +1,4 @@
-package com.episteme.api.entity;
+package com.episteme.api.entity.enums;
 
 public enum Role {
     USER,

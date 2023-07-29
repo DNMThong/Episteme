@@ -152,6 +152,10 @@ public class UsersServiceImpl implements UsersService {
 
     }
 
+    public Users findByIdUser(String id) { // nhận Users
+        return this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find user id: " + id));
+    }
+
     public Optional<Users> findUerByEmail(String email){
         Optional<Users> user = usersRepository.findByEmail(email);
         return user;

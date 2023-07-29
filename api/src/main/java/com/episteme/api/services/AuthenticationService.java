@@ -1,6 +1,6 @@
 package com.episteme.api.services;
 
-import com.episteme.api.entity.Role;
+import com.episteme.api.entity.enums.Role;
 import com.episteme.api.entity.Users;
 import com.episteme.api.repository.UsersRepository;
 import com.episteme.api.request.AuthenticationRequest;

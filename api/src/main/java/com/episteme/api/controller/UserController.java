@@ -1,4 +1,4 @@
-package com.episteme.api.controller.admin;
+package com.episteme.api.controller;
 
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.UsersDto;
@@ -17,12 +17,11 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/v1/admin/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
     @Autowired
     private UsersServiceImpl usersService;
-    @GetMapping("/")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("")
     public ApiResponse<UserResponse> getAllPost(@RequestParam(value = "pageNumber",defaultValue = "0",required = false) Integer pageNumber,
                                                    @RequestParam(value="pageSize",defaultValue = "10",required = false) Integer pageSize,
                                                    @RequestParam(value = "sortBy", defaultValue = "fullname", required = false) String sortBy,
@@ -32,18 +31,21 @@ public class UserController {
         return ApiResponse.success(HttpStatus.OK, "success", userResponse);
     }
     @GetMapping("/search")
-    public ApiResponse<List<UsersDto>> search(@RequestParam(value = "kw",defaultValue = "",required = false) String keywords){
+    public ApiResponse<List<UsersDto>> search(@RequestParam(value = "q",defaultValue = "",required = false) String keywords){
         return ApiResponse.success(HttpStatus.OK,"success",usersService.findByKeywords(keywords));
     }
-    @PostMapping("/create")
+    @PostMapping("")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ApiResponse<UsersDto> create (@RequestBody UsersDto usersDto){
         return ApiResponse.success(HttpStatus.OK,"success",usersService.save(usersDto));
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public ApiResponse<UsersDto> update (@RequestBody UsersDto usersDto,@PathVariable String id){
         return ApiResponse.success(HttpStatus.OK,"success",usersService.update(usersDto,id));
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ApiResponse<Void> delete (@PathVariable String id){
         usersService.delete(id);
         return  ApiResponse.success(HttpStatus.OK,"success",null);

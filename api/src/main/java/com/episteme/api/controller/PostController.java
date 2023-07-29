@@ -7,22 +7,25 @@ import com.episteme.api.services.PostServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1/posts")
 public class PostController {
     @Autowired
     PostServiceImpl postService;
 
-    @GetMapping("/getAllPost")
+    @GetMapping("")
     public ResponseEntity<?> getAll() {
         List<PostDto> postDtoList = this.postService.findAll();
         return ResponseEntity.ok(postDtoList);
     }
 
-    @PostMapping("/users/{userId}/posts")
+    @PostMapping("/{userId}")
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public ApiResponse<PostDto> addPost(@RequestBody PostDto postDto,
                                         @PathVariable String userId) {
         PostDto savedPost = postService.savePostWithCategories(postDto, userId);
@@ -31,6 +34,7 @@ public class PostController {
     }
 
     @PutMapping("/posts/{postId}")
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public  ApiResponse<PostDto> updatePost(@RequestBody PostDto postDto,
                                         @PathVariable Long postId) {
         PostDto updatePost = postService.updatePostWithCategories(postDto, postId);
@@ -39,21 +43,15 @@ public class PostController {
     }
 
     @DeleteMapping("/posts/{postId}")
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public ApiResponse<PostDto> deletePost(@PathVariable("postId") Long postId) {
         postService.delete(postId);
         String successMessage = "Xóa bài đăng thành công!";
         return  ApiResponse.success(HttpStatus.CREATED,successMessage, null);
     }
 
-    //PostDraft: Bản nháp của bài đăng
-    @PutMapping("/draft/{postId}")
-    public ApiResponse<?> addDraft(@PathVariable Long postId) {
-        PostDto postDto = this.postService.createDraft(postId);
-        String successMessage = "Lưu bản nháp bài đăng thành công!";
-        return ApiResponse.success(HttpStatus.OK, successMessage, postDto);
-    }
-
     @GetMapping("/draft")
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public ApiResponse<?> getAllDraftPost() {
         List<PostDto> postDto = this.postService.findALlDraftPost();
         return ApiResponse.success(HttpStatus.OK, "", postDto);

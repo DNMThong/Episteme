@@ -16,10 +16,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
@@ -30,15 +29,19 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(entryPointExceptionHandler))
-                .authorizeHttpRequests((authorize)-> authorize
-                        .requestMatchers(HttpMethod.GET,"/api/v1/auth/**","/api/v1/posts/").permitAll()
+                .authorizeHttpRequests((request)-> request
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/auth/**",
+                                "/api/v1/users/**",
+                                "/api/v1/categories/**",
+                                "/api/v1/posts/**"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/v1/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-//                .logout((logout) -> logout.logoutUrl("/api/v1/auth/logout").logoutSuccessUrl("/api/v1/auth/success"));
         return http.build();
     }
 }
