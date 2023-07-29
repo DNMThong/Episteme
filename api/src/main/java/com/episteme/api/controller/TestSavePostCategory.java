@@ -16,7 +16,7 @@ public class TestSavePostCategory {
 
     @GetMapping("/test")
     public String testCreate() {
-        Users users = new Users("123456asd", "Trần Thị Hà Vi", "havi@example.com", "password123", "image1.jpg", LocalDate.now(), "Năm tháng ấy trôi qua thật nhanh", LocalDateTime.now(), LocalDateTime.now(), "token", true, "active");
+        Users users = new Users("123456asd", "Trần Thị Hà Vi", "havi@example.com", "password123", "image1.jpg", LocalDate.now(), "Năm tháng ấy trôi qua thật nhanh", LocalDateTime.now(), LocalDateTime.now(), "token", Role.USER, "active");
         Post post = new Post(1, users, "IT đã không còn là vua của mọi nghề nữa rồi ...", "Đôi dòng tâm sự dành cho người anh ..", "<div _ngcontent-serverapp-c88", "https://spiderum.com/bai-dang/IT-da-khong-con-la-vua-cua-moi-nghe-nua-roi-dedHFDWy5X1X", LocalDateTime.now(), LocalDateTime.now(), "Published");
         Categories categories = new Categories(1, "title", "slug");
 

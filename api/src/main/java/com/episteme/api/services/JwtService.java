@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.security.Key;
@@ -14,11 +15,16 @@ import java.util.Map;
 import java.util.function.Function;
 @Service
 public class JwtService {
-    private static final String SECRET_KEY="VXyGAhVzjIymlThC6KXnjRSGqgBrwxdzi0/PEggKLrdsBZdadSbipBIa4NR3SshmaDCU9HcQeKVqekVBj01bUPUIioWcuyq01YN1gc5VT50";
+    @Value("${episteme.secret_key}")
+    private String SECRET_KEY;
+
+    @Value("${episteme.expiration_time}")
+    private long EXPIRATION_TIME;
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
-    private static final long EXPIRATION_TIME = 3600000;
+
     public String generateToken(UserDetails userDetails){
         return generateToken(new HashMap<>(),userDetails);
     }

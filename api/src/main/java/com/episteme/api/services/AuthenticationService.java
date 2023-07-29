@@ -32,7 +32,7 @@ public class AuthenticationService {
                 .birthday(request.getBirthday())
                 .image(request.getImage())
                 .description(request.getDescription())
-                .roles(Role.USER)
+                .role(Role.USER)
                 .build();
         repository.save(users);
         var jwtToken =jwtService.generateToken(users);

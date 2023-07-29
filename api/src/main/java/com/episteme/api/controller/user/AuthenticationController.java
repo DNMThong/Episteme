@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -22,7 +22,7 @@ public class AuthenticationController {
     ){
         return ResponseEntity.ok(service.register(request));
     }
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ){

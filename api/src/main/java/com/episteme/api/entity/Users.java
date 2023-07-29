@@ -59,12 +59,12 @@ public class Users  implements UserDetails {
     private String token;
 
     @Column(name = "role", nullable = true)
-    private boolean role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(name = "status", nullable = true, length = -1)
     private String status;
-    @Enumerated(EnumType.STRING)
-    private Role roles;
+
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
@@ -84,7 +84,7 @@ public class Users  implements UserDetails {
 
 
 
-    public Users(String userId, String fullname, String email, String password, String image, LocalDate birthday, String description, LocalDateTime registeredAt, LocalDateTime lastLogin, String token, boolean role, String status) {
+    public Users(String userId, String fullname, String email, String password, String image, LocalDate birthday, String description, LocalDateTime registeredAt, LocalDateTime lastLogin, String token, Role role, String status) {
         this.userId = userId;
         this.fullname = fullname;
         this.email = email;
@@ -101,7 +101,7 @@ public class Users  implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(roles.name()));
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
