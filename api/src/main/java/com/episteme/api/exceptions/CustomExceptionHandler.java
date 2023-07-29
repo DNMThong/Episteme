@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.LocalDateTime;
+
 @RestControllerAdvice
 public class CustomExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(CustomExceptionHandler.class);
@@ -16,7 +18,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiResponse<Void> handlerNotFoundException(NotFoundException ex, WebRequest req) {
-        return  ApiResponse.error(HttpStatus.NOT_FOUND, ex.getMessage());
+        return ApiResponse.error(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     // 400 Bad Request: Yêu cầu không hợp lệ do cú pháp sai hoặc tham số không hợp lệ.
