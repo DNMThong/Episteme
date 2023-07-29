@@ -12,36 +12,37 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id", nullable = false)
-    private Long commentId;
+    private long commentId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private Users user;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
+    @JsonBackReference
     private Post post;
 
     @Column(name = "content", nullable = true, length = -1)
     private String content;
 
-    @Column(name = "create_at", nullable = true)
+    @Column(name = "create_at", nullable = false)
     private LocalDateTime createAt;
 
-    @Column(name = "update_at", nullable = true)
+    @Column(name = "update_at", nullable = false)
     private LocalDateTime updateAt;
 
-    @OneToMany(mappedBy = "comment_parent_id", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Comment> comments;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_parent_id")
     @JsonBackReference
     private Comment parentComment;

@@ -1,27 +1,25 @@
 package com.episteme.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
-
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity
-@Table(name = "posts_categories")
 public class PostsCategories {
+    @EmbeddedId
+    private PostsCategoriesPK id;
 
-    @Id
     @ManyToOne
-    @JoinColumn(name = "category_id",referencedColumnName = "category_id", insertable = false, updatable = false)
-    Categories category;
+    @JoinColumn(name = "post_id", insertable = false, updatable = false)
+    @JsonBackReference
+    private Post post;
 
-    @Id
     @ManyToOne
-    @JoinColumn(name = "post_id",referencedColumnName = "post_id", insertable = false, updatable = false)
-    Post post;
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
+    @JsonBackReference
+    private Categories category;
 }

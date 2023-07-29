@@ -1,5 +1,6 @@
 package com.episteme.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity
 public class Bookmark {
     @Id
@@ -18,13 +18,15 @@ public class Bookmark {
     private long bookmarkId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private Users user;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
+    @JsonBackReference
     private Post post;
 
-    @Column(name = "save_time", nullable = true)
+    @Column(name = "save_time", nullable = false)
     private LocalDateTime saveTime;
 }
