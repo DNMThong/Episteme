@@ -1,16 +1,13 @@
 package com.episteme.api.services;
 
-import com.episteme.api.entity.Post;
 import com.episteme.api.entity.Users;
-import com.episteme.api.entity.dto.PostDto;
+import com.episteme.api.entity.dto.AuthorDto;
 import com.episteme.api.entity.dto.UsersDto;
 import com.episteme.api.exceptions.DuplicateRecordException;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.UsersRepository;
-import com.episteme.api.response.PostResponse;
 import com.episteme.api.response.UserResponse;
-import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -121,35 +118,41 @@ public class UsersServiceImpl implements UsersService {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
-        // create Pageable instance
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
         Page<Users> users = usersRepository.findAll(pageable);
 
-        // get content for page object
         List<Users> listOfPosts = users.getContent();
 
-        List<UsersDto> content= listOfPosts.stream().map(user -> this.usersToDto(user)).collect(Collectors.toList());
+        List<AuthorDto> authors= listOfPosts.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
 
         UserResponse userResponse = new UserResponse();
-        userResponse.setContent(content);
+        userResponse.setData(authors);
         userResponse.setPageNumber(users.getNumber());
         userResponse.setPageSize(users.getSize());
         userResponse.setTotalElements(users.getTotalElements());
         userResponse.setTotalPages(users.getTotalPages());
         userResponse.setLastPage(users.isLast());
+
         return userResponse;
     }
 
-    public List<UsersDto> findByKeywords(String keywords) {
+    @Override
+    public UsersDto updateForAdmin(String id, UsersDto usersDto) {
+        Users users = dtoToUsers(usersDto);
+        users.setUserId(id);
+        Users userSave = usersRepository.save(users);
+        return usersToDto(userSave);
+    }
+
+    public List<AuthorDto> findByKeywords(String keywords) {
             List<Users> users=usersRepository.findByKeywords(keywords);
             if(users==null) {
                 throw  new NotFoundException("Không tìm thấy"+keywords);
             }else {
-                List<UsersDto> content= users.stream().map(post -> modelMapper.map(post,UsersDto.class)).collect(Collectors.toList());
-                return content;
+                List<AuthorDto> authors= users.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
+                return authors;
             }
-
     }
 
     public Users findByIdUser(String id) { // nhận Users
@@ -157,7 +160,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     public Optional<Users> findUerByEmail(String email){
-        Optional<Users> user = usersRepository.findByEmail(email);
+        Optional<Users> user = usersRepository.findByEmailAndPasswordNotNull(email);
         return user;
     }
 
@@ -169,6 +172,9 @@ public class UsersServiceImpl implements UsersService {
         return this.modelMapper.map(users, UsersDto.class);
     }
 
+    public AuthorDto usersToAuthorDto (Users user) {
+        return this.modelMapper.map(user,AuthorDto.class);
+    }
 
 
 }

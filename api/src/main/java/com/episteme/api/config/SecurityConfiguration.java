@@ -34,11 +34,13 @@ public class SecurityConfiguration {
                                 "/api/v1/auth/**",
                                 "/api/v1/users/**",
                                 "/api/v1/categories/**",
-                                "/api/v1/posts/**"
+                                "/api/v1/posts/**",
+                                "/oauth2/authorization/google"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/v1/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .oauth2Login(configurer -> configurer.defaultSuccessUrl("/api/v1/auth/login-google"))
                 .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

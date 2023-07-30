@@ -1,8 +1,6 @@
 package com.episteme.api.response;
 
-import com.episteme.api.entity.Users;
-import com.episteme.api.entity.dto.PostDto;
-import com.episteme.api.entity.dto.UsersDto;
+import com.episteme.api.entity.dto.AuthorDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class UserResponse {
-    private List<UsersDto> content;
+    private List<AuthorDto> data;
     private int pageNumber;
     private int pageSize;
     private long totalElements;

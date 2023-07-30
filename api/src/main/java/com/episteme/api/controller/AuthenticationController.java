@@ -7,7 +7,10 @@ import com.episteme.api.response.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,9 +32,13 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "Test";
+    @RequestMapping("/login-google")
+    public ResponseEntity<AuthenticationResponse> loginWithGoogle(
+            OAuth2AuthenticationToken auth2AuthenticationToken
+    ){
+        OAuth2User oAuth2User = auth2AuthenticationToken.getPrincipal();
+        return ResponseEntity.ok(service.loginWithGoogle(oAuth2User));
     }
+
 
 }

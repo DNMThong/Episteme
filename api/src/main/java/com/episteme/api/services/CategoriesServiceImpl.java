@@ -93,9 +93,9 @@ public class CategoriesServiceImpl implements CategoriesService {
                 new NotFoundException("Không tìm thấy danh mục với ID: " + id));
     }
 
-    public List<CategoriesDto> findByNameCategories(String kw) {
-        List<Categories> categories = categoriesRepository.findCategoriesByNameKeyword(kw);
-        if(categories.isEmpty()) throw new NotFoundException("Không tìm thấy danh mục với tên là: " + kw);
+    public List<CategoriesDto> findWithParams(String name,String slug) {
+        List<Categories> categories = categoriesRepository.findWithParams(name,slug);
+        if(categories.isEmpty()) throw new NotFoundException("Không tìm thấy danh mục với các param truyền vào");
         return categories.stream().map(this::categoriesToDto).collect(Collectors.toList());
     }
 

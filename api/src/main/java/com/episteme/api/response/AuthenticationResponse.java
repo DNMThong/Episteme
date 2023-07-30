@@ -1,5 +1,6 @@
 package com.episteme.api.response;
 
+import com.episteme.api.entity.dto.UsersDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,5 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 public class AuthenticationResponse {
+    private UsersDto infoUser;
     private String token;
 }

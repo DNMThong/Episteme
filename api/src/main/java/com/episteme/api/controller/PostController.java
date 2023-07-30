@@ -24,15 +24,6 @@ public class PostController {
         return ResponseEntity.ok(postDtoList);
     }
 
-    @PostMapping("/{userId}")
-    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
-    public ApiResponse<PostDto> addPost(@RequestBody PostDto postDto,
-                                        @PathVariable String userId) {
-        PostDto savedPost = postService.savePostWithCategories(postDto, userId);
-        String successMessage = "Thêm bài đăng thành công!";
-        return ApiResponse.success(HttpStatus.CREATED,successMessage, savedPost);
-    }
-
     @PutMapping("/posts/{postId}")
     @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public  ApiResponse<PostDto> updatePost(@RequestBody PostDto postDto,

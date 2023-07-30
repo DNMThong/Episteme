@@ -11,4 +11,5 @@ import java.util.List;
 public interface UsersService extends IService<UsersDto, String> {
     UserResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
+    UsersDto updateForAdmin(String id,UsersDto usersDto);
 }

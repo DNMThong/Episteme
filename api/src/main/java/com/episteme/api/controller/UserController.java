@@ -1,6 +1,7 @@
 package com.episteme.api.controller;
 
 import com.episteme.api.entity.Users;
+import com.episteme.api.entity.dto.AuthorDto;
 import com.episteme.api.entity.dto.UsersDto;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.response.PostResponse;
@@ -22,7 +23,7 @@ public class UserController {
     @Autowired
     private UsersServiceImpl usersService;
     @GetMapping("")
-    public ApiResponse<UserResponse> getAllPost(@RequestParam(value = "pageNumber",defaultValue = "0",required = false) Integer pageNumber,
+    public ApiResponse<UserResponse> getUsers(@RequestParam(value = "pageNumber",defaultValue = "0",required = false) Integer pageNumber,
                                                    @RequestParam(value="pageSize",defaultValue = "10",required = false) Integer pageSize,
                                                    @RequestParam(value = "sortBy", defaultValue = "fullname", required = false) String sortBy,
                                                    @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
@@ -31,25 +32,11 @@ public class UserController {
         return ApiResponse.success(HttpStatus.OK, "success", userResponse);
     }
     @GetMapping("/search")
-    public ApiResponse<List<UsersDto>> search(@RequestParam(value = "q",defaultValue = "",required = false) String keywords){
+    public ApiResponse<List<AuthorDto>> search(@RequestParam(value = "q",defaultValue = "",required = false) String keywords){
         return ApiResponse.success(HttpStatus.OK,"success",usersService.findByKeywords(keywords));
     }
-    @PostMapping("")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ApiResponse<UsersDto> create (@RequestBody UsersDto usersDto){
-        return ApiResponse.success(HttpStatus.OK,"success",usersService.save(usersDto));
-    }
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
-    public ApiResponse<UsersDto> update (@RequestBody UsersDto usersDto,@PathVariable String id){
-        return ApiResponse.success(HttpStatus.OK,"success",usersService.update(usersDto,id));
-    }
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ApiResponse<Void> delete (@PathVariable String id){
-        usersService.delete(id);
-        return  ApiResponse.success(HttpStatus.OK,"success",null);
-    }
+
+
 //    @PutMapping("/update/{id}")
 //    public ApiResponse<UsersDto> updateStatus (@RequestBody UsersDto usersDto,@PathVariable String id){
 //        return ApiResponse.success(HttpStatus.OK,"success",usersService.update(usersDto,id));

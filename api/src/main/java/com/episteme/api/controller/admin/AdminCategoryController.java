@@ -1,4 +1,4 @@
-package com.episteme.api.controller;
+package com.episteme.api.controller.admin;
 
 import com.episteme.api.entity.dto.CategoriesDto;
 import com.episteme.api.exceptions.ApiResponse;
@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/categories")
-public class CategoriesController {
+@RequestMapping("/api/v1/admin/categories")
+@PreAuthorize("hasAuthority('ADMIN')")
+public class AdminCategoryController {
     @Autowired
     CategoriesServiceImpl categoriesService;
 
@@ -23,7 +24,6 @@ public class CategoriesController {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ApiResponse<?> createCategory(@RequestBody CategoriesDto categoriesDto) {
         CategoriesDto categories = categoriesService.save(categoriesDto);
         String messageSuccess = "Thêm danh mục thành công!!";
@@ -31,7 +31,6 @@ public class CategoriesController {
     }
 
     @PutMapping("/{categoryId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ApiResponse<?> updateCategory(@RequestBody CategoriesDto categoriesDto,
                                          @PathVariable Integer categoryId ) {
         CategoriesDto categories = categoriesService.update(categoriesDto, categoryId);
@@ -40,7 +39,6 @@ public class CategoriesController {
     }
 
     @DeleteMapping("/{categoryId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ApiResponse<?> deleteCategory(@PathVariable Integer categoryId) {
         categoriesService.deleteCategoryById(categoryId);
         String messageSuccess = "Xóa danh mục thành công!!";
@@ -54,9 +52,5 @@ public class CategoriesController {
         return ApiResponse.success(HttpStatus.OK, messageSuccess, categoriesDto);
     }
 
-    @GetMapping("/search")
-    public ApiResponse<List<CategoriesDto>> findByCategoryName(@RequestParam("name") String name) {
-        List<CategoriesDto> categoriesDto = categoriesService.findByNameCategories(name);
-        return ApiResponse.success(HttpStatus.OK, "", categoriesDto);
-    }
+
 }

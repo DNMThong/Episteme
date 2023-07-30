@@ -1,7 +1,5 @@
 package com.episteme.api.entity.dto;
 
-import com.episteme.api.entity.enums.Role;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,12 +11,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UsersDto {
+public class AuthorDto {
     private String fullname;
     private String email;
     private LocalDate birthday;
     private String image;
     private String status;
     private String description;
-    private Role role;
 }
