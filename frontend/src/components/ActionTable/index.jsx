@@ -9,22 +9,22 @@ const ActionTable = ({ view, edit, remove, lock, isLock = false }) => {
   return (
     <Box display="flex">
       {view && (
-        <IconButton size="small" onClick={view}>
+        <IconButton value="view" size="small" onClick={view}>
           <VisibilityIcon />
         </IconButton>
       )}
       {lock && (
-        <IconButton size="small" onClick={lock}>
+        <IconButton value="lock" size="small" onClick={lock}>
           {isLock ? <LockOpenIcon /> : <LockIcon />}
         </IconButton>
       )}
       {edit && (
-        <IconButton size="small" onClick={edit}>
+        <IconButton value="edit" size="small" onClick={edit}>
           <EditIcon />
         </IconButton>
       )}
       {remove && (
-        <IconButton size="small" onClick={remove}>
+        <IconButton value="remove" size="small" onClick={remove}>
           <DeleteIcon />
         </IconButton>
       )}

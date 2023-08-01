@@ -7,17 +7,37 @@ import ActionTable from "../../components/ActionTable";
 import InfoUserTable from "../../components/InfoUserTable";
 import DisplayTimeTable from "../../components/DisplayTimeTable";
 import ChipCustom from "./../../components/ChipCustom/index";
+import { useEffect, useState } from "react";
+import { getUsersAdmin } from "../../services/userAdminService";
 
 const ListUserPost = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const response = getUsersAdmin();
+    const fetchData = async () => {
+      try {
+        const response = await getUsersAdmin();
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  console.log(users);
 
   const columns = [
     {
       field: "id",
       headerName: "Id",
+      width: 200,
     },
     {
+      field: "fullname",
       headerName: "Thông tin",
       width: 200,
       renderCell: ({ row: { image, fullname, birthday } }) => (
@@ -29,41 +49,46 @@ const ListUserPost = () => {
       headerName: "Email",
       width: 150,
     },
-    {
-      field: "registeredAt",
-      headerName: "Ngày đăng ký",
-      width: 150,
-      renderCell: ({ row }) => (
-        <DisplayTimeTable time="11:45 PM" date="23/7/2023" />
-      ),
-    },
-    {
-      field: "lastLogin",
-      headerName: "Đăng nhập cuối",
-      width: 150,
-      renderCell: ({ row }) => (
-        <DisplayTimeTable time="11:45 PM" date="23/7/2023" />
-      ),
-    },
+    // {
+    //   field: "registeredAt",
+    //   headerName: "Ngày đăng ký",
+    //   width: 150,
+    //   renderCell: ({ row }) => (
+    //     <DisplayTimeTable time="11:45 PM" date="23/7/2023" />
+    //   ),
+    // },
+    // {
+    //   field: "lastLogin",
+    //   headerName: "Đăng nhập cuối",
+    //   width: 150,
+    //   renderCell: ({ row }) => (
+    //     <DisplayTimeTable time="11:45 PM" date="23/7/2023" />
+    //   ),
+    // },
     {
       field: "role",
       headerName: "Vai trò",
       width: 100,
-      renderCell: ({ row }) => <ChipCustom type="user" label="User" />,
+      renderCell: ({ row: { role } }) => (
+        <ChipCustom type={role.toLowerCase()} label={role} />
+      ),
     },
     {
       field: "status",
       headerName: "Trạng thái",
       width: 150,
-      renderCell: ({ row: { status } }) => (
-        <ChipCustom type="success" label={status} />
-      ),
+      renderCell: ({ row: { status } }) => {
+        if (status === "active") {
+          return <ChipCustom type="success" label={status} />;
+        }
+        return <ChipCustom type="success" label={status} />;
+      },
     },
     {
       field: "action",
       headerName: "Action",
       width: 120,
-      renderCell: ({ row }) => (
+      renderCell: ({ row: { id } }) => (
         <ActionTable view={() => {}} edit={() => {}} remove={() => {}} />
       ),
     },
@@ -85,21 +110,9 @@ const ListUserPost = () => {
         }}>
         <DataGrid
           columns={columns}
-          rows={[
-            {
-              id: "13",
-              name: "Displays element information like tag name, class, id, size etc.",
-              registeredAt: "11:09:23PM 23/7/2023",
-              lastLogin: "11:54:23PM 23/7/2023",
-              status: "Hoạt động",
-              image:
-                "https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj",
-              fullname: "Nguyễn Văn ABC",
-              birthday: "1/1/2023",
-              email: "nguyenvana123@gmail.com",
-            },
-          ]}
-          components={{ Toolbar: GridToolbar }}></DataGrid>
+          rows={users}
+          components={{ Toolbar: GridToolbar }}
+          key={"abcsa"}></DataGrid>
       </Box>
     </Box>
   );

@@ -12,7 +12,7 @@ import InlineCode from "@editorjs/inline-code";
 import AttachesTool from "@editorjs/attaches";
 import AlignmentTuneTool from "editorjs-paragraph-with-alignment";
 import Header from "editorjs-header-with-alignment";
-import { uploadFile, uploadImage } from "../services/fetchAPI";
+import { uploadFile, uploadImage } from "../services/uploadService";
 import EmbedTool from "../tool/EmbedTool";
 import { toast } from "react-toastify";
 

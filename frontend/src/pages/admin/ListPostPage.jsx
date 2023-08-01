@@ -61,7 +61,7 @@ const ListPostPage = () => {
       field: "action",
       headerName: "Action",
       width: 120,
-      renderCell: ({ row }) => {
+      renderCell: ({ row: { id } }) => {
         const [isLock, setIsLock] = useState(false);
         return (
           <ActionTable

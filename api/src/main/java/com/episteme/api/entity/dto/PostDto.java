@@ -1,6 +1,7 @@
 package com.episteme.api.entity.dto;
 
 import com.episteme.api.entity.enums.PostStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,9 @@ public class PostDto {
     private String content;
     private String summary;
     private String image;
+    @JsonFormat(pattern = "hh:mma dd/MM/yyyy")
     private LocalDateTime createAt;
+    @JsonFormat(pattern = "hh:mma dd/MM/yyyy")
     private LocalDateTime updateAt;
     private PostStatus status;
     private Long view;

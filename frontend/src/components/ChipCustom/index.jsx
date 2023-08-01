@@ -40,9 +40,10 @@ const ChipCustom = ({ type = "success", label }) => {
   );
 };
 
-ChipCustom.propTypes = {
-  type: PropTypes.objectOf(["success", "warning", "error", "admin", "user"]),
-  label: PropTypes.string.isRequired,
-};
+// ChipCustom.propTypes = {
+//   type: PropTypes.objectOf(["success", "warning", "error", "admin", "user"]),
+//   label: PropTypes.string.isRequired,
+//   key: PropTypes.any.isRequired,
+// };
 
 export default ChipCustom;

@@ -22,7 +22,7 @@ import { useState } from "react";
 import { DateField } from "@mui/x-date-pickers/DateField";
 import dayjs from "dayjs";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
-import { uploadImage } from "../../services/fetchAPI";
+import { uploadImage } from "../../services/uploadService";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 
 const initialValues = {
@@ -31,7 +31,7 @@ const initialValues = {
   password: "",
   birthday: null,
   status: "Hoạt động",
-  isAdmin: false,
+  role: "USER",
   description: "",
   image: "",
 };
@@ -51,6 +51,7 @@ const FormAddUserPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [image, setImage] = useState(null);
   const [urlImage, setUrlImage] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleSubmitForm = async (values) => {
     const url = image ? await uploadImage(image) : "";
@@ -60,7 +61,6 @@ const FormAddUserPage = () => {
     };
     console.log(data);
   };
-  console.log(image);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -263,9 +263,6 @@ const FormAddUserPage = () => {
                     </MenuItem>
                     <MenuItem value="Hoạt động">Hoạt động</MenuItem>
                     <MenuItem value="Bị khóa">Bị khóa</MenuItem>
-                    <MenuItem value="Đang chờ xét duyệt">
-                      Đang chờ xét duyệt
-                    </MenuItem>
                   </Select>
                   {!!touched.status && errors.status && (
                     <FormHelperText sx={{ color: "#f44336" }}>
@@ -276,11 +273,18 @@ const FormAddUserPage = () => {
               </Grid>
               <Grid item sm={6} md={6} lg={6} xs={12}>
                 <FormControlLabel
-                  name="isAdmin"
+                  name="role"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.isAdmin}
-                  control={<Switch />}
+                  value={isAdmin ? "ADMIN" : "USER"}
+                  control={
+                    <Switch
+                      onChange={() => {
+                        (isAdmin) => setIsAdmin((prev) => !prev);
+                      }}
+                      value={isAdmin}
+                    />
+                  }
                   label="Admin"
                 />
               </Grid>
