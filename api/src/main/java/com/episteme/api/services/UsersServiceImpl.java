@@ -17,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.Mapping;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -31,6 +33,10 @@ public class UsersServiceImpl implements UsersService {
     private UsersRepository usersRepository;
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public static String shortUUID() {
         UUID uuid = UUID.randomUUID();
         long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
@@ -41,8 +47,11 @@ public class UsersServiceImpl implements UsersService {
     public UsersDto save(UsersDto usersDto) {
         try {
             Users users = this.dtoToUsers(usersDto);
+
             users.setUserId(shortUUID());
+            users.setPassword(passwordEncoder.encode(usersDto.getPassword()));
             Users saveUsers = this.usersRepository.save(users);
+
             return this.usersToDto(saveUsers);
         } catch (DataIntegrityViolationException ex) {
             ApiResponse<UsersDto> apiResponse = new ApiResponse<>(HttpStatus.CONFLICT, "Duplicate record: " + ex.getMessage());
@@ -63,11 +72,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UsersDto update(UsersDto usersDto, String id) {
-        Users users = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy User Id: " + id));
-        users.setEmail(usersDto.getEmail());
-        users.setPassword(usersDto.getEmail());
-        users.setBirthday(usersDto.getBirthday());
-        users.setDescription(usersDto.getDescription());
+        Users u = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy User Id: " + id));
+        Users users = this.dtoToUsers(usersDto);
+        users.setPassword(passwordEncoder.encode(usersDto.getPassword()));
         Users updateUser =usersRepository.save(users);
         return this.modelMapper.map(updateUser,UsersDto.class);
     }

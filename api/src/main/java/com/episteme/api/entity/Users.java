@@ -1,6 +1,7 @@
 package com.episteme.api.entity;
 
 import com.episteme.api.entity.enums.Role;
+import com.episteme.api.entity.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -62,8 +63,9 @@ public class Users  implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "status", nullable = true, length = -1)
-    private String status;
+    @Column(name = "status", nullable = true)
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
 
     @OneToMany(mappedBy = "user")
@@ -84,7 +86,7 @@ public class Users  implements UserDetails {
 
 
 
-    public Users(String userId, String fullname, String email, String password, String image, LocalDate birthday, String description, LocalDateTime registeredAt, LocalDateTime lastLogin, String token, Role role, String status) {
+    public Users(String userId, String fullname, String email, String password, String image, LocalDate birthday, String description, LocalDateTime registeredAt, LocalDateTime lastLogin, String token, Role role, UserStatus status) {
         this.userId = userId;
         this.fullname = fullname;
         this.email = email;

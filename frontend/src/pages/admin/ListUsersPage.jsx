@@ -9,6 +9,7 @@ import DisplayTimeTable from "../../components/DisplayTimeTable";
 import ChipCustom from "./../../components/ChipCustom/index";
 import { useEffect, useState } from "react";
 import { getUsersAdmin } from "../../services/userAdminService";
+import { STATUS_USERS } from "../../constants/status";
 
 const ListUserPost = () => {
   const theme = useTheme();
@@ -78,10 +79,16 @@ const ListUserPost = () => {
       headerName: "Trạng thái",
       width: 150,
       renderCell: ({ row: { status } }) => {
-        if (status === "active") {
-          return <ChipCustom type="success" label={status} />;
+        switch (status) {
+          case STATUS_USERS.ACTIVE:
+            return <ChipCustom type="success" label={status} />;
+          case STATUS_USERS.PENDING:
+            return <ChipCustom type="warning" label={status} />;
+          case STATUS_USERS.SUSPENDED:
+            return <ChipCustom type="error" label={status} />;
+          default:
+            return <ChipCustom type="error" label={status} />;
         }
-        return <ChipCustom type="success" label={status} />;
       },
     },
     {

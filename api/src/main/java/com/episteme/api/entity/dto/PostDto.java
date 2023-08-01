@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class PostDto {
-    private long id;
+    private Long id;
     private String userId;
     private String title;
     private String slug;

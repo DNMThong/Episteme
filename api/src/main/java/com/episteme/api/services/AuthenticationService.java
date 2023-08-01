@@ -2,6 +2,7 @@ package com.episteme.api.services;
 
 import com.episteme.api.entity.enums.Role;
 import com.episteme.api.entity.Users;
+import com.episteme.api.entity.enums.UserStatus;
 import com.episteme.api.repository.UsersRepository;
 import com.episteme.api.request.AuthenticationRequest;
 import com.episteme.api.request.RegisterRequest;
@@ -40,6 +41,7 @@ public class AuthenticationService {
                 .birthday(request.getBirthday())
                 .image(request.getImage())
                 .description(request.getDescription())
+                .status(UserStatus.Active)
                 .role(Role.USER)
                 .build();
         Users userSaved = repository.save(users);
@@ -56,7 +58,7 @@ public class AuthenticationService {
         );
         var users = repository.findByEmailAndPasswordNotNull(request.getEmail()).orElseThrow();
 
-        String jwtToken =jwtService.generateToken(users);
+        String jwtToken = jwtService.generateToken(users);
         return AuthenticationResponse.builder().infoUser(usersService.usersToDto(users)).token(jwtToken).build();
     }
 

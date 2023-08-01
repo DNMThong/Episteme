@@ -24,6 +24,8 @@ import { useEffect, useRef, useState } from "react";
 import { tokens } from "../constants/theme";
 import { listCategory } from "../data/categories";
 import { toast } from "react-toastify";
+import { getCategories } from "../services/categoryService";
+import { createPost } from "../services/postService";
 
 const CreatePostPage = () => {
   const theme = useTheme();
@@ -57,14 +59,26 @@ const CreatePostPage = () => {
     const post = {
       title: titleRef.current.value,
       categories: selectedCategories,
-      content: dataPost,
-      description: descriptionRef.current.value,
+      content: JSON.stringify(dataPost?.blocks || []),
+      summary: descriptionRef.current.value,
     };
     console.log(post);
+    createPost(post, "1hbiqgy5slf79")
+      .then((response) => {
+        toast.success("Tạo bài viết thành công");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Tạo bài viết thất bại");
+      });
   };
 
   useEffect(() => {
-    setCategories(listCategory);
+    const fetchAPI = async () => {
+      const response = await getCategories();
+      setCategories(response?.data || []);
+    };
+    fetchAPI();
   }, []);
 
   return (

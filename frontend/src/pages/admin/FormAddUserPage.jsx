@@ -24,13 +24,17 @@ import dayjs from "dayjs";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import { uploadImage } from "../../services/uploadService";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import { STATUS_USERS } from "../../constants/status";
+import { addUsersAdmin } from "../../services/userAdminService";
+import { toast } from "react-toastify";
+import { format } from "date-fns";
 
 const initialValues = {
   fullname: "",
   email: "",
   password: "",
   birthday: null,
-  status: "Hoạt động",
+  status: "",
   role: "USER",
   description: "",
   image: "",
@@ -53,13 +57,24 @@ const FormAddUserPage = () => {
   const [urlImage, setUrlImage] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  console.log(isAdmin);
+
   const handleSubmitForm = async (values) => {
     const url = image ? await uploadImage(image) : "";
+    const cloneValue = { ...values };
     const data = {
-      ...values,
+      ...cloneValue,
+      role: isAdmin ? "ADMIN" : "USER",
+      birthday: dayjs(values.birthday).format("DD/MM/YYYY"),
       image: url,
     };
     console.log(data);
+    addUsersAdmin(data)
+      .then((response) => {
+        console.log(response);
+        toast.success("Thêm user thành công");
+      })
+      .catch((error) => {});
   };
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -239,9 +254,7 @@ const FormAddUserPage = () => {
                   label="Ngày sinh"
                   format="DD/MM/YYYY"
                   value={values.birthday}
-                  onChange={(value) =>
-                    setFieldValue("birthday", dayjs(value).toDate())
-                  }
+                  onChange={(value) => setFieldValue("birthday", value)}
                   onBlur={handleBlur}
                   error={!!touched.birthday && !!errors.birthday}
                   helperText={!!touched.birthday && errors.birthday}
@@ -261,8 +274,11 @@ const FormAddUserPage = () => {
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value="Hoạt động">Hoạt động</MenuItem>
-                    <MenuItem value="Bị khóa">Bị khóa</MenuItem>
+                    {Object.values(STATUS_USERS).map((status) => (
+                      <MenuItem key={status} value={status}>
+                        {status}
+                      </MenuItem>
+                    ))}
                   </Select>
                   {!!touched.status && errors.status && (
                     <FormHelperText sx={{ color: "#f44336" }}>
@@ -273,17 +289,8 @@ const FormAddUserPage = () => {
               </Grid>
               <Grid item sm={6} md={6} lg={6} xs={12}>
                 <FormControlLabel
-                  name="role"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={isAdmin ? "ADMIN" : "USER"}
                   control={
-                    <Switch
-                      onChange={() => {
-                        (isAdmin) => setIsAdmin((prev) => !prev);
-                      }}
-                      value={isAdmin}
-                    />
+                    <Switch onChange={() => setIsAdmin((prev) => !prev)} />
                   }
                   label="Admin"
                 />

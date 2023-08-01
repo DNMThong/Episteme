@@ -24,21 +24,30 @@ public class PostController {
         return ResponseEntity.ok(postDtoList);
     }
 
-    @PutMapping("/posts/{postId}")
+    @GetMapping("/{id}")
+    public  ApiResponse<PostDto> getPost(
+                                            @PathVariable("id") Long id) {
+        PostDto updatePost = postService.findById(id);
+        String successMessage = "Tìm thấy post có id " + id;
+        return  ApiResponse.success(HttpStatus.OK,successMessage, updatePost);
+    }
+
+
+    @PutMapping("/{postId}")
     @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public  ApiResponse<PostDto> updatePost(@RequestBody PostDto postDto,
                                         @PathVariable Long postId) {
         PostDto updatePost = postService.updatePostWithCategories(postDto, postId);
         String successMessage = "Cập nhật bài đăng thành công!";
-        return  ApiResponse.success(HttpStatus.CREATED,successMessage, updatePost);
+        return  ApiResponse.success(HttpStatus.OK,successMessage, updatePost);
     }
 
-    @DeleteMapping("/posts/{postId}")
+    @DeleteMapping("/{postId}")
     @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public ApiResponse<PostDto> deletePost(@PathVariable("postId") Long postId) {
         postService.delete(postId);
         String successMessage = "Xóa bài đăng thành công!";
-        return  ApiResponse.success(HttpStatus.CREATED,successMessage, null);
+        return  ApiResponse.success(HttpStatus.OK,successMessage, null);
     }
 
     @GetMapping("/draft")
@@ -47,6 +56,7 @@ public class PostController {
         List<PostDto> postDto = this.postService.findALlDraftPost();
         return ApiResponse.success(HttpStatus.OK, "", postDto);
     }
+
 
 
 }

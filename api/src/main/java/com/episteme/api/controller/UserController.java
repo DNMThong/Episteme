@@ -2,10 +2,12 @@ package com.episteme.api.controller;
 
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.AuthorDto;
+import com.episteme.api.entity.dto.PostDto;
 import com.episteme.api.entity.dto.UsersDto;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.response.PostResponse;
 import com.episteme.api.response.UserResponse;
+import com.episteme.api.services.PostServiceImpl;
 import com.episteme.api.services.UsersServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,10 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UsersServiceImpl usersService;
+
+    @Autowired
+    PostServiceImpl postService;
+
     @GetMapping("")
     public ApiResponse<UserResponse> getUsers(@RequestParam(value = "pageNumber",defaultValue = "0",required = false) Integer pageNumber,
                                                    @RequestParam(value="pageSize",defaultValue = "10",required = false) Integer pageSize,
@@ -36,9 +42,13 @@ public class UserController {
         return ApiResponse.success(HttpStatus.OK,"success",usersService.findByKeywords(keywords));
     }
 
+    @PostMapping("/{id}/posts")
+    public ApiResponse<PostDto> addPost(@RequestBody PostDto postDto,
+                                        @PathVariable("id") String userId
+        ) {
+            PostDto savedPost = postService.savePostWithCategories(postDto, userId);
+            String successMessage = "Thêm bài đăng thành công!";
+            return ApiResponse.success(HttpStatus.CREATED,successMessage, savedPost);
+        }
 
-//    @PutMapping("/update/{id}")
-//    public ApiResponse<UsersDto> updateStatus (@RequestBody UsersDto usersDto,@PathVariable String id){
-//        return ApiResponse.success(HttpStatus.OK,"success",usersService.update(usersDto,id));
-//    }
 }
