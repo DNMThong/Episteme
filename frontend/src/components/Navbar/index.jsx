@@ -204,7 +204,7 @@ function Navbar() {
                         {user && (
                            <MenuItem>
                               <NavLinkButton
-                                 to="/createBlog"
+                                 to="/tao-bai-viet"
                                  variant="outlined"
                                  sx={{
                                     color: textColor,
@@ -278,7 +278,7 @@ function Navbar() {
                            xs: "8px 0",
                            md: 2,
                         },
-                        "& a[href='/createBlog']": {
+                        "& a[href='/tao-bai-viet']": {
                            display: {
                               xs: "none",
                               md: "flex",
@@ -327,7 +327,7 @@ function Navbar() {
                               <NotificationsIcon />
                            </Badge>
                            <NavLinkButton
-                              to="/createBlog"
+                              to="/tao-bai-viet"
                               buttonText="Viết bài"
                               variant="outlined"
                               textColor={textColor}

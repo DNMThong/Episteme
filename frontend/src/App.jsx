@@ -22,6 +22,7 @@ import ErrorPage from "./pages/user/error/ErrorPage";
 import LoginPage from "./pages/user/login/LoginPage";
 import { AuthProvider } from "./context/auth-context";
 import HomePageUser from "./pages/user/home/HomePage";
+import ListPage from "./pages/user/list/ListPage";
 
 function App() {
    const { theme } = useMode();
@@ -58,6 +59,7 @@ function App() {
                         path="/update-profile/:profileId"
                         element={<UpdateProfilePage />}
                      />
+                     <Route path="/:slug" element={<ListPage />} />
                   </Route>
                   <Route path="/login" element={<LoginPage />}>
                      Login

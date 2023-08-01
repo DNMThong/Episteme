@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import CardPost from "./CardPost";
 
 const CardList = ({
-   slug = "/posts",
+   slug = "posts",
    direction = "vertical",
    containerAttributes = {},
 }) => {
    const [posts, setPosts] = useState([]);
    useEffect(() => {
       function fetchData() {
-         fetch(`/src/data${slug}.json`)
+         fetch(`/src/data/${slug}.json`)
             .then((result) => result.json())
             .then((res) => {
                console.log(res);

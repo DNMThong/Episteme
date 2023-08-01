@@ -6,6 +6,7 @@ import {
    CardListHeader,
    CustomCardListDirection,
 } from "../../../components/CardPost";
+import { CardDraft } from "../../../components/CardDraft";
 
 // const cards = [
 //    {
@@ -61,7 +62,7 @@ const HomePageUser = () => {
 
          <Container sx={{ mb: 10 }}>
             <CardListHeader text="Bài viết nổi bật" slug="/popularAuthor" />
-            <CardList />
+            <CardList slug="/popularPosts" />
          </Container>
          <Container sx={{ mb: 10 }}>
             <CardListHeader text="Tác giả nổi bật" slug="/popularAuthor" />
