@@ -1,21 +1,23 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Container, Grid } from "@mui/material";
 import { Box, Button, Divider, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { useMode } from "../../../context/mode-context";
 import { tokens } from "../../../constants/theme";
+import { register } from "../../../services/authService";
+import { useAuth } from "../../../context/auth-context";
 
 const initialValues = {
-   fullName: "",
+   fullname: "",
    email: "",
    password: "",
    confirmPassword: "",
 };
 
 const userSchema = yup.object().shape({
-   fullName: yup.string().required("Vui lòng nhập họ và tên"),
+   fullname: yup.string().required("Vui lòng nhập họ và tên"),
    email: yup
       .string()
       .email("Vui lòng nhập đúng định dạng email")
@@ -35,11 +37,36 @@ const userSchema = yup.object().shape({
 });
 
 const RegisterPage = () => {
+   const navigate = useNavigate();
    const { setMode } = useMode();
    const token = tokens("light");
-   const handleSubmitForm = (values) => {
-      console.log("submit");
-      console.log(values);
+   const { setUser } = useAuth();
+   const [errorMessage, setErrorMessage] = useState("");
+
+   const handleSubmitForm = async (values) => {
+      const registerData = {
+         email: values.email,
+         password: values.password,
+         fullname: values.fullname,
+      };
+      await register(registerData)
+         .then((res) => {
+            console.log(
+               "🚀 ~ file: RegisterPage.jsx:54 ~ awaitregister ~ res:",
+               res
+            );
+            setUser(res.data.infoUser);
+            localStorage.setItem("token_episteme", res.data.token);
+            navigate("/");
+            setErrorMessage("");
+         })
+         .catch((error) => {
+            console.log(
+               "🚀 ~ file: RegisterPage.jsx:58 ~ awaitregister ~ error:",
+               error
+            );
+            setErrorMessage("Đăng ký thất bại");
+         });
    };
    useEffect(() => setMode("light"), []);
    return (
@@ -76,16 +103,26 @@ const RegisterPage = () => {
                      >
                         Đăng ký
                      </Typography>
+                     {errorMessage && (
+                        <Typography
+                           variant="h6"
+                           component="p"
+                           marginBottom={3}
+                           sx={{ color: "red" }}
+                        >
+                           {errorMessage}
+                        </Typography>
+                     )}
                      <Formik
                         initialValues={initialValues}
                         validationSchema={userSchema}
-                        handleSubmit={handleSubmitForm}
+                        onSubmit={handleSubmitForm}
                      >
                         {({ touched, errors, handleChange, handleSubmit }) => (
                            <form onSubmit={handleSubmit}>
                               <TextField
-                                 id="fullName"
-                                 name="fullName"
+                                 id="fullname"
+                                 name="fullname"
                                  label="Họ và tên"
                                  type="text"
                                  sx={{
@@ -93,9 +130,9 @@ const RegisterPage = () => {
                                     marginBottom: 2,
                                  }}
                                  onChange={handleChange}
-                                 error={!!touched.fullName && !!errors.fullName}
+                                 error={!!touched.fullname && !!errors.fullname}
                                  helperText={
-                                    !!touched.fullName && errors.fullName
+                                    !!touched.fullname && errors.fullname
                                  }
                               />
                               <TextField

@@ -42,6 +42,12 @@ public class UserController {
         return ApiResponse.success(HttpStatus.OK,"success",usersService.findByKeywords(keywords));
     }
 
+    @GetMapping("/token/{token}")
+    public ApiResponse<UsersDto> getUser(@PathVariable("token") String token) {
+
+        return ApiResponse.success(HttpStatus.OK,"success",usersService.getUserWithToken(token));
+    }
+
     @PostMapping("/{id}/posts")
     public ApiResponse<PostDto> addPost(@RequestBody PostDto postDto,
                                         @PathVariable("id") String userId

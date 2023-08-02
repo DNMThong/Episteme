@@ -19,6 +19,7 @@ export const ModeProvider = (props) => {
   const value = {
     toggleColorMode,
     theme,
+    setMode,
   };
   return <ModeContext.Provider value={value} {...props}></ModeContext.Provider>;
 };

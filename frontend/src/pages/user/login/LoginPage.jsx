@@ -7,7 +7,7 @@ import {
    TextField,
    Typography,
 } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -15,6 +15,8 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { useMode } from "../../../context/mode-context";
 import { tokens } from "../../../constants/theme";
 import { useAuth } from "../../../context/auth-context";
+import { login } from "../../../services/authService";
+import "./style.css";
 
 const initialValues = {
    email: "",
@@ -29,23 +31,32 @@ const userSchema = yup.object().shape({
    password: yup.string().required("Vui lòng nhập mật khẩu"),
 });
 
-const sampleUser = {
-   id: "whisper",
-   gmail: "whisper14802@gmail.com",
-   avatar:
-      "https://cdn.discordapp.com/attachments/911999301717200906/1129624110931120329/323817117_1263876954160070_4031113429306859744_n.jpg",
-   noti: 4,
-};
-
 const LoginPage = () => {
    const { theme, setMode } = useMode();
    const token = tokens(theme.palette.mode);
    const navigate = useNavigate();
    const { setUser } = useAuth();
-   const handleSubmitForm = (values) => {
-      console.log(values);
-      setUser(sampleUser);
-      navigate("/");
+
+   const [errorMessage, setErrorMessage] = useState("");
+
+   const handleSubmitForm = async (values) => {
+      // 1. Send info to server
+      // 2. Set Token from response to LocalStorage
+      // 3. Get set user
+      await login(values)
+         .then((res) => {
+            setErrorMessage("");
+            const { infoUser, token } = res.data;
+            localStorage.setItem("token_episteme", token);
+            setUser(infoUser);
+            navigate("/");
+         })
+         .catch((error) => {
+            console.log(error);
+            setErrorMessage(
+               "Email hoặc mật khẩu không hợp lê! Vui lòng kiểm tra lại!"
+            );
+         });
    };
    useEffect(() => setMode("light"), []);
    return (
@@ -79,6 +90,16 @@ const LoginPage = () => {
                      >
                         Đăng nhập
                      </Typography>
+                     {errorMessage && (
+                        <Typography
+                           variant="h6"
+                           component="p"
+                           marginBottom={3}
+                           sx={{ color: "red" }}
+                        >
+                           {errorMessage}
+                        </Typography>
+                     )}
                      <Formik
                         initialValues={initialValues}
                         onSubmit={handleSubmitForm}
@@ -115,6 +136,7 @@ const LoginPage = () => {
                                  }
                               />
                               <Button
+                                 // disabled={isSubmitting}
                                  size="large"
                                  type="submit"
                                  variant="outlined"
@@ -134,6 +156,11 @@ const LoginPage = () => {
                                  }}
                               >
                                  Đăng nhập
+                                 {/* {isSubmitting ? (
+                                    <div className="loading-spin"></div>
+                                 ) : (
+                                    "Đăng nhập"
+                                 )} */}
                               </Button>
                            </form>
                         )}

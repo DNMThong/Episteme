@@ -37,6 +37,9 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtService jwtService;
+
     public static String shortUUID() {
         UUID uuid = UUID.randomUUID();
         long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
@@ -150,6 +153,14 @@ public class UsersServiceImpl implements UsersService {
         users.setUserId(id);
         Users userSave = usersRepository.save(users);
         return usersToDto(userSave);
+    }
+
+    @Override
+    public UsersDto getUserWithToken(String token) {
+        String username = jwtService.extractUsername(token);
+        Optional<Users> optional = usersRepository.findByEmailAndPasswordNotNull(username);
+        Users user = optional.orElseThrow(() -> new NotFoundException("Không tìm thấy"));
+        return this.usersToDto(user);
     }
 
     public List<AuthorDto> findByKeywords(String keywords) {

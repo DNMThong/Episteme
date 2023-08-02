@@ -14,7 +14,7 @@ const CardList = ({
          fetch(`/src/data/${slug}.json`)
             .then((result) => result.json())
             .then((res) => {
-               console.log(res);
+               // console.log(res);
                setPosts(res);
             })
             .catch((err) => {

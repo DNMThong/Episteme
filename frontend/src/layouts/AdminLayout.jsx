@@ -3,8 +3,12 @@ import { ProSidebarProvider } from "react-pro-sidebar";
 import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
 import TopbarAdmin from "../components/TopBarAdmin";
+import { useAuth } from "../context/auth-context";
+import ErrorPage from "./../pages/user/error/ErrorPage";
 
 const AdminLayout = () => {
+  const { user } = useAuth();
+  if (!user || user.role != "ADMIN") return <ErrorPage />;
   return (
     <ProSidebarProvider>
       <Box display="flex" position="relative">
