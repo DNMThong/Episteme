@@ -32,10 +32,7 @@ function App() {
             <CssBaseline />
             <AuthProvider>
                <Routes>
-                  <Route
-                     path="/tao-bai-viet"
-                     element={<CreatePostPage />}
-                  ></Route>
+                  <Route path="/tao-bai-viet" element={<CreatePostPage />} />
                   <Route path="/admin" element={<AdminLayout />}>
                      <Route index element={<HomePage />} />
                      <Route path="users" element={<ListUsersPage />} />

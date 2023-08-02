@@ -27,6 +27,7 @@ import NavLinkButton from "./NavLinkButton";
 import { SwitchTheme } from "../Switch";
 import SearchIcon from "@mui/icons-material/Search";
 import SearchBox from "./SearchBox";
+import Settings from "./Settings";
 
 const pages = [
    {
@@ -46,8 +47,6 @@ const pages = [
       to: "/aboutUs",
    },
 ];
-
-const settings = ["Tài khoản", "Thông báo", "Dashboard", "Đăng xuất"];
 
 function Navbar() {
    const { theme, toggleColorMode } = useMode();
@@ -204,7 +203,7 @@ function Navbar() {
                         {user && (
                            <MenuItem>
                               <NavLinkButton
-                                 to="/tao-bai-viet"
+                                 to="/create-post"
                                  variant="outlined"
                                  sx={{
                                     color: textColor,
@@ -327,7 +326,7 @@ function Navbar() {
                               <NotificationsIcon />
                            </Badge>
                            <NavLinkButton
-                              to="/tao-bai-viet"
+                              to="/create-post"
                               buttonText="Viết bài"
                               variant="outlined"
                               textColor={textColor}
@@ -408,11 +407,7 @@ const ListMenuItemAccount = ({ anchorElUser, handleCloseUserMenu }) => {
                label={theme.palette.mode === "dark" ? "Dark" : "Light"}
             />
          </MenuItem>
-         {settings.map((setting) => (
-            <MenuItem key={setting} onClick={handleCloseUserMenu}>
-               <Typography textAlign="center">{setting}</Typography>
-            </MenuItem>
-         ))}
+         <Settings />
       </Menu>
    );
 };

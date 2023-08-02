@@ -1,7 +1,7 @@
-// export const tokenAuthorization = `Bearer ${localStorage.getItem(
-//   "token_episteme"
-// )}`;
+export const tokenAuthorization = `Bearer ${localStorage.getItem(
+   "token_episteme"
+)}`;
 
-const token = `eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0aG9uZ0BnbWFpbC5jb20iLCJpYXQiOjE2OTA5Mjg1NTYsImV4cCI6MTY5MDkzMjE1Nn0.KBUhpa86wIoGdxQAuLbjsnyBPuSxNzUrBQjToWW4TFw`;
+// const token = `eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmpAZ21haWwuY29tIiwiaWF0IjoxNjkwOTY1MTEzLCJleHAiOjE2OTA5Njg3MTN9.st9wWinW1tWS8KFmh_0Yp835V9pIgololC8m8EbJgXs`;
 
-export const tokenAuthorization = `Bearer ${token}`;
+// export const tokenAuthorization = `Bearer ${token}`;
