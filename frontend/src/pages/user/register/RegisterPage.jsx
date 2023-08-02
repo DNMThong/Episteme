@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { useMode } from "../../../context/mode-context";
 import { tokens } from "../../../constants/theme";
-import { authentication } from "../../../services/authService";
+import { register } from "../../../services/authService";
 import { useAuth } from "../../../context/auth-context";
 
 const initialValues = {
@@ -49,10 +49,7 @@ const RegisterPage = () => {
          password: values.password,
          fullname: values.fullname,
       };
-      await authentication(
-         "http://localhost:8080/api/v1/auth/register",
-         registerData
-      )
+      await register(registerData)
          .then((res) => {
             console.log(
                "🚀 ~ file: RegisterPage.jsx:54 ~ awaitregister ~ res:",

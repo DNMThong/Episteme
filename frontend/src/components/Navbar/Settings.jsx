@@ -5,7 +5,7 @@
 // ))}
 
 import { MenuItem, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/auth-context";
 
 const SettingItem = ({ onClick, label }) => {
@@ -21,6 +21,8 @@ const SettingItem = ({ onClick, label }) => {
 // const settings = ["Tài khoản", "Thông báo", "Dashboard", "Đăng xuất"];
 const Settings = () => {
    const { user, setUser } = useAuth();
+   const location = useLocation();
+   console.log("🚀 ~ file: Settings.jsx:25 ~ Settings ~ location:", location);
    const navigate = useNavigate();
    const handleOpenUserProfile = () => navigate(`/profile/${user.id}`);
    const handleOpenNotifications = () => console.log("Open Notification");
@@ -28,6 +30,14 @@ const Settings = () => {
    const handleLogout = async () => {
       await localStorage.removeItem("token_episteme");
       setUser(null);
+
+      if (location.pathname.includes("profile")) {
+         navigate("/");
+      } else {
+         const indexOfSplash = location.pathname.lastIndexOf("/");
+         const path = location.pathname.slice(indexOfSplash);
+         navigate(path);
+      }
    };
    return (
       <>

@@ -15,7 +15,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { useMode } from "../../../context/mode-context";
 import { tokens } from "../../../constants/theme";
 import { useAuth } from "../../../context/auth-context";
-import { authentication } from "../../../services/authService";
+import { login } from "../../../services/authService";
 import "./style.css";
 
 const initialValues = {
@@ -43,7 +43,7 @@ const LoginPage = () => {
       // 1. Send info to server
       // 2. Set Token from response to LocalStorage
       // 3. Get set user
-      await authentication("http://localhost:8080/api/v1/auth/login", values)
+      await login(values)
          .then((res) => {
             setErrorMessage("");
             const { infoUser, token } = res.data;
