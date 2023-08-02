@@ -84,6 +84,10 @@ export const themeSettings = (mode) => {
         fontSize: 14,
         fontWeight: 500,
       },
+      body1: {
+        fontFamily: ["Inter", "sans-serif"].join(","),
+        fontSize: 16,
+      },
       subtitle1: {
         fontFamily: ["Inter", "sans-serif"].join(","),
         fontSize: 14,
@@ -93,6 +97,12 @@ export const themeSettings = (mode) => {
         fontFamily: ["Inter", "sans-serif"].join(","),
         fontSize: 12,
         color: mode === "dark" ? "#94a3b8" : "#333",
+      },
+      caption: {
+        fontFamily: ["Inter", "sans-serif"].join(","),
+        fontSize: 14,
+        color: mode === "dark" ? "#94a3b8" : "#333",
+        fontStyle: "italic",
       },
     },
   };

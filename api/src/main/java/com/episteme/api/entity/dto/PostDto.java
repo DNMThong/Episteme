@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 public class PostDto {
     private Long id;
-    private String userId;
+    private AuthorDto author;
     private String title;
     private String slug;
     private String content;

@@ -5,10 +5,14 @@ import { themeSettings } from "../constants/theme";
 const ModeContext = createContext();
 
 export const ModeProvider = (props) => {
-  const [mode, setMode] = useState("dark");
+  const [mode, setMode] = useState(localStorage.getItem("theme") || "dark");
 
   const toggleColorMode = () =>
-    setMode((prev) => (prev === "light" ? "dark" : "light"));
+    setMode((prev) => {
+      const theme = prev === "dark" ? "light" : "dark";
+      localStorage.setItem("theme", theme);
+      return theme;
+    });
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 

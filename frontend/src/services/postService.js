@@ -13,6 +13,12 @@ export const getPostById = async (id) => {
   return response.data;
 };
 
+export const getPostBySlug = async (slug) => {
+  const response = await callGetAPI(`${API_POST}/by-slug/${slug}`);
+
+  return response.data;
+};
+
 export const createPost = async (data, id) => {
   const response = await callPostAPIAuthorization(
     `${API_USER}/${id}/posts`,

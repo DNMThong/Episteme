@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import renderBlock from "./renderBlock";
 
-const PostRender = ({ data: { blocks } }) => {
+const PostRender = ({ blocks }) => {
   return (
     <Box
       sx={{
@@ -9,11 +9,11 @@ const PostRender = ({ data: { blocks } }) => {
         width: "100%",
         margin: "20px auto",
       }}>
-      {blocks.map((block) => {
+      {blocks.map((block, index) => {
         const blockRender = renderBlock(block);
         if (!blockRender) return null;
         return (
-          <Box key={block.id} sx={{ padding: "0.4em 0" }}>
+          <Box key={index} sx={{ padding: "20px 0" }}>
             {blockRender}
           </Box>
         );

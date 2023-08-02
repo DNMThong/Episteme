@@ -185,7 +185,7 @@ public class PostServiceImpl implements PostService {
             postDto.setTotal_comment(post.getCommentList()==null ? 0 : post.getCommentList().size());
             postDto.setTotal_bookmark(post.getBookmarkList()==null ? 0 : post.getBookmarkList().size());
 //            UsersDto usersDto = this.usersService.findById(post.getUser().getUserId());
-            postDto.setUserId(post.getUser().getUserId());
+            postDto.setAuthor(modelMapper.map(post.getUser(),AuthorDto.class));
             List<CategoriesDto> categoriesDtoList = this.postsCategoriesService.findAllCategoriesNameByPostId(post.getPostId());
             postDto.setCategories(categoriesDtoList);
             return postDto;
@@ -206,6 +206,13 @@ public class PostServiceImpl implements PostService {
         List<PostDto> postDtoList = posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
         return postDtoList;
     }
+
+    public PostDto findBySlug(String slug) {
+        Optional<Post> optional = postRepository.findBySlug(slug);
+        Post post = optional.orElseThrow(() -> new NotFoundException("Không tìm thấy post có slug: " + slug));
+        return this.postDto(post);
+    }
+
     public void savePostCategoriesForPost(List<Categories> categories, Post post) {
         if (categories == null || post == null) {
             throw new NotFoundException("Không tìm thấy: " + categories + post);

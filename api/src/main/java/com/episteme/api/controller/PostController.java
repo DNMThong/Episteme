@@ -27,11 +27,18 @@ public class PostController {
     @GetMapping("/{id}")
     public  ApiResponse<PostDto> getPost(
                                             @PathVariable("id") Long id) {
-        PostDto updatePost = postService.findById(id);
+        PostDto post = postService.findById(id);
         String successMessage = "Tìm thấy post có id " + id;
-        return  ApiResponse.success(HttpStatus.OK,successMessage, updatePost);
+        return  ApiResponse.success(HttpStatus.OK,successMessage, post);
     }
 
+    @GetMapping("/by-slug/{slug}")
+    public  ApiResponse<PostDto> getPostBySlug(
+            @PathVariable("slug") String slug) {
+        PostDto post = postService.findBySlug(slug);
+        String successMessage = "Tìm thấy post có slug " + slug;
+        return  ApiResponse.success(HttpStatus.OK,successMessage, post);
+    }
 
     @PutMapping("/{postId}")
     @PreAuthorize("hasAnyAuthority('USER','ADMIN')")

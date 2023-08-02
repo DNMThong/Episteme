@@ -4,7 +4,6 @@ import {
   Chip,
   Container,
   Divider,
-  IconButton,
   InputBase,
   Modal,
   Stack,
@@ -12,20 +11,18 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import Editor from "../components/editor";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useEffect, useRef, useState } from "react";
-import { tokens } from "../constants/theme";
-import { listCategory } from "../data/categories";
+import { tokens } from "../../../constants/theme";
+import { createPost } from "../../../services/postService";
 import { toast } from "react-toastify";
-import { getCategories } from "../services/categoryService";
-import { createPost } from "../services/postService";
+import { getCategories } from "./../../../services/categoryService";
+import Editor from "./../../../components/Editor/index";
 
 const CreatePostPage = () => {
   const theme = useTheme();
@@ -82,7 +79,7 @@ const CreatePostPage = () => {
   }, []);
 
   return (
-    <Box sx={{ position: "relative", minHeight: "100vh" }}>
+    <Box sx={{ position: "relative", minHeight: "100vh", mt: "40px" }}>
       {/* <IconButton
         size="large"
         sx={{
@@ -93,7 +90,6 @@ const CreatePostPage = () => {
         aria-label="prev-page">
         <ArrowBackIosIcon />
       </IconButton> */}
-      <Box sx={{ height: "40px" }}></Box>
       <Container>
         <Box sx={{ maxWidth: "650px", width: "100%", mx: "auto" }}>
           <InputBase
