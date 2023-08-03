@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 public interface UsersService extends IService<UsersDto, String> {
-    UserResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+    UserResponse getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
     UsersDto updateForAdmin(String id,UsersDto usersDto);
 

@@ -3,11 +3,13 @@ package com.episteme.api.controller;
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.AuthorDto;
 import com.episteme.api.entity.dto.PostDto;
+import com.episteme.api.entity.dto.FollowUserResponseDto;
 import com.episteme.api.entity.dto.UsersDto;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.response.PostResponse;
 import com.episteme.api.response.UserResponse;
 import com.episteme.api.services.PostServiceImpl;
+import com.episteme.api.services.SocialNetworkServiceImpl;
 import com.episteme.api.services.UsersServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ public class UserController {
     @Autowired
     PostServiceImpl postService;
 
+    @Autowired
+    SocialNetworkServiceImpl socialNetworkService;
     @GetMapping("")
     public ApiResponse<UserResponse> getUsers(@RequestParam(value = "pageNumber",defaultValue = "0",required = false) Integer pageNumber,
                                                    @RequestParam(value="pageSize",defaultValue = "10",required = false) Integer pageSize,
@@ -42,6 +46,23 @@ public class UserController {
         return ApiResponse.success(HttpStatus.OK,"success",usersService.findByKeywords(keywords));
     }
 
+        return ApiResponse.success(HttpStatus.OK,"success",usersService.findById(id));
+    }
+    //Danh sách người minh đang theo dõi
+    @GetMapping("/{id}/follows/following")
+    public ApiResponse<List<UsersDto>>listFollowing(@PathVariable String id){
+        return ApiResponse.success(HttpStatus.OK,"success",socialNetworkService.findAllFollowingByUserId(id));
+    }
+    //Danh sách người đang theo dõi mình
+    @GetMapping("/{id}/follows/followers")
+    public ApiResponse<List<UsersDto>>listFollowers(@PathVariable String id){
+        return ApiResponse.success(HttpStatus.OK,"success",socialNetworkService.findAllFollowersByUserId(id));
+    }
+    // Số ngưới mình theo dõi và số người theo dõi mình
+    @GetMapping("/{id}/follows/count")
+    public ApiResponse<FollowUserResponseDto>countFollowOfUser(@PathVariable String id){
+        return ApiResponse.success(HttpStatus.OK,"success",socialNetworkService.followOfUser(id));
+    }
     @GetMapping("/token/{token}")
     public ApiResponse<UsersDto> getUser(@PathVariable("token") String token) {
 

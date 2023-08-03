@@ -124,7 +124,7 @@ public class UsersServiceImpl implements UsersService {
         return usersToDto(users);
     }
     @Override
-    public UserResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+    public UserResponse getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
