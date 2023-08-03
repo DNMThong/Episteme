@@ -3,6 +3,8 @@ package com.episteme.api.services;
 import com.episteme.api.entity.enums.Role;
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.enums.UserStatus;
+import com.episteme.api.exceptions.DuplicateRecordException;
+import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.UsersRepository;
 import com.episteme.api.request.AuthenticationRequest;
 import com.episteme.api.request.RegisterRequest;
@@ -33,6 +35,9 @@ public class AuthenticationService {
     UsersServiceImpl usersService;
 
     public AuthenticationResponse register(RegisterRequest request) {
+        var user = repository.findByEmailAndPasswordNotNull(request.getEmail()).orElse(null);
+        if (user != null) throw new DuplicateRecordException("Email đã tồn tại");
+
         var users= Users.builder()
                 .userId(shortUUID())
                 .fullname(request.getFullname())
@@ -51,15 +56,21 @@ public class AuthenticationService {
 
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),request.getPassword()
-                )
-        );
-        var users = repository.findByEmailAndPasswordNotNull(request.getEmail()).orElseThrow();
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(), request.getPassword()
+                    )
+            );
+            var users = repository.findByEmailAndPasswordNotNull(request.getEmail()).orElseThrow(() -> new NotFoundException("Email không tồn tại"));
 
-        String jwtToken = jwtService.generateToken(users);
-        return AuthenticationResponse.builder().infoUser(usersService.usersToDto(users)).token(jwtToken).build();
+            String jwtToken = jwtService.generateToken(users);
+            return AuthenticationResponse.builder().infoUser(usersService.usersToDto(users)).token(jwtToken).build();
+        } catch (DuplicateRecordException ex) {
+            throw new DuplicateRecordException("Sai mật khẩu"
+            );
+        }
+
     }
 
     public AuthenticationResponse loginWithGoogle(OAuth2User oAuth2User) {

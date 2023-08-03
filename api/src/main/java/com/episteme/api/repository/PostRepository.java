@@ -4,6 +4,8 @@ import com.episteme.api.entity.Post;
 import com.episteme.api.entity.dto.PostDto;
 import com.episteme.api.entity.enums.PostStatus;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +29,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Transactional
     @Query(value = "update post p set p.view = p.view + 1 where p.post_id = ?1", nativeQuery = true)
     void autoIncreaseViews(Long postId);
+
+    @Query("select o from Post o where  o.createAt >= CURRENT_DATE - 7")
+    Page<Post> findPostByNewest(Pageable pageable);
+    @Query("SELECT o FROM Post o ORDER BY o.view DESC")
+    Page<Post> findPostsPopular(Pageable pageable);
 }
