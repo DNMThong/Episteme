@@ -3,6 +3,8 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import HeaderAdmin from "../../components/HeaderAdmin";
 import slug from "slug";
+import { addCategory } from "../../services/categoryService";
+import { toast } from "react-toastify";
 
 const initialValues = {
   name: "",
@@ -20,6 +22,9 @@ const FormAddCategoryPage = () => {
       slug: values.slug || slug(values.name),
     };
     console.log(data);
+    addCategory(data)
+      .then(() => toast.success("Thêm danh mục thành công"))
+      .catch(() => toast.error("Thêm danh mục thất bại"));
   };
 
   return (

@@ -7,10 +7,22 @@ import ActionTable from "../../components/ActionTable";
 import InfoUserTable from "../../components/InfoUserTable";
 import DisplayTimeTable from "../../components/DisplayTimeTable";
 import ChipCustom from "../../components/ChipCustom/index";
+import { useState } from "react";
+import {
+  deleteCategory,
+  getCategories,
+} from "./../../services/categoryService";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const ListCategoryPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [categories, setCategories] = useState([]);
+
+  useState(() => {
+    getCategories().then((response) => setCategories(response.data));
+  }, []);
 
   const columns = [
     {
@@ -31,9 +43,37 @@ const ListCategoryPage = () => {
       field: "action",
       headerName: "Action",
       width: 150,
-      renderCell: ({ row }) => (
-        <ActionTable edit={() => {}} remove={() => {}} />
-      ),
+      renderCell: ({ row: { id } }) => {
+        const handleRemoveCategory = (idPost) => {
+          Swal.fire({
+            title: `Bạn có chắc muốn xóa danh mục có id ${idPost}?`,
+            text: "Khi xóa không thể hoàn tác lại!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Xóa",
+            cancelButtonText: "Hủy",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              deleteCategory(idPost)
+                .then(() => {
+                  setCategories((prev) =>
+                    prev.filter((item) => item.id != idPost)
+                  );
+                  toast.success("Xóa bài viết thành công");
+                })
+                .catch(() => toast.error("Xóa bài viết thất bại"));
+            }
+          });
+        };
+        return (
+          <ActionTable
+            edit={() => {}}
+            remove={() => handleRemoveCategory(id)}
+          />
+        );
+      },
     },
   ];
 
@@ -53,13 +93,7 @@ const ListCategoryPage = () => {
         }}>
         <DataGrid
           columns={columns}
-          rows={[
-            {
-              id: "13",
-              name: "Lập trình",
-              slug: "lap-trinh",
-            },
-          ]}
+          rows={categories}
           components={{ Toolbar: GridToolbar }}></DataGrid>
       </Box>
     </Box>

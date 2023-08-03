@@ -1,5 +1,10 @@
-import { API_POST, API_USER } from "../constants/api";
-import { callGetAPI, callPostAPIAuthorization } from "./fetchApiService";
+import { API_POST, API_USER, API_USER_ADMIN } from "../constants/api";
+import {
+  callDeleteAPIAuthorization,
+  callGetAPI,
+  callPostAPIAuthorization,
+  callPutAPIAuthorization,
+} from "./fetchApiService";
 
 export const getPosts = async () => {
   const response = await callGetAPI(API_POST);
@@ -24,6 +29,18 @@ export const createPost = async (data, id) => {
     `${API_USER}/${id}/posts`,
     data
   );
+
+  return response.data;
+};
+
+export const updatePost = async (id, data) => {
+  const response = await callPutAPIAuthorization(`${API_POST}/${id}`, data);
+
+  return response.data;
+};
+
+export const deletePost = async (id) => {
+  const response = await callDeleteAPIAuthorization(`${API_POST}/${id}`);
 
   return response.data;
 };

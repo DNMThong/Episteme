@@ -15,7 +15,7 @@ const ActionTable = ({ view, edit, remove, lock, isLock = false }) => {
       )}
       {lock && (
         <IconButton value="lock" size="small" onClick={lock}>
-          {isLock ? <LockOpenIcon /> : <LockIcon />}
+          {isLock ? <LockIcon /> : <LockOpenIcon />}
         </IconButton>
       )}
       {edit && (

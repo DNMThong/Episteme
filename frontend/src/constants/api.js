@@ -16,3 +16,6 @@ export const API_BOOKMARK = "http://localhost:8080/api/v1/bookmarks";
 
 // api for admin
 export const API_USER_ADMIN = "http://localhost:8080/api/v1/admin/users";
+
+export const API_CATEGORY_ADMIN =
+  "http://localhost:8080/api/v1/admin/categories";
