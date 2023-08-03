@@ -6,6 +6,8 @@ import PostRender from "../../../components/PostRender";
 import { getPostBySlug } from "../../../services/postService";
 import { useParams } from "react-router-dom";
 import { CommentBox, ReplyBox } from "../../../components/Comment";
+import { addBookmark, removeBookmark } from "../../../services/bookmarkService";
+import { useAuth } from "../../../context/auth-context";
 
 const ViewPostPage = () => {
   const [post, setPost] = useState();
@@ -34,6 +36,7 @@ const ViewPostPage = () => {
         gap="30px"
         alignItems="start">
         <ActionPost
+          post={post}
           breakPoint="sm"
           display={{ sm: "flex", xs: "none" }}></ActionPost>
         <Box

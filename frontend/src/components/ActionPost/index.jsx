@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, Stack } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
@@ -9,13 +9,30 @@ import { FacebookShareButton, TwitterShareButton } from "react-share";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../constants/theme";
+import { useAuth } from "../../context/auth-context";
+import { addBookmark, removeBookmark } from "../../services/bookmarkService";
 
-const ActionPost = ({ breakPoint = "md", display }) => {
+const ActionPost = ({ breakPoint = "md", display, post }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [like, setLike] = useState(false);
   const [bookmark, setBookmark] = useState(false);
-  console.log();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const handleBookmark = async () => {
+      const data = {
+        user,
+        post,
+      };
+      if (bookmark) {
+        const response = await addBookmark(data);
+      } else {
+        const response = await removeBookmark(data);
+      }
+    };
+    handleBookmark();
+  }, [bookmark]);
 
   return (
     <Stack

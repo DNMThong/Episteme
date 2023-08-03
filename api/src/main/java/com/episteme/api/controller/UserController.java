@@ -49,12 +49,10 @@ public class UserController {
     }
 
     @PostMapping("/{id}/posts")
-    public ApiResponse<PostDto> addPost(@RequestBody PostDto postDto,
-                                        @PathVariable("id") String userId
-        ) {
+    public ApiResponse<PostDto> addPost(@RequestBody PostDto postDto, @PathVariable("id") String userId) {
             PostDto savedPost = postService.savePostWithCategories(postDto, userId);
-            String successMessage = "Thêm bài đăng thành công!";
+            String successMessage = "Thêm thành công!";
             return ApiResponse.success(HttpStatus.CREATED,successMessage, savedPost);
-        }
+    }
 
 }

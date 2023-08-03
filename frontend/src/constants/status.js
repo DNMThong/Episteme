@@ -3,3 +3,9 @@ export const STATUS_USERS = {
   PENDING: "Pending",
   SUSPENDED: "Suspended",
 };
+
+export const STATUS_POST = {
+  PUBLISHED: "Published",
+  DRAFT: "Draft",
+  SUSPENDED: "Suspended",
+};

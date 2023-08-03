@@ -23,6 +23,8 @@ import { createPost } from "../../../services/postService";
 import { toast } from "react-toastify";
 import { getCategories } from "./../../../services/categoryService";
 import Editor from "./../../../components/Editor/index";
+import { STATUS_POST, STATUS_USERS } from "../../../constants/status";
+import { useAuth } from "../../../context/auth-context";
 
 const CreatePostPage = () => {
   const theme = useTheme();
@@ -34,6 +36,7 @@ const CreatePostPage = () => {
   const editorRef = useRef(null);
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
+  const { user } = useAuth();
 
   const handleRemoveSelectedCategory = (id) => {
     setSelectedCategories((prev) => prev.filter((item) => item.id !== id));
@@ -58,15 +61,34 @@ const CreatePostPage = () => {
       categories: selectedCategories,
       content: JSON.stringify(dataPost?.blocks || []),
       summary: descriptionRef.current.value,
+      status: STATUS_POST.PUBLISHED,
     };
-    console.log(post);
-    createPost(post, "1hbiqgy5slf79")
+    createPost(post, user.id)
       .then((response) => {
         toast.success("Tạo bài viết thành công");
       })
       .catch((error) => {
         console.log(error);
         toast.error("Tạo bài viết thất bại");
+      });
+  };
+
+  const handleSaveDraft = async () => {
+    const dataPost = await editorRef.current.save();
+    const post = {
+      title: titleRef.current.value,
+      categories: selectedCategories,
+      content: JSON.stringify(dataPost?.blocks || []),
+      summary: descriptionRef.current.value,
+      status: STATUS_POST.DRAFT,
+    };
+    createPost(post, user.id)
+      .then((response) => {
+        toast.success("Lưu nháp thành công");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Lưu nháp thất bại");
       });
   };
 
@@ -117,7 +139,10 @@ const CreatePostPage = () => {
           mx: "0",
           zIndex: "9999",
         }}>
-        <Button variant="outlined" startIcon={<SaveAltIcon />}>
+        <Button
+          variant="outlined"
+          onClick={handleSaveDraft}
+          startIcon={<SaveAltIcon />}>
           Lưu nháp
         </Button>
         <Button

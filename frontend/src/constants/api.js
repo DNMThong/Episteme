@@ -12,5 +12,7 @@ export const API_LOGIN = "http://localhost:8080/api/v1/auth/login";
 
 export const API_REGISTER = "http://localhost:8080/api/v1/auth/register";
 
+export const API_BOOKMARK = "http://localhost:8080/api/v1/bookmarks";
+
 // api for admin
 export const API_USER_ADMIN = "http://localhost:8080/api/v1/admin/users";
