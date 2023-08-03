@@ -2,32 +2,40 @@
 import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import CardPost from "./CardPost";
+import { getPostsByType } from "../../services/postService";
 
 const CardList = ({
-   slug = "posts",
+   type = "",
    direction = "vertical",
    containerAttributes = {},
+   pageNumber = 0,
+   pageSize = 4,
+   sortBy = "id",
+   sortDir = "asc",
 }) => {
    const [posts, setPosts] = useState([]);
    useEffect(() => {
-      function fetchData() {
-         fetch(`/src/data/${slug}.json`)
-            .then((result) => result.json())
-            .then((res) => {
-               // console.log(res);
-               setPosts(res);
+      async function fetchData() {
+         await getPostsByType({ type, pageNumber, pageSize, sortBy, sortDir })
+            .then((response) => {
+               console.log(
+                  "🚀 ~ file: CardList.jsx:22 ~ .then ~ response:",
+                  response
+               );
+               if (response.code === 200) setPosts([...response.data.content]);
             })
-            .catch((err) => {
-               console.log(err);
-            });
+            .catch((error) =>
+               console.log("🚀 ~ file: CardList.jsx:24 ~ error:", error)
+            );
       }
       fetchData();
-   }, [slug]);
+   }, []);
+
    return (
       <Grid container spacing={3} {...containerAttributes}>
          {posts &&
             posts.length > 0 &&
-            posts.map((item) => {
+            posts.map((post) => {
                const postDirection =
                   direction === "vertical"
                      ? {
@@ -38,8 +46,8 @@ const CardList = ({
                      : { xs: 12 };
 
                return (
-                  <Grid item {...postDirection} key={item.id}>
-                     <CardPost blogInfo={item} direction={direction} />
+                  <Grid item {...postDirection} key={post.id}>
+                     <CardPost postInfo={post} direction={direction} />
                   </Grid>
                );
             })}

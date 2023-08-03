@@ -8,9 +8,9 @@ export const API_CATEGORY = "http://localhost:8080/api/v1/categories";
 
 export const API_USER = "http://localhost:8080/api/v1/users";
 
-export const API_LOGIN = "http://localhost:8080/api/v1/auth/login";
+export const API_AUTH = "http://localhost:8080/api/v1/auth";
 
-export const API_REGISTER = "http://localhost:8080/api/v1/auth/register";
+// export const API_REGISTER = "http://localhost:8080/api/v1/auth/register";
 
 export const API_BOOKMARK = "http://localhost:8080/api/v1/bookmarks";
 

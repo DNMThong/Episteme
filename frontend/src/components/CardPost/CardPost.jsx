@@ -4,10 +4,8 @@ import { Link } from "react-router-dom";
 import CardPoster from "./CardPoster";
 import CardFooter from "./CardFooter";
 
-const CardPost = ({ blogInfo, direction = "vertical" }) => {
-   // const { theme } = useMode();
-   // const token = tokens(theme.palette.mode);
-   const { posterPath, ...info } = blogInfo;
+const CardPost = ({ postInfo, direction = "vertical" }) => {
+   const { image, ...info } = postInfo;
    return (
       <Link
          to={`/${info.title}`}
@@ -41,12 +39,12 @@ const CardPost = ({ blogInfo, direction = "vertical" }) => {
                      xs: "12px",
                      md: "14px",
                   },
-                  ":hover": {
-                     position: "relative",
-                     zIndex: 1000,
-                     flexWrap: "wrap",
-                     rowGap: 1,
-                  },
+                  // ":hover": {
+                  //    position: "relative",
+                  //    zIndex: 1000,
+                  //    flexWrap: "wrap",
+                  //    rowGap: 1,
+                  // },
                },
                "& .MuiCardContent-root": {
                   padding: "8px 0px",
@@ -60,7 +58,8 @@ const CardPost = ({ blogInfo, direction = "vertical" }) => {
                "& .MuiCardMedia-root":
                   direction === "vertical"
                      ? {
-                          height: "120px",
+                          minHeight: "140px",
+                          height: "100%",
                           borderRadius: "6px",
                        }
                      : {
@@ -104,17 +103,17 @@ const CardPost = ({ blogInfo, direction = "vertical" }) => {
                },
             }}
          >
-            <CardPoster posterPath={posterPath} />
+            <CardPoster posterPath={image} height="140px" />
             <Box component="div" className="card__info">
                <CardContent>
                   <Box className="categories__container">
                      {info.categories &&
                         info.categories.length > 0 &&
-                        info.categories.map((item, index) => {
+                        info.categories.slice(0, 1).map((item) => {
                            return (
                               <Chip
-                                 label={item}
-                                 key={index}
+                                 label={item.name}
+                                 key={item.id}
                                  sx={{
                                     cursor: "pointer",
                                     height: "fit-content",
