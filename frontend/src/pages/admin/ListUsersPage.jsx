@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { tokens } from "../../constants/theme";
 import HeaderAdmin from "../../components/HeaderAdmin";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
@@ -162,11 +162,16 @@ const ListUserPost = () => {
             borderBottom: "none",
           },
         }}>
-        <DataGrid
-          columns={columns}
-          rows={users}
-          components={{ Toolbar: GridToolbar }}
-          key={"abcsa"}></DataGrid>
+        {users.length > 0 ? (
+          <DataGrid
+            columns={columns}
+            rows={users}
+            components={{ Toolbar: GridToolbar }}></DataGrid>
+        ) : (
+          <Box mx="auto" width="50px">
+            <CircularProgress />
+          </Box>
+        )}
       </Box>
     </Box>
   );

@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { tokens } from "../../constants/theme";
 import HeaderAdmin from "../../components/HeaderAdmin";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
@@ -171,7 +171,6 @@ const ListPostPage = () => {
       <HeaderAdmin title="Bài viết" subtitle="Danh sách bài viết" />
       <Box
         mt="40px"
-        overflow="auto"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
@@ -180,10 +179,16 @@ const ListPostPage = () => {
             borderBottom: "none",
           },
         }}>
-        <DataGrid
-          columns={columns}
-          rows={posts}
-          components={{ Toolbar: GridToolbar }}></DataGrid>
+        {posts.length > 0 ? (
+          <DataGrid
+            columns={columns}
+            rows={posts}
+            components={{ Toolbar: GridToolbar }}></DataGrid>
+        ) : (
+          <Box mx="auto" width="50px">
+            <CircularProgress />
+          </Box>
+        )}
       </Box>
     </Box>
   );
