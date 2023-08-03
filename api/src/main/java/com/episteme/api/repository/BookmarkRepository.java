@@ -13,6 +13,6 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 	@Query("select bm from Bookmark bm where bm.user.userId = ?1")
 	List<Bookmark> findBookmarkByUserId(String userId);
 
-	@Query("select bm from Bookmark bm where bm.post.postId = ?1")
-	List<Bookmark> findBookmarkByPostId(String postId);
+	@Query("select bm from Bookmark bm where bm.post.postId = ?1 and bm.user.userId = ?2")
+	Bookmark findBookmarkByPostId(long postId, String userId);
 }

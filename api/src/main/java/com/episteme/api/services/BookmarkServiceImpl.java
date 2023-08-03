@@ -14,6 +14,7 @@ import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.BookmarkDto;
 import com.episteme.api.entity.dto.PostDto;
 import com.episteme.api.entity.dto.UsersDto;
+import com.episteme.api.exceptions.DuplicateRecordException;
 import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.BookmarkRepository;
 import com.episteme.api.repository.PostRepository;
@@ -44,10 +45,15 @@ public class BookmarkServiceImpl implements BookmarkService {
 		// check exist post
 		Post existingPost = postRepository.findById(postId)
 				.orElseThrow(() -> new NotFoundException("Can't find post has id: " + postId));
-		// chưa xử lý phần post đã được lưu trong bookmark nhưng vẫn cho phép add thêm
-		bookmark.setUser(user);
-		bookmark.setPost(existingPost);
-		bookmark.setSaveTime(LocalDateTime.now());
+		// check saved post
+		Bookmark checkBookmark = bookmarkRepository.findBookmarkByPostId(postId, userId);
+		if (checkBookmark != null) {
+			throw new DuplicateRecordException("Bạn đã lưu post này");
+		} else {
+			bookmark.setUser(user);
+			bookmark.setPost(existingPost);
+			bookmark.setSaveTime(LocalDateTime.now());
+		}
 		Bookmark saveBookmark = this.bookmarkRepository.save(bookmark);
 		return this.bookmarkToDto(saveBookmark);
 	}
