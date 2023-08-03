@@ -2,6 +2,7 @@ import { API_USER_ADMIN } from "../constants/api";
 import {
   callGetAPIAuthorization,
   callPostAPIAuthorization,
+  callPutAPIAuthorization,
 } from "./fetchApiService";
 
 export const getUsersAdmin = async () => {
@@ -10,8 +11,17 @@ export const getUsersAdmin = async () => {
   return response.data;
 };
 
-export const addUsersAdmin = async (value) => {
-  const response = await callPostAPIAuthorization(API_USER_ADMIN, value);
+export const addUsersAdmin = async (data) => {
+  const response = await callPostAPIAuthorization(API_USER_ADMIN, data);
+
+  return response.data;
+};
+
+export const updateUsersAdmin = async (id, data) => {
+  const response = await callPutAPIAuthorization(
+    `${API_USER_ADMIN}/${id}`,
+    data
+  );
 
   return response.data;
 };

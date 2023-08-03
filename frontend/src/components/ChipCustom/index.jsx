@@ -20,8 +20,8 @@ const ChipCustom = ({ type = "success", label }) => {
       text: "#A77ACB",
     },
     user: {
-      background: "#FEEAE4",
-      text: "#F35E34",
+      background: "#eaf1f1",
+      text: "#5a4e4b",
     },
   };
 

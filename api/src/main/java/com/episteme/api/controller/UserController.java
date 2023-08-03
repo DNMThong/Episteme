@@ -38,23 +38,20 @@ public class UserController {
                                                    @RequestParam(value = "sortBy", defaultValue = "fullname", required = false) String sortBy,
                                                    @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
     ){
-        UserResponse userResponse = this.usersService.getAllPosts(pageNumber,pageSize,sortBy,sortDir);
+        UserResponse userResponse = this.usersService.getAllUsers(pageNumber,pageSize,sortBy,sortDir);
         return ApiResponse.success(HttpStatus.OK, "success", userResponse);
     }
     @GetMapping("/search")
     public ApiResponse<List<AuthorDto>> search(@RequestParam(value = "q",defaultValue = "",required = false) String keywords){
         return ApiResponse.success(HttpStatus.OK,"success",usersService.findByKeywords(keywords));
     }
-
-        return ApiResponse.success(HttpStatus.OK,"success",usersService.findById(id));
-    }
     //Danh sách người minh đang theo dõi
-    @GetMapping("/{id}/follows/following")
+    @GetMapping("/{id}/following")
     public ApiResponse<List<UsersDto>>listFollowing(@PathVariable String id){
         return ApiResponse.success(HttpStatus.OK,"success",socialNetworkService.findAllFollowingByUserId(id));
     }
     //Danh sách người đang theo dõi mình
-    @GetMapping("/{id}/follows/followers")
+    @GetMapping("/{id}/followers")
     public ApiResponse<List<UsersDto>>listFollowers(@PathVariable String id){
         return ApiResponse.success(HttpStatus.OK,"success",socialNetworkService.findAllFollowersByUserId(id));
     }

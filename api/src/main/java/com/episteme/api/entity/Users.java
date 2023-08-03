@@ -125,7 +125,7 @@ public class Users  implements UserDetails {
     @Override
     // Tài khoản chưa bị khóa ?
     public boolean isAccountNonLocked() {
-        return true;
+        return this.status!=UserStatus.Suspended;
     }
 
     @Override

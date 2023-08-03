@@ -3,6 +3,7 @@ package com.episteme.api.services;
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.AuthorDto;
 import com.episteme.api.entity.dto.UsersDto;
+import com.episteme.api.entity.enums.UserStatus;
 import com.episteme.api.exceptions.DuplicateRecordException;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.exceptions.NotFoundException;
@@ -84,8 +85,8 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public void delete(String id) {
-        Users users = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy User Id: " + id));
-        this.usersRepository.delete(users);
+        Users user = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy User Id: " + id));
+        this.usersRepository.delete(user);
     }
 
     public ResponseEntity<ApiResponse> deleteResp(String id) {
@@ -163,6 +164,7 @@ public class UsersServiceImpl implements UsersService {
         return this.usersToDto(user);
     }
 
+
     public List<AuthorDto> findByKeywords(String keywords) {
             List<Users> users=usersRepository.findByKeywords(keywords);
             if(users==null) {
@@ -176,6 +178,8 @@ public class UsersServiceImpl implements UsersService {
     public Users findByIdUser(String id) { // nhận Users
         return this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find user id: " + id));
     }
+
+
 
     public Optional<Users> findUerByEmail(String email){
         Optional<Users> user = usersRepository.findByEmailAndPasswordNotNull(email);

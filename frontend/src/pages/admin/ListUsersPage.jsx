@@ -8,7 +8,10 @@ import InfoUserTable from "../../components/InfoUserTable";
 import DisplayTimeTable from "../../components/DisplayTimeTable";
 import ChipCustom from "./../../components/ChipCustom/index";
 import { useEffect, useState } from "react";
-import { getUsersAdmin } from "../../services/userAdminService";
+import {
+  getUsersAdmin,
+  updateUsersAdmin,
+} from "../../services/userAdminService";
 import { STATUS_USERS } from "../../constants/status";
 
 const ListUserPost = () => {
@@ -95,9 +98,53 @@ const ListUserPost = () => {
       field: "action",
       headerName: "Action",
       width: 120,
-      renderCell: ({ row: { id } }) => (
-        <ActionTable view={() => {}} edit={() => {}} remove={() => {}} />
-      ),
+      renderCell: ({ row }) => {
+        const { id, status } = row;
+        const [isLock, setIsLock] = useState(status === STATUS_USERS.SUSPENDED);
+        useEffect(() => {
+          if (id != null) {
+            if (isLock) {
+              updateUsersAdmin(id, {
+                ...row,
+                status: STATUS_USERS.SUSPENDED,
+              }).then(() =>
+                setUsers((prevUser) =>
+                  prevUser.map((prevPost) => ({
+                    ...prevPost,
+                    status:
+                      prevPost.id === id
+                        ? STATUS_USERS.SUSPENDED
+                        : prevPost.status,
+                  }))
+                )
+              );
+            } else {
+              updateUsersAdmin(id, {
+                ...row,
+                status: STATUS_USERS.ACTIVE,
+              }).then(() =>
+                setUsers((prevUser) =>
+                  prevUser.map((prevPost) => ({
+                    ...prevPost,
+                    status:
+                      prevPost.id === id
+                        ? STATUS_USERS.ACTIVE
+                        : prevPost.status,
+                  }))
+                )
+              );
+            }
+          }
+        }, [id, isLock]);
+        return (
+          <ActionTable
+            view={() => {}}
+            edit={() => {}}
+            isLock={isLock}
+            lock={() => setIsLock((prev) => !prev)}
+          />
+        );
+      },
     },
   ];
 
