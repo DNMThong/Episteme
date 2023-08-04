@@ -8,11 +8,12 @@ import {
   Container,
   Grid,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useMode } from "../../../context/mode-context";
 import { tokens } from "../../../constants/theme";
 import { useAuth } from "../../../context/auth-context";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CustomCardListDirection } from "../../../components/CardPost";
 import { DEFAULT_IMAGE } from "../../../constants/default";
 
@@ -45,21 +46,14 @@ const headings = [
 
 const ProfilePage = () => {
   const { userId } = useParams();
-  const { user, setUser } = useAuth();
+  console.log(userId);
+  const { user } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
-  console.log("🚀 ~ file: ProfilePage.jsx:48 ~ ProfilePage ~ user:", user);
-  const {
-    theme: { palette },
-  } = useMode();
-  const token = tokens(palette.mode);
+  const theme = useTheme();
+  const token = tokens(theme.palette.mode);
+  const navigate = useNavigate();
+  console.log(navigate);
   const isMyProfile = userInfo && userId === userInfo.id;
-  console.log(
-    "🚀 ~ file: ProfilePage.jsx:55 ~ ProfilePage ~ user.id:",
-    user.id
-  );
-  console.log("🚀 ~ file: ProfilePage.jsx:55 ~ ProfilePage ~ userId:", userId);
-
-  useEffect(() => setUserInfo(user), []);
 
   const handleFollowClick = (e) => {
     e.preventDefault();
@@ -88,8 +82,8 @@ const ProfilePage = () => {
           }}>
           <Grid item md={1} sm={2}>
             <Avatar
-              alt={user.fullname || user.id || user.email}
-              src={user.image || DEFAULT_IMAGE.USER_AVATAR}
+              alt={user?.fullname || user?.id || user?.email}
+              src={user?.image || DEFAULT_IMAGE.USER_AVATAR}
               sx={{
                 display: "block",
                 marginX: "auto",
@@ -136,12 +130,12 @@ const ProfilePage = () => {
                   md: "8px",
                 },
               }}>
-              <Typography variant="h5">{user.id}</Typography>
+              <Typography variant="h5">{user?.fullname}</Typography>
               <Typography
                 variant="subtitle2"
                 component="span"
                 sx={{ fontSize: "12px" }}>
-                @{user.id}
+                @{user?.id}
               </Typography>
             </Box>
             {isMyProfile ? (
@@ -161,10 +155,10 @@ const ProfilePage = () => {
         }}>
         <Grid container spacing={2}>
           <Grid item md={9} xs={12}>
-            <CustomCardListDirection
+            {/* <CustomCardListDirection
               headerBtns={headings}
               cardDirection="vertical"
-            />
+            /> */}
           </Grid>
           <Grid item md={3} xs={12}>
             <Box

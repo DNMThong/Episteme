@@ -1,4 +1,5 @@
 import { Box, Container } from "@mui/material";
+import banner from "../../assets/img/episteme.mp4";
 
 const Banner = () => {
   return (
@@ -29,7 +30,7 @@ const Banner = () => {
           },
         }}>
         <video muted autoPlay loop className="video">
-          <source src="episteme.mp4" type="video/mp4" />
+          <source src={banner} type="video/mp4" />
         </video>
         <img className="backgroundImage" src="episteme.jpg" alt="" />
       </Box>

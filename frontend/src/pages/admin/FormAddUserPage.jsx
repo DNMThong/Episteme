@@ -25,7 +25,7 @@ import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import { uploadImage } from "../../services/uploadService";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { STATUS_USERS } from "../../constants/status";
-import { addUsersAdmin } from "../../services/userAdminService";
+import { addUsers } from "../../services/userService";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
 
@@ -69,12 +69,14 @@ const FormAddUserPage = () => {
       image: url,
     };
     console.log(data);
-    addUsersAdmin(data)
+    addUsers(data)
       .then((response) => {
         console.log(response);
-        toast.success("Thêm user thành công");
+        toast.success("Thêm người dùng thành công");
       })
-      .catch((error) => {});
+      .catch((error) => {
+        toast.error("Thêm người dùng thất bại");
+      });
   };
   const handleImageChange = (e) => {
     const file = e.target.files[0];

@@ -23,6 +23,11 @@ public class AdminUserController {
         return ApiResponse.success(HttpStatus.OK,"success",usersService.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ApiResponse<?> getUser(@PathVariable("id") String id){
+        return ApiResponse.success(HttpStatus.OK,"success",usersService.findUserForAdmin(id));
+    }
+
     @PostMapping("")
     public ApiResponse<UsersDto> create(@RequestBody UsersDto usersDto){
         return ApiResponse.success(HttpStatus.OK,"success",usersService.save(usersDto));

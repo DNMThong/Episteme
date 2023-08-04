@@ -11,6 +11,7 @@ import { useTheme } from "@emotion/react";
 import { tokens } from "../../constants/theme";
 import { useAuth } from "../../context/auth-context";
 import { addBookmark, removeBookmark } from "../../services/bookmarkService";
+import { toast } from "react-toastify";
 
 const ActionPost = ({ breakPoint = "md", display, post }) => {
   const theme = useTheme();
@@ -19,8 +20,9 @@ const ActionPost = ({ breakPoint = "md", display, post }) => {
   const [bookmark, setBookmark] = useState(false);
   const { user } = useAuth();
 
-  useEffect(() => {
-    const handleBookmark = async () => {
+  const handleBookmark = async () => {
+    setBookmark((prev) => !prev);
+    if (user) {
       const data = {
         user,
         post,
@@ -30,9 +32,10 @@ const ActionPost = ({ breakPoint = "md", display, post }) => {
       } else {
         const response = await removeBookmark(data);
       }
-    };
-    handleBookmark();
-  }, [bookmark]);
+    } else {
+      toast.warning("Vui lòng đăng nhập để lưu bài viết");
+    }
+  };
 
   return (
     <Stack
@@ -95,7 +98,7 @@ const ActionPost = ({ breakPoint = "md", display, post }) => {
       </IconButton>
       <IconButton
         sx={{ width: "40px", height: "40px" }}
-        onClick={() => setBookmark((prev) => !prev)}>
+        onClick={handleBookmark}>
         {bookmark ? <BookmarkOutlinedIcon /> : <BookmarkBorderOutlinedIcon />}
       </IconButton>
       <FacebookShareButton

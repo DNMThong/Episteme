@@ -1,24 +1,29 @@
-import { Avatar, Button, Typography } from "@mui/material";
+import { Avatar, Box, Button, Typography } from "@mui/material";
 import InputComment from "./InputComment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CommentBox from "./CommentBox";
-import { useParams } from "react-router-dom";
+import { getAuthor } from "../../services/authorService";
+import { addCommentReplyPost } from "../../services/commentService";
+import { toast } from "react-toastify";
 
-const ReplyBox = ({ avatar, name, createAt, value }) => {
-  const { slug } = useParams();
+const ReplyBox = ({ comment, postId }) => {
+  const { id, content, userId, createAt, comments } = comment;
   const [openReplyInput, setOpenReplyInput] = useState(false);
-  const [replyContent, setReplyContent] = useState("");
+  const [userComment, setUserComment] = useState();
 
-  const handleSubmitReply = (e) => {
-    e.preventDefault();
-    console.log(
-      "🚀 ~ file: ReplyBox.jsx:11 ~ ReplyBox ~ replyContent:",
-      replyContent
-    );
-  };
+  useEffect(() => {
+    getAuthor(userId).then((response) => setUserComment(response.data));
+  }, [userId]);
 
-  const handleReplyContentChange = (e) => {
-    setReplyContent(e.target.value);
+  const handleCommentPost = (value) => {
+    addCommentReplyPost(postId, id, {
+      content: postId,
+      userId,
+    })
+      .then((response) => {
+        toast.success("Thêm bình luận thành công");
+      })
+      .catch(() => toast.error("Thêm bình luận thất bại"));
   };
 
   const handleCloseReplyInput = () => {
@@ -31,45 +36,58 @@ const ReplyBox = ({ avatar, name, createAt, value }) => {
   return (
     <div className="reply-box__container">
       <div className="reply__info">
-        <Avatar className="reply-info__avatar" src={avatar} />
+        <Avatar className="reply-info__avatar" src={userComment?.avatar} />
         <div className="reply-info__bottom">
           <Typography
             className="reply-info__username"
             variant="h6"
             component="span"
             fontWeight={400}>
-            {name}
-          </Typography>
-          <Typography
-            className="reply-info__create-date"
-            variant="subtitle2"
-            component="span">
-            {createAt}
+            {userComment?.fullname}
           </Typography>
         </div>
       </div>
       <div className="reply-content__container">
         <InputComment
           className="reply__content"
-          defaultValue={
-            "hay qua hhhhhhhhhhhhhhhhhhssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
-          }
+          defaultValue={content}
           inputProps={{
             readOnly: true,
           }}
         />
-        <div className="reply__action">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}>
           <Button variant="text" onClick={handleReplyClick}>
             Trả lời
           </Button>
-        </div>
+          <Typography
+            className="reply-info__create-date"
+            variant="subtitle2"
+            component="span">
+            {createAt}
+          </Typography>
+        </Box>
+        <Box>
+          {comments.map((item) => (
+            <Box key={item.id} m="0 0 20px 20px">
+              <InputComment
+                className="reply__content"
+                defaultValue={item.content}
+                inputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Box>
+          ))}
+        </Box>
         {openReplyInput && (
           <CommentBox
-            value={replyContent}
             type="reply"
             onClose={handleCloseReplyInput}
-            onInputChange={handleReplyContentChange}
-            onSubmit={handleSubmitReply}
+            handleCommentPost={handleCommentPost}
           />
         )}
       </div>

@@ -22,9 +22,8 @@ const SettingItem = ({ onClick, label }) => {
 const Settings = () => {
   const { user, setUser } = useAuth();
   const location = useLocation();
-  console.log("🚀 ~ file: Settings.jsx:25 ~ Settings ~ location:", location);
   const navigate = useNavigate();
-  const handleOpenUserProfile = () => navigate(`/profile/${user.id}`);
+  const handleOpenUserProfile = () => navigate("/profile/me");
   const handleOpenNotifications = () => console.log("Open Notification");
   const handleOpenDraftPosts = () => console.log("Open Draft");
   const handleOpenAdminPage = () => navigate("/admin");

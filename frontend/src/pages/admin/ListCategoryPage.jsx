@@ -14,6 +14,7 @@ import {
 } from "./../../services/categoryService";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const ListCategoryPage = () => {
   const theme = useTheme();
@@ -44,6 +45,7 @@ const ListCategoryPage = () => {
       headerName: "Action",
       width: 150,
       renderCell: ({ row: { id } }) => {
+        const navigate = useNavigate();
         const handleRemoveCategory = (idPost) => {
           Swal.fire({
             title: `Bạn có chắc muốn xóa danh mục có id ${idPost}?`,
@@ -69,7 +71,7 @@ const ListCategoryPage = () => {
         };
         return (
           <ActionTable
-            edit={() => {}}
+            edit={() => navigate(`/admin/categories/update/${id}`)}
             remove={() => handleRemoveCategory(id)}
           />
         );

@@ -5,19 +5,25 @@ import {
   callPutAPIAuthorization,
 } from "./fetchApiService";
 
-export const getUsersAdmin = async () => {
+export const getUsers = async () => {
   const response = await callGetAPIAuthorization(API_USER_ADMIN);
 
   return response.data;
 };
 
-export const addUsersAdmin = async (data) => {
+export const getUser = async (id) => {
+  const response = await callGetAPIAuthorization(`${API_USER_ADMIN}/${id}`);
+
+  return response.data;
+};
+
+export const addUsers = async (data) => {
   const response = await callPostAPIAuthorization(API_USER_ADMIN, data);
 
   return response.data;
 };
 
-export const updateUsersAdmin = async (id, data) => {
+export const updateUsers = async (id, data) => {
   const response = await callPutAPIAuthorization(
     `${API_USER_ADMIN}/${id}`,
     data

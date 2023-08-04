@@ -180,7 +180,7 @@ public class PostServiceImpl implements PostService {
             postDto.setSlug(post.getSlug());
             postDto.setContent(post.getContent());
             postDto.setSummary(post.getSummary());
-            postDto.setImage(post.getImage());
+            postDto.setThumbnail(post.getImage());
             postDto.setCreateAt(post.getCreateAt());
             postDto.setUpdateAt(post.getUpdateAt());
             postDto.setStatus(post.getStatus());

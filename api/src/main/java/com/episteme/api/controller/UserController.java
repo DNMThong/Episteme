@@ -42,6 +42,10 @@ public class UserController {
         UserResponse userResponse = this.usersService.getAllUsers(pageNumber,pageSize,sortBy,sortDir);
         return ApiResponse.success(HttpStatus.OK, "success", userResponse);
     }
+    @GetMapping("/{id}")
+    public ApiResponse<AuthorDto> getAuthor(@PathVariable String id){
+        return ApiResponse.success(HttpStatus.OK,"success",usersService.findAuthorById(id));
+    }
     @GetMapping("/search")
     public ApiResponse<List<AuthorDto>> search(@RequestParam(value = "q",defaultValue = "",required = false) String keywords){
         return ApiResponse.success(HttpStatus.OK,"success",usersService.findByKeywords(keywords));

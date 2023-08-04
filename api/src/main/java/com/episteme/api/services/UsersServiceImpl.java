@@ -124,6 +124,12 @@ public class UsersServiceImpl implements UsersService {
         Users users = this.usersRepository.findById(id).orElseThrow(() ->  new NotFoundException("Không tìm thấy id: "+id));
         return usersToDto(users);
     }
+
+    public AuthorDto findAuthorById(String id) {
+        Users users = this.usersRepository.findById(id).orElseThrow(() ->  new NotFoundException("Không tìm thấy id: "+id));
+        return usersToAuthorDto(users);
+    }
+
     @Override
     public UserResponse getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
@@ -177,6 +183,12 @@ public class UsersServiceImpl implements UsersService {
 
     public Users findByIdUser(String id) { // nhận Users
         return this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find user id: " + id));
+    }
+
+    @Override
+    public UsersDto findUserForAdmin(String id) {
+        Users user = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find user id: " + id));
+        return usersToDto(user);
     }
 
 

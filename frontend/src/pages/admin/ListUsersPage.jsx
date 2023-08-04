@@ -8,11 +8,9 @@ import InfoUserTable from "../../components/InfoUserTable";
 import DisplayTimeTable from "../../components/DisplayTimeTable";
 import ChipCustom from "./../../components/ChipCustom/index";
 import { useEffect, useState } from "react";
-import {
-  getUsersAdmin,
-  updateUsersAdmin,
-} from "../../services/userAdminService";
+import { getUsers, updateUsers } from "../../services/userService";
 import { STATUS_USERS } from "../../constants/status";
+import { useNavigate } from "react-router-dom";
 
 const ListUserPost = () => {
   const theme = useTheme();
@@ -20,10 +18,10 @@ const ListUserPost = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    const response = getUsersAdmin();
+    const response = getUsers();
     const fetchData = async () => {
       try {
-        const response = await getUsersAdmin();
+        const response = await getUsers();
         setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -101,10 +99,11 @@ const ListUserPost = () => {
       renderCell: ({ row }) => {
         const { id, status } = row;
         const [isLock, setIsLock] = useState(status === STATUS_USERS.SUSPENDED);
+        const navigate = useNavigate();
         useEffect(() => {
           if (id != null) {
             if (isLock) {
-              updateUsersAdmin(id, {
+              updateUsers(id, {
                 ...row,
                 status: STATUS_USERS.SUSPENDED,
               }).then(() =>
@@ -119,7 +118,7 @@ const ListUserPost = () => {
                 )
               );
             } else {
-              updateUsersAdmin(id, {
+              updateUsers(id, {
                 ...row,
                 status: STATUS_USERS.ACTIVE,
               }).then(() =>
@@ -138,8 +137,8 @@ const ListUserPost = () => {
         }, [id, isLock]);
         return (
           <ActionTable
-            view={() => {}}
-            edit={() => {}}
+            view={() => navigate(`/profile/${id}`)}
+            edit={() => navigate(`/admin/users/update/${id}`)}
             isLock={isLock}
             lock={() => setIsLock((prev) => !prev)}
           />

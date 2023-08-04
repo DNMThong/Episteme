@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 public class CommentDto {
     private Long id;
-    private UsersDto user;
+    private String userId;
     private String content;
     @JsonFormat(pattern = "hh:mma dd/MM/yyyy")
     private LocalDateTime createAt;

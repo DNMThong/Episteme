@@ -39,7 +39,7 @@ public class CommentServiceImpl implements CommentService {
 
 	public CommentDto saveNewComment(CommentDto commentDto, long postId, Optional<Long> commentId) {
 		Comment comment = this.dtoToComment(commentDto);
-		Users user = usersService.findByIdUser("123456asd");
+		Users user = usersService.findByIdUser(commentDto.getUserId());
 		PostDto postDto = postService.findById(postId);
 		Post post = postService.dtoToPost(postDto);
 		comment.setPost(post);
@@ -117,8 +117,6 @@ public class CommentServiceImpl implements CommentService {
 
 	public CommentDto commentToDto(Comment comment) {
 		CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
-		UsersDto usersDto = usersService.findById(comment.getUser().getUserId());
-		commentDto.setUser(usersDto);
 		return commentDto;
 	}
 

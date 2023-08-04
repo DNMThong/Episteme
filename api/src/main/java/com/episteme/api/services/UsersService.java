@@ -14,4 +14,6 @@ public interface UsersService extends IService<UsersDto, String> {
     UsersDto updateForAdmin(String id,UsersDto usersDto);
 
     UsersDto getUserWithToken(String token);
+
+    UsersDto findUserForAdmin(String id);
 }

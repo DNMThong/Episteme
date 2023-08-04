@@ -1,5 +1,6 @@
 import { Avatar, Box, Typography } from "@mui/material";
 import { NavLink } from "react-router-dom";
+import logo from "../../assets/img/logo.svg";
 
 // eslint-disable-next-line react/prop-types
 const NavbarLogo = ({ type = "tablet" }) => {
@@ -8,7 +9,7 @@ const NavbarLogo = ({ type = "tablet" }) => {
       <Box mr={0}>
         <Avatar
           className={type === "tablet" ? "logo__img" : "logo__img--sm"}
-          src="logo.svg"
+          src={logo}
         />
       </Box>
       <Box
