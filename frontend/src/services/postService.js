@@ -12,6 +12,21 @@ export const getPosts = async () => {
   return response.data;
 };
 
+export const getPostsByType = async ({
+  type = undefined,
+  pageNumber = 0,
+  pageSize = 8,
+  sortBy = "id",
+  sortDir = "asc",
+}) => {
+  const typeParam = type ? `type=${type}` : "";
+  const response = await callGetAPI(
+    `${API_POST}?${typeParam}&pageNumber=${pageNumber}&pageSize=${pageSize}`
+  );
+
+  return response.data;
+};
+
 export const getPostById = async (id) => {
   const response = await callGetAPI(`${API_POST}/${id}`);
 

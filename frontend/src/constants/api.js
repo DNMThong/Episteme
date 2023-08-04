@@ -10,6 +10,8 @@ export const API_CATEGORY = `${domainApi}/api/v1/categories`;
 
 export const API_USER = `${domainApi}/api/v1/users`;
 
+export const API_AUTH = `${domainApi}/api/v1/auth`;
+
 export const API_LOGIN = `${domainApi}/api/v1/auth/login`;
 
 export const API_REGISTER = `${domainApi}/api/v1/auth/register`;

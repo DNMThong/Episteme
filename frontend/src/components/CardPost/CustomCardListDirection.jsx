@@ -8,11 +8,11 @@ import { useState } from "react";
 const headerBtnsEx = [
    {
       heading: "Dành cho bạn",
-      slug: "/posts",
+      slug: "",
    },
    {
       heading: "Theo tác giả",
-      slug: "/listByAuthor",
+      slug: "listByAuthor",
    },
    {
       heading: "Mới nhất",
@@ -20,11 +20,11 @@ const headerBtnsEx = [
    },
    {
       heading: "Sôi nổi",
-      slug: "/popularPosts",
+      slug: "popularPosts",
    },
    {
       heading: "Đánh giá cao nhất",
-      slug: "/highestRateBlogs",
+      slug: "highestRateBlogs",
    },
 ];
 
@@ -32,7 +32,7 @@ const CustomCardListDirection = ({
    headerBtns = headerBtnsEx,
    cardDirection = "vertical",
 }) => {
-   const [slug, setSlug] = useState("/posts");
+   const [slug, setSlug] = useState("");
    return (
       <>
          <Box
@@ -55,7 +55,7 @@ const CustomCardListDirection = ({
                   );
                })}
          </Box>
-         <CardList direction={cardDirection} slug={slug} />
+         <CardList direction={cardDirection} type={slug} />
       </>
    );
 };
@@ -63,7 +63,6 @@ const CustomCardListDirection = ({
 const MyHeaderButton = ({ text, onClick = () => {} }) => {
    const { theme } = useMode();
    const token = tokens(theme.palette.mode);
-   console.log(onClick);
 
    return (
       <Button

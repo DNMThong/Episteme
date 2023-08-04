@@ -118,6 +118,7 @@ const CreatePostPage = () => {
             inputRef={titleRef}
             placeholder="Tiêu đề bài viết"
             name="title"
+            autoComplete="off"
             sx={{
               fontSize: "32px",
               fontWeight: 500,

@@ -27,6 +27,7 @@ import ViewPostPage from "./pages/user/post/ViewPostPage";
 
 function App() {
   const { theme } = useMode();
+
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
