@@ -8,7 +8,7 @@ const NavbarLogo = ({ type = "tablet" }) => {
          <Box mr={0}>
             <Avatar
                className={type === "tablet" ? "logo__img" : "logo__img--sm"}
-               src="/src/assets/img/logo.svg"
+               src="logo.svg"
             />
          </Box>
          <Box

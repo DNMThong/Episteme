@@ -19,7 +19,7 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "../../../context/auth-context";
 
 const UpdateProfilePage = () => {
-   const param = useParams();
+   const { userId } = useParams();
    const [value, setValue] = useState(0);
    const [selectedFile, setSelectedFile] = useState(null);
    const { user } = useAuth();

@@ -21,12 +21,6 @@ export function formatDate(inputDate) {
    // const dateString = "10:13PM 30/07/2023";
    // return `${day} ${monthName}`;
    const [day, month, year] = inputDate.split(" ")[1].split("/");
-   console.log(
-      "🚀 ~ file: DateUtil.js:28 ~ formatDate ~ dateObject:",
-      day,
-      month,
-      year
-   );
 
    // Lấy thông tin về ngày và tháng từ đối tượng Date
    // const day = dateObject.getDate();

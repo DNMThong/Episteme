@@ -3,7 +3,6 @@ import { Box, Typography } from "@mui/material";
 import { formatDate } from "../../utils/DateUtil";
 
 const CardFooter = ({ info }) => {
-   console.log("🚀 ~ file: CardFooter.jsx:6 ~ CardFooter ~ info:", info);
    return (
       <Box className="card__footer">
          <Typography variant="h5">{formatDate(info?.createAt)}</Typography>

@@ -1,13 +1,16 @@
 import Banner from "../../../components/Banner";
-import { Container, Grid } from "@mui/material";
+import { Box, Button, Container, Grid } from "@mui/material";
 import AuthorList from "../../../components/CardAuthor/AuthorList";
-import {
-   CardList,
-   CardListHeader,
-   CustomCardListDirection,
-} from "../../../components/CardPost";
+import { CardList, CardListHeader } from "../../../components/CardPost";
+import { useMode } from "../../../context/mode-context";
+import { tokens } from "../../../constants/theme";
+import { useEffect, useState } from "react";
 
 const HomePageUser = () => {
+   const [postType, setPostType] = useState("");
+   useEffect(() => {
+      document.title = "Trang chủ";
+   }, []);
    return (
       <>
          <Banner></Banner>
@@ -22,15 +25,96 @@ const HomePageUser = () => {
          </Container>
          <Container sx={{ mb: 10 }}>
             <Grid container spacing={2}>
-               <Grid item xs={12} md={9}>
-                  <CustomCardListDirection cardDirection="horizontal" />
+               <Grid item xs={12} display="flex" flexDirection="column">
+                  <Buttons setPostType={setPostType} />
+                  <CardList
+                     direction="horizontal"
+                     type={postType}
+                     pageSize={8}
+                  />
                </Grid>
-               <Grid item xs={12} md={3}>
+               {/* <Grid item xs={12} md={3}>
                   <AuthorList />
-               </Grid>
+               </Grid> */}
             </Grid>
          </Container>
       </>
+   );
+};
+
+const Buttons = ({ setPostType }) => {
+   const [activePostType, setActivePostType] = useState("");
+   const handleGetPostByAuthor = () => {
+      setPostType("");
+      setActivePostType("");
+   };
+   const handleGetPostNewest = () => {
+      setPostType("newest");
+      setActivePostType("newest");
+   };
+   const handleGetPostPopular = () => {
+      setPostType("popular");
+      setActivePostType("popular");
+   };
+   const handleGetPostHighestRate = () => {
+      setPostType("hightestRate");
+      setActivePostType("highestRate");
+   };
+   return (
+      <Box
+         sx={{
+            display: "flex",
+            width: "100%",
+            flexDirection: "row",
+            mb: 3,
+            overflowX: "auto",
+            flexWrap: "nowrap",
+            alignItems: "center",
+         }}
+      >
+         <ButtonItem
+            text="Theo tác giả"
+            onClick={handleGetPostByAuthor}
+            active={activePostType === ""}
+         />
+         <ButtonItem
+            text="Mới nhất"
+            onClick={handleGetPostNewest}
+            active={activePostType === "newest"}
+         />
+         <ButtonItem
+            text="Sôi nổi"
+            onClick={handleGetPostPopular}
+            active={activePostType === "popular"}
+         />
+         <ButtonItem
+            text="Đánh giá cao"
+            onClick={handleGetPostHighestRate}
+            active={activePostType === "highestRate"}
+         />
+      </Box>
+   );
+};
+
+const ButtonItem = ({ text, onClick = () => {}, active }) => {
+   const { theme } = useMode();
+   const token = tokens(theme.palette.mode);
+
+   return (
+      <Button
+         variant="outlined"
+         component="span"
+         sx={{
+            width: "fit-content",
+            wordBreak: "normal",
+            wordWrap: "normal",
+            borderColor: active ? "initial" : "transparent",
+            color: token.text,
+         }}
+         onClick={onClick}
+      >
+         {text}
+      </Button>
    );
 };
 

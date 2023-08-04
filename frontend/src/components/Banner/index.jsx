@@ -30,14 +30,10 @@ const Banner = () => {
                },
             }}
          >
-            <video muted autoPlay loop>
-               <source src="/src/assets/img/episteme.mp4" type="video/mp4" />
+            <video muted autoPlay loop className="video">
+               <source src="episteme.mp4" type="video/mp4" />
             </video>
-            <img
-               className="backgroundImage"
-               src="/src/assets/img/episteme.jpg"
-               alt=""
-            />
+            <img className="backgroundImage" src="episteme.jpg" alt="" />
          </Box>
       </Container>
    );

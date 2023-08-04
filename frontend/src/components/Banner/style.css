@@ -1,0 +1,11 @@
+@media (min-width: ) {
+}
+
+.video {
+   object-fit: contain;
+   border-radius: inherit;
+}
+
+.backgroundImage {
+   border-radius: inherit;
+}
