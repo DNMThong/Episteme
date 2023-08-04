@@ -18,7 +18,7 @@ public class PostDto {
     private String slug;
     private String content;
     private String summary;
-    private String image;
+    private String thumbnail;
     @JsonFormat(pattern = "hh:mma dd/MM/yyyy")
     private LocalDateTime createAt;
     @JsonFormat(pattern = "hh:mma dd/MM/yyyy")

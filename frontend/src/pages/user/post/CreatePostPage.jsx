@@ -55,11 +55,6 @@ const CreatePostPage = () => {
   };
 
   const handleCreatePost = async () => {
-    const dataPost = await editorRef.current.save();
-
-    const image =
-      dataPost.blocks.find((block) => block.type === "image")?.data.file.url ||
-      "";
     const post = {
       title: titleRef.current.value,
       categories: selectedCategories,
