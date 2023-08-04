@@ -1,4 +1,4 @@
-const domainApi = "https://episteme-be-production.up.railway.app";
+const domainApi = "http://localhost:8080";
 
 export const API_SAVE_IMAGE = `${domainApi}/api/v1/fileUpLoad`;
 export const API_GET_IMAGE = `${domainApi}/api/v1/fileUpLoad/files`;

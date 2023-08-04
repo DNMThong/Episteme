@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Sidebar as ProSidebar,
   Menu,
@@ -6,7 +5,7 @@ import {
   useProSidebar,
 } from "react-pro-sidebar";
 import { Avatar, Box, IconButton, Typography, useTheme } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
@@ -17,12 +16,14 @@ import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import BookmarksOutlinedIcon from "@mui/icons-material/BookmarksOutlined";
 import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
 import { tokens } from "../../constants/theme";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const Item = ({ title, to, icon }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const location = useLocation();
   const { toggleSidebar, broken } = useProSidebar();
+
   return (
     <MenuItem
       onClick={broken ? () => toggleSidebar() : () => {}}
@@ -38,6 +39,7 @@ const Item = ({ title, to, icon }) => {
 const SidebarAdmin = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
 
   const { toggleSidebar, collapseSidebar, collapsed, broken } = useProSidebar();
 
@@ -97,9 +99,9 @@ const SidebarAdmin = () => {
                 justifyContent="space-between"
                 alignItems="center"
                 ml="15px">
-                <Typography variant="h3" color={colors.greyAccent}>
-                  Admin
-                </Typography>
+                <IconButton onClick={() => navigate("/")}>
+                  <ArrowBackIcon />
+                </IconButton>
                 <IconButton
                   onClick={
                     broken ? () => toggleSidebar() : () => collapseSidebar()

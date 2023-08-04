@@ -1,22 +1,30 @@
 package com.episteme.api.services;
 
 import com.episteme.api.entity.Bookmark;
+import com.episteme.api.entity.Post;
+import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.BookmarkDto;
 import com.episteme.api.entity.dto.PostDto;
 import com.episteme.api.entity.dto.UsersDto;
+import com.episteme.api.exceptions.DuplicateRecordException;
 import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.BookmarkRepository;
+import com.episteme.api.repository.PostRepository;
+import com.episteme.api.repository.UsersRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class BookmarkServiceImpl implements BookmarkService {
 	@Autowired
 	private BookmarkRepository bookmarkRepository;
+
 	@Autowired
 	private ModelMapper modelMapper;
 	@Autowired
@@ -29,8 +37,6 @@ public class BookmarkServiceImpl implements BookmarkService {
     @Autowired
     private UsersRepository usersRepository;
 
-    @Autowired
-    private PostRepository postRepository;
 
     @Override
     public BookmarkDto save(BookmarkDto bookmarkDto) {
@@ -39,31 +45,7 @@ public class BookmarkServiceImpl implements BookmarkService {
         Bookmark saveBookmark = this.bookmarkRepository.save(bookmark);
         return this.bookmarkToDto(saveBookmark);
     }
-	@Override
-	public BookmarkDto save(BookmarkDto bookmarkDto) {
-		Bookmark bookmark = this.dtoToBookmark(bookmarkDto);
-		Bookmark saveBookmark = this.bookmarkRepository.save(bookmark);
-		return this.bookmarkToDto(saveBookmark);
-	}
 
-	public BookmarkDto savePost(BookmarkDto bookmarkDto, long postId, String userId) {
-		Bookmark bookmark = this.dtoToBookmark(bookmarkDto);
-		Users user = usersService.findByIdUser("123456asd");
-		// check exist post
-		Post existingPost = postRepository.findById(postId)
-				.orElseThrow(() -> new NotFoundException("Can't find post has id: " + postId));
-		// check saved post
-		Bookmark checkBookmark = bookmarkRepository.findBookmarkByPostId(postId, userId);
-		if (checkBookmark != null) {
-			throw new DuplicateRecordException("Bạn đã lưu post này");
-		} else {
-			bookmark.setUser(user);
-			bookmark.setPost(existingPost);
-			bookmark.setSaveTime(LocalDateTime.now());
-		}
-		Bookmark saveBookmark = this.bookmarkRepository.save(bookmark);
-		return this.bookmarkToDto(saveBookmark);
-	}
 
 	@Override
 	public void delete(Long bookmarkId) {
@@ -94,9 +76,6 @@ public class BookmarkServiceImpl implements BookmarkService {
 
         return bookmark;
     }
-	public Bookmark dtoToBookmark(BookmarkDto bookmarkDto) {
-		return this.modelMapper.map(bookmarkDto, Bookmark.class);
-	}
 
 	public BookmarkDto bookmarkToDto(Bookmark bookmark) {
 		BookmarkDto bookmarkDto = new BookmarkDto();

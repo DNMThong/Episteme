@@ -1,13 +1,11 @@
 package com.episteme.api.controller;
 
 import com.episteme.api.entity.Users;
-import com.episteme.api.entity.dto.AuthorDto;
-import com.episteme.api.entity.dto.PostDto;
-import com.episteme.api.entity.dto.FollowUserResponseDto;
-import com.episteme.api.entity.dto.UsersDto;
+import com.episteme.api.entity.dto.*;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.response.PostResponse;
 import com.episteme.api.response.UserResponse;
+import com.episteme.api.services.BookmarkServiceImpl;
 import com.episteme.api.services.PostServiceImpl;
 import com.episteme.api.services.SocialNetworkServiceImpl;
 import com.episteme.api.services.UsersServiceImpl;
@@ -29,6 +27,9 @@ public class UserController {
 
     @Autowired
     PostServiceImpl postService;
+
+    @Autowired
+    BookmarkServiceImpl bookmarkService;
 
     @Autowired
     SocialNetworkServiceImpl socialNetworkService;
@@ -71,6 +72,12 @@ public class UserController {
             PostDto savedPost = postService.savePostWithCategories(postDto, userId);
             String successMessage = "Thêm thành công!";
             return ApiResponse.success(HttpStatus.CREATED,successMessage, savedPost);
+    }
+
+    @GetMapping("/{userId}/bookmark")
+    public ResponseEntity<?> getListPost(@PathVariable String userId) {
+        List<BookmarkDto> bookmarkDtoList = bookmarkService.findBookmarkByUserId(userId);
+        return ResponseEntity.ok(bookmarkDtoList);
     }
 
 }

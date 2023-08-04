@@ -56,13 +56,20 @@ const CreatePostPage = () => {
 
   const handleCreatePost = async () => {
     const dataPost = await editorRef.current.save();
+
+    const image =
+      dataPost.blocks.find((block) => block.type === "image")?.data.file.url ||
+      "";
     const post = {
       title: titleRef.current.value,
       categories: selectedCategories,
       content: JSON.stringify(dataPost?.blocks || []),
       summary: descriptionRef.current.value,
       status: STATUS_POST.PUBLISHED,
+      thumbnail: image,
     };
+    console.log(post);
+    setOpenModal(false);
     createPost(post, user.id)
       .then((response) => {
         toast.success("Tạo bài viết thành công");
