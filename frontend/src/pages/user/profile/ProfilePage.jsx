@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
   Avatar,
   Box,
@@ -14,6 +14,7 @@ import { tokens } from "../../../constants/theme";
 import { useAuth } from "../../../context/auth-context";
 import { useParams } from "react-router-dom";
 import { CustomCardListDirection } from "../../../components/CardPost";
+import { DEFAULT_IMAGE } from "../../../constants/default";
 
 const headings = [
   {
@@ -43,13 +44,22 @@ const headings = [
 ];
 
 const ProfilePage = () => {
-  const { profileId } = useParams();
-  const { user } = useAuth();
+  const { userId } = useParams();
+  const { user, setUser } = useAuth();
+  const [userInfo, setUserInfo] = useState(null);
+  console.log("🚀 ~ file: ProfilePage.jsx:48 ~ ProfilePage ~ user:", user);
   const {
     theme: { palette },
   } = useMode();
   const token = tokens(palette.mode);
-  const isMyProfile = profileId === user.id;
+  const isMyProfile = userInfo && userId === userInfo.id;
+  console.log(
+    "🚀 ~ file: ProfilePage.jsx:55 ~ ProfilePage ~ user.id:",
+    user.id
+  );
+  console.log("🚀 ~ file: ProfilePage.jsx:55 ~ ProfilePage ~ userId:", userId);
+
+  useEffect(() => setUserInfo(user), []);
 
   const handleFollowClick = (e) => {
     e.preventDefault();
@@ -78,8 +88,8 @@ const ProfilePage = () => {
           }}>
           <Grid item md={1} sm={2}>
             <Avatar
-              alt={user.id + "avatar"}
-              src={user.avatar}
+              alt={user.fullname || user.id || user.email}
+              src={user.image || DEFAULT_IMAGE.USER_AVATAR}
               sx={{
                 display: "block",
                 marginX: "auto",
@@ -241,11 +251,11 @@ const ProfilePage = () => {
                   "Đời sống",
                   "Đời sống",
                   "Đời sống",
-                ].map((item) => {
+                ].map((item, index) => {
                   return (
                     <Chip
                       label={item}
-                      key={item}
+                      key={index}
                       sx={{
                         cursor: "pointer",
                         height: "fit-content",

@@ -28,7 +28,7 @@ const Banner = () => {
             zIndex: -1,
           },
         }}>
-        <video muted autoPlay loop>
+        <video muted autoPlay loop className="video">
           <source src="episteme.mp4" type="video/mp4" />
         </video>
         <img className="backgroundImage" src="episteme.jpg" alt="" />

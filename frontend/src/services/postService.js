@@ -16,7 +16,7 @@ export const getPostsByType = async ({
   type = undefined,
   pageNumber = 0,
   pageSize = 8,
-  sortBy = "id",
+  sortBy = "title",
   sortDir = "asc",
 }) => {
   const typeParam = type ? `type=${type}` : "";

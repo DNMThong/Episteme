@@ -10,22 +10,19 @@ const CardList = ({
   containerAttributes = {},
   pageNumber = 0,
   pageSize = 4,
-  sortBy = "id",
+  sortBy = "title",
   sortDir = "asc",
 }) => {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
-    async function fetchData() {
-      await getPostsByType({ type, pageNumber, pageSize, sortBy, sortDir })
-        .then((response) => {
-          if (response.code === 200) setPosts([...response.data.content]);
-        })
-        .catch((error) =>
-          console.log("🚀 ~ file: CardList.jsx:24 ~ error:", error)
-        );
-    }
-    fetchData();
-  }, []);
+    getPostsByType({ type, pageNumber, pageSize, sortBy, sortDir })
+      .then((response) => {
+        if (response.code === 200) setPosts([...response.data.content]);
+      })
+      .catch((error) =>
+        console.log("🚀 ~ file: CardList.jsx:24 ~ error:", error)
+      );
+  }, [type]);
 
   return (
     <Grid container spacing={3} {...containerAttributes}>

@@ -27,7 +27,6 @@ import ViewPostPage from "./pages/user/post/ViewPostPage";
 
 function App() {
   const { theme } = useMode();
-
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -48,9 +47,9 @@ function App() {
               <Route path="/create-post" element={<CreatePostPage />}></Route>
               <Route path="/p/:slug" element={<ViewPostPage />}></Route>
               <Route path="/aboutUs" element={<About />} />
-              <Route path="/profile/:profileId" element={<ProfilePage />} />
+              <Route path="/profile/:userId" element={<ProfilePage />} />
               <Route
-                path="/update-profile/:profileId"
+                path="/update-profile/:userId"
                 element={<UpdateProfilePage />}
               />
               <Route path="/:slug" element={<ListPage />} />
