@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    @Query("select cmt from Comment cmt where cmt.post.postId = ?1 and cmt.parentComment IS NULL")
+    @Query("select cmt from Comment cmt where cmt.post.postId = ?1 and cmt.parentComment IS NULL order by cmt.updateAt desc")
     List<Comment> findAllCommentByPostId(Long postId);
 }

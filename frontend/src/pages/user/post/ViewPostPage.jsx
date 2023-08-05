@@ -20,7 +20,6 @@ const ViewPostPage = () => {
   const [comments, setComments] = useState([]);
   const { slug } = useParams();
   const { user } = useAuth();
-  console.log(123);
 
   useEffect(() => {
     getPostBySlug(slug)
@@ -82,9 +81,9 @@ const ViewPostPage = () => {
             amountBookmark={post?.total_bookmark}
             amountComment={post?.total_comment}></InfoAuthor>
           <Typography variant="h2" mt="40px" mb="10px">
-            Quân tới chơi
+            {post?.title}
           </Typography>
-          <Typography variant="caption">Đây là mô tả</Typography>
+          <Typography variant="caption">{post?.description}</Typography>
           <PostRender blocks={JSON.parse(post?.content || "[]")}></PostRender>
           <Box mt="12px">
             {user && (
@@ -102,6 +101,7 @@ const ViewPostPage = () => {
       </Box>
       <ActionPost
         breakPoint="sm"
+        post={post}
         display={{ sm: "none", xs: "flex" }}></ActionPost>
     </Container>
   );

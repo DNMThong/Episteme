@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { Box, Button, Typography } from "@mui/material";
+import { formatDate } from "../../utils/DateUtil";
 
 const CardDraftStyled = styled(Box)(({ theme }) => ({
    "&": {
@@ -28,12 +29,12 @@ const CardDraftStyled = styled(Box)(({ theme }) => ({
    },
 }));
 
-const CardDraft = () => {
+const CardDraft = ({ info }) => {
    return (
       <CardDraftStyled>
-         <Typography variant="h5">CardTitle</Typography>
+         <Typography variant="h5">{info?.title}</Typography>
          <Typography variant="h6" component="p">
-            CardTitle
+            {info?.description}
          </Typography>
          <Box className="card-draft__footer">
             <Typography
@@ -41,7 +42,7 @@ const CardDraft = () => {
                variant="subtitle1"
                className="card-draft__date"
             >
-               29 thang 7 nam 2023
+               {formatDate(info?.createAt)}
             </Typography>
             <Box className="card-draft__btns">
                <Button>Chỉnh sửa</Button>

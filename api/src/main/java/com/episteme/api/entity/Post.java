@@ -44,7 +44,7 @@ public class Post {
     private Long view;
 
     @Column(name = "thumbnail", nullable = true)
-    private String image;
+    private String thumbnail;
 
     @Column(name = "create_at", nullable = false)
 //    @CreatedDate

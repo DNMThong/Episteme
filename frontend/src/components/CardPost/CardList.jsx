@@ -17,7 +17,7 @@ const CardList = ({
   useEffect(() => {
     getPostsByType({ type, pageNumber, pageSize, sortBy, sortDir })
       .then((response) => {
-        if (response.code === 200) setPosts([...response.data.content]);
+        if (response?.code === 200) setPosts([...response.data.content]);
       })
       .catch((error) =>
         console.log("🚀 ~ file: CardList.jsx:24 ~ error:", error)

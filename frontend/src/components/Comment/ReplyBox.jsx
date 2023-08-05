@@ -71,17 +71,19 @@ const ReplyBox = ({ comment, postId }) => {
           </Typography>
         </Box>
         <Box>
-          {comments.map((item) => (
-            <Box key={item.id} m="0 0 20px 20px">
-              <InputComment
-                className="reply__content"
-                defaultValue={item.content}
-                inputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Box>
-          ))}
+          {comments &&
+            comments.length > 0 &&
+            comments.map((item) => (
+              <Box key={item.id} m="0 0 20px 20px">
+                <InputComment
+                  className="reply__content"
+                  defaultValue={item.content}
+                  inputProps={{
+                    readOnly: true,
+                  }}
+                />
+              </Box>
+            ))}
         </Box>
         {openReplyInput && (
           <CommentBox

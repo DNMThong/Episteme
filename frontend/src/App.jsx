@@ -59,7 +59,6 @@ function App() {
                 path="/update-profile/:userId"
                 element={<UpdateProfilePage />}
               />
-              <Route path="/:slug" element={<ListPage />} />
             </Route>
             <Route path="/login" element={<LoginPage />}>
               Login

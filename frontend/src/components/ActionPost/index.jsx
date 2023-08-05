@@ -20,6 +20,10 @@ const ActionPost = ({ breakPoint = "md", display, post }) => {
   const [bookmark, setBookmark] = useState(false);
   const { user } = useAuth();
 
+  useEffect(() => {
+    console.log(post);
+  }, []);
+
   const handleBookmark = async () => {
     setBookmark((prev) => !prev);
     if (user) {

@@ -23,21 +23,21 @@ const Settings = () => {
   const { user, setUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const handleOpenUserProfile = () => navigate("/profile/me");
+  const handleOpenUserProfile = () => navigate(`/profile/${user.id}`);
   const handleOpenNotifications = () => console.log("Open Notification");
   const handleOpenDraftPosts = () => console.log("Open Draft");
   const handleOpenAdminPage = () => navigate("/admin");
   const handleLogout = async () => {
-    await localStorage.removeItem("token_episteme");
+    localStorage.removeItem("token_episteme");
     setUser(null);
-
-    if (location.pathname.includes("profile")) {
-      navigate("/");
-    } else {
-      const indexOfSplash = location.pathname.lastIndexOf("/");
-      const path = location.pathname.slice(indexOfSplash);
-      navigate(path);
-    }
+    navigate("/");
+    //  if (location.pathname.includes("profile")) {
+    //    navigate("/");
+    //  } else {
+    //    const indexOfSplash = location.pathname.lastIndexOf("/");
+    //    const path = location.pathname.slice(indexOfSplash);
+    //    navigate(path);
+    //  }
   };
   return (
     <>

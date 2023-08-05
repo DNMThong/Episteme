@@ -6,11 +6,11 @@ const AuthContext = createContext();
 function AuthProvider(props) {
   const [user, setUser] = useState(null);
   useEffect(() => {
-    getUserWithToken(localStorage.getItem("token_episteme") || "").then(
-      (response) => {
+    const token = localStorage.getItem("token_episteme");
+    !!token &&
+      getUserWithToken(token).then((response) => {
         setUser(response.data);
-      }
-    );
+      });
   }, []);
 
   const value = { user, setUser };

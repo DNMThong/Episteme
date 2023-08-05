@@ -23,8 +23,9 @@ import { createPost } from "../../../services/postService";
 import { toast } from "react-toastify";
 import { getCategories } from "./../../../services/categoryService";
 import Editor from "./../../../components/Editor/index";
-import { STATUS_POST, STATUS_USERS } from "../../../constants/status";
+import { STATUS_POST } from "../../../constants/status";
 import { useAuth } from "../../../context/auth-context";
+import ErrorPage from "./../error/ErrorPage";
 
 const CreatePostPage = () => {
   const theme = useTheme();
@@ -37,6 +38,16 @@ const CreatePostPage = () => {
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchAPI = async () => {
+      const response = await getCategories();
+      setCategories(response?.data || []);
+    };
+    fetchAPI();
+  }, []);
+
+  if (!user) return <ErrorPage />;
 
   const handleRemoveSelectedCategory = (id) => {
     setSelectedCategories((prev) => prev.filter((item) => item.id !== id));
@@ -55,6 +66,10 @@ const CreatePostPage = () => {
   };
 
   const handleCreatePost = async () => {
+    const dataPost = await editorRef.current.save();
+    const image =
+      dataPost?.blocks.find((block) => block.type === "image")?.data.file.url ||
+      "";
     const post = {
       title: titleRef.current.value,
       categories: selectedCategories,
@@ -94,14 +109,6 @@ const CreatePostPage = () => {
       });
   };
 
-  useEffect(() => {
-    const fetchAPI = async () => {
-      const response = await getCategories();
-      setCategories(response?.data || []);
-    };
-    fetchAPI();
-  }, []);
-
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", mt: "40px" }}>
       {/* <IconButton
@@ -121,10 +128,14 @@ const CreatePostPage = () => {
             placeholder="Tiêu đề bài viết"
             name="title"
             autoComplete="off"
+            multiline
+            spellCheck={false}
             sx={{
               fontSize: "32px",
               fontWeight: 500,
               m: "12px 0 30px",
+              wordBreak: "break-word",
+              width: "100%",
             }}
           />
           <Editor ref={editorRef} />
