@@ -22,3 +22,5 @@ export const API_BOOKMARK = `${domainApi}/api/v1/bookmarks`;
 export const API_USER_ADMIN = `${domainApi}/api/v1/admin/users`;
 
 export const API_CATEGORY_ADMIN = `${domainApi}/api/v1/admin/categories`;
+
+export const API_POST_ADMIN = `${domainApi}/api/v1/admin/posts`;

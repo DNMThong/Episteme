@@ -1,13 +1,25 @@
-import { API_POST, API_USER, API_USER_ADMIN } from "../constants/api";
+import {
+  API_POST,
+  API_POST_ADMIN,
+  API_USER,
+  API_USER_ADMIN,
+} from "../constants/api";
 import {
   callDeleteAPIAuthorization,
   callGetAPI,
+  callGetAPIAuthorization,
   callPostAPIAuthorization,
   callPutAPIAuthorization,
 } from "./fetchApiService";
 
 export const getPosts = async () => {
   const response = await callGetAPI(API_POST);
+
+  return response.data;
+};
+
+export const getPostsForAdmin = async () => {
+  const response = await callGetAPIAuthorization(API_POST_ADMIN);
 
   return response.data;
 };

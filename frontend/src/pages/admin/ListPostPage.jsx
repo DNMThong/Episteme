@@ -8,7 +8,12 @@ import { Link, useNavigate } from "react-router-dom";
 import DisplayTimeTable from "../../components/DisplayTimeTable";
 import ChipCustom from "../../components/ChipCustom";
 import { useEffect, useState } from "react";
-import { deletePost, getPosts, updatePost } from "./../../services/postService";
+import {
+  deletePost,
+  getPosts,
+  getPostsForAdmin,
+  updatePost,
+} from "./../../services/postService";
 import { STATUS_POST } from "../../constants/status";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
@@ -21,7 +26,7 @@ const ListPostPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getPosts().then((response) => setPosts(response?.data?.content));
+    getPostsForAdmin().then((response) => setPosts(response?.data));
   }, []);
 
   console.log(posts);

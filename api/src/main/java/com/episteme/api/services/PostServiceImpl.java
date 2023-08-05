@@ -162,6 +162,14 @@ public class PostServiceImpl implements PostService {
         return postDtos;
     }
 
+    public List<PostDto> findAllForAdmin() {
+        List<Post> posts = this.postRepository.findAllForAdmin();
+        List<PostDto> postDtos = posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+        return postDtos;
+    }
+
+
+
     @Override
     public PostDto findById(Long id) {
         Post post = this.postRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find post id: " + id));

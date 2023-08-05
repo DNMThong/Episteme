@@ -5,7 +5,8 @@ import CardPoster from "./CardPoster";
 import CardFooter from "./CardFooter";
 
 const CardPost = ({ postInfo, direction = "vertical" }) => {
-  const { image, ...info } = postInfo;
+  const { thumbnail, ...info } = postInfo;
+  console.log(postInfo);
   return (
     <Link
       to={`/p/${info.slug}`}
@@ -101,7 +102,7 @@ const CardPost = ({ postInfo, direction = "vertical" }) => {
             backgroundColor: "#ccc",
           },
         }}>
-        <CardPoster posterPath={image} height="140px" />
+        <CardPoster posterPath={thumbnail} height="140px" />
         <Box component="div" className="card__info">
           <CardContent>
             <Box className="categories__container">
