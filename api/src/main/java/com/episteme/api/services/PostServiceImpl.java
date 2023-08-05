@@ -182,30 +182,6 @@ public class PostServiceImpl implements PostService {
         return this.postDto(post);
     }
 
-    @Override
-    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-
-        // create Pageable instance
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-
-        Page<Post> posts = postRepository.findAll(pageable);
-
-        // get content for page object
-        List<Post> listOfPosts = posts.getContent();
-
-        List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
-
-        PostResponse postResponse = new PostResponse();
-        postResponse.setContent(content);
-        postResponse.setPageNumber(posts.getNumber());
-        postResponse.setPageSize(posts.getSize());
-        postResponse.setTotalElements(posts.getTotalElements());
-        postResponse.setTotalPages(posts.getTotalPages());
-        postResponse.setLastPage(posts.isLast());
-        return postResponse;
-    }
 
 
     public List<PostDto> findByKeywords(String keywords) {
@@ -450,44 +426,4 @@ public class PostServiceImpl implements PostService {
         return postResponse;
     }
 
-    public PostResponse findByType(Integer pageNumber, Integer pageSize, String type) {
-        if (type.equals("newest")) {
-            Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-            Page<Post> posts = postRepository.findPostByNewest(pageable);
-
-            // get content for page object
-            List<Post> listOfPosts = posts.getContent();
-
-            List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
-            PostResponse postResponse = new PostResponse();
-            postResponse.setContent(content);
-            postResponse.setPageNumber(posts.getNumber());
-            postResponse.setPageSize(posts.getSize());
-            postResponse.setTotalElements(posts.getTotalElements());
-            postResponse.setTotalPages(posts.getTotalPages());
-            postResponse.setLastPage(posts.isLast());
-            return postResponse;
-        } else if (type.equals("popular")) {
-            Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-            Page<Post> posts = postRepository.findPostsPopular(pageable);
-
-            // get content for page object
-            List<Post> listOfPosts = posts.getContent();
-
-            List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
-
-            PostResponse postResponse = new PostResponse();
-            postResponse.setContent(content);
-            postResponse.setPageNumber(posts.getNumber());
-            postResponse.setPageSize(posts.getSize());
-            postResponse.setTotalElements(posts.getTotalElements());
-            postResponse.setTotalPages(posts.getTotalPages());
-            postResponse.setLastPage(posts.isLast());
-            return postResponse;
-        } else {
-            throw new NotFoundException("Không tìm thấy Posts theo Type");
-        }
-    }
 }

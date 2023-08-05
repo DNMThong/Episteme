@@ -10,6 +10,7 @@ const ReplyBox = ({ comment, postId }) => {
   const { id, content, userId, createAt, comments } = comment;
   const [openReplyInput, setOpenReplyInput] = useState(false);
   const [userComment, setUserComment] = useState();
+  const [listSubCmtReply, setListSubCmtReply] = useState(comments);
 
   useEffect(() => {
     getAuthor(userId).then((response) => setUserComment(response.data));
@@ -17,11 +18,12 @@ const ReplyBox = ({ comment, postId }) => {
 
   const handleCommentPost = (value) => {
     addCommentReplyPost(postId, id, {
-      content: postId,
+      content: value,
       userId,
     })
       .then((response) => {
         toast.success("Thêm bình luận thành công");
+        setListSubCmtReply((prev) => [...prev, response.data]);
       })
       .catch(() => toast.error("Thêm bình luận thất bại"));
   };
@@ -71,9 +73,9 @@ const ReplyBox = ({ comment, postId }) => {
           </Typography>
         </Box>
         <Box>
-          {comments &&
-            comments.length > 0 &&
-            comments.map((item) => (
+          {listSubCmtReply &&
+            listSubCmtReply.length > 0 &&
+            listSubCmtReply.map((item) => (
               <Box key={item.id} m="0 0 20px 20px">
                 <InputComment
                   className="reply__content"

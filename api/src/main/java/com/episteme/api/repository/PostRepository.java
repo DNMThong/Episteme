@@ -24,23 +24,18 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select p from Post p where p.slug = ?1")
     Optional<Post> findBySlug(String slug);
     List<Post> findByStatus(PostStatus postStatus);
-    @Query("select o from Post o where o.status= 'Published' and o.createAt >= CURRENT_DATE - 7")
-    Page<Post> findPostByNewest(Pageable pageable);
-    @Query("SELECT o FROM Post o where o.status= 'Published' GROUP BY o.postId ORDER BY o.view DESC")
-    Page<Post> findPostsPopular(Pageable pageable);
+
     @Query("select p from Post p where p.user.userId = ?1")
     Page<Post> findPostsByUserId(String userId,Pageable pageable);
-
-
 
     @Modifying
     @Transactional
     @Query(value = "update post p set p.view = p.view + 1 where p.post_id = ?1", nativeQuery = true)
     void autoIncreaseViews(Long postId);
 
-    @Query(value = "select * from Post o where  o.create_at >= CURRENT_DATE - 7 and o.status like 'Published'",nativeQuery = true)
+    @Query("select o from Post o where o.status= 'Published' and o.createAt >= CURRENT_DATE - 7")
     Page<Post> findPostByNewest(Pageable pageable);
-    @Query(value="SELECT * FROM Post p where p.status like 'Published' ORDER BY p.view DESC", nativeQuery = true)
+    @Query("SELECT o FROM Post o where o.status= 'Published' GROUP BY o.postId ORDER BY o.view DESC")
     Page<Post> findPostsPopular(Pageable pageable);
 
     @Query("SELECT o FROM Post o WHERE o.status = 'Draft'")

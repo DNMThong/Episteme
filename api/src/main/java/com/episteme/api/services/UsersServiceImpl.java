@@ -202,7 +202,6 @@ public class UsersServiceImpl implements UsersService {
 
 
     public Optional<Users> findUerByEmail(String email){
-    public Optional<Users> findUerByEmail(String email) {
         Optional<Users> user = usersRepository.findByEmailAndPasswordNotNull(email);
         return user;
     }
@@ -237,4 +236,26 @@ public class UsersServiceImpl implements UsersService {
         numberRegisters.setData(countNewUserList);
         return numberRegisters;
     }
+
+    public UserResponse getUserMostFollow(Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Users> users = usersRepository.findUsersMostFollow(pageable);
+
+        List<Users> listOfPosts = users.getContent();
+
+        List<AuthorDto> authors = listOfPosts.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
+
+        UserResponse userResponse = new UserResponse();
+        userResponse.setData(authors);
+        userResponse.setPageNumber(users.getNumber());
+        userResponse.setPageSize(users.getSize());
+        userResponse.setTotalElements(users.getTotalElements());
+        userResponse.setTotalPages(users.getTotalPages());
+        userResponse.setLastPage(users.isLast());
+
+        return userResponse;
+    }
+
 }
