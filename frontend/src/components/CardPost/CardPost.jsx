@@ -8,7 +8,7 @@ const CardPost = ({ postInfo, direction = "vertical" }) => {
    const { image, ...info } = postInfo;
    return (
       <Link
-         to={`/${info.title}`}
+         to={`/${info.slug}`}
          style={{
             display: "block",
             height: "100%",

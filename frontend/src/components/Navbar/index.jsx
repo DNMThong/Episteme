@@ -155,7 +155,7 @@ function Navbar() {
                   <NavbarLogo type="tablet" />
                   <Box
                      sx={{
-                        "flex-grow": 0,
+                        flexGrow: 0,
                         display: { xs: "flex", md: "none" },
                      }}
                   >

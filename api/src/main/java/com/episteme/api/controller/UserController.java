@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -53,6 +54,32 @@ public class UserController {
             PostDto savedPost = postService.savePostWithCategories(postDto, userId);
             String successMessage = "Thêm thành công!";
             return ApiResponse.success(HttpStatus.CREATED,successMessage, savedPost);
+    }
+
+    @GetMapping("/{id}/posts")
+    public ApiResponse<List<PostDto>> getPostsByUserId(@PathVariable("id") String userId) {
+        List<PostDto> posts = postService.findAllPostByUserId(userId);
+        String successMessage = "success";
+        return ApiResponse.success(HttpStatus.OK,successMessage, posts);
+    }
+
+    @GetMapping("/{id}/drafts")
+    public ApiResponse<PostResponse> getDraftsByUserId(@PathVariable("id") String userId,
+                                                        @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+                                                        @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+                                                        @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+                                                        @RequestParam(value = "sortDir", defaultValue = "des", required = false) String sortDir
+
+    ) {
+        PostResponse posts = postService.findAllDraftByUserId(userId, pageNumber, pageSize, sortBy, sortDir);
+        String successMessage = "success";
+        return ApiResponse.success(HttpStatus.OK, successMessage, posts);
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<UsersDto> getAuthorById(@PathVariable String id){
+
+        return ApiResponse.success(HttpStatus.OK,"success",usersService.findById(id));
     }
 
 }

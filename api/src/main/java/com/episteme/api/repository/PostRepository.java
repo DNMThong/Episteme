@@ -34,4 +34,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findPostByNewest(Pageable pageable);
     @Query("SELECT o FROM Post o ORDER BY o.view DESC")
     Page<Post> findPostsPopular(Pageable pageable);
+
+    @Query("SELECT o FROM Post o WHERE o.status = 'Draft'")
+    Page<Post> findPostsByStatusDraft(String userId, Pageable pageable);
 }

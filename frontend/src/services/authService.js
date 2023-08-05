@@ -14,3 +14,9 @@ export const getUserWithToken = async (token) => {
 
    return response.data;
 };
+
+export const getAuthorById = async (id) => {
+   const response = await callGetAPI(`${API_USER}/${id}`);
+
+   return response.data;
+};

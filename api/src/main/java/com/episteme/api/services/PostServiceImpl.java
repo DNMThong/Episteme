@@ -180,7 +180,7 @@ public class PostServiceImpl implements PostService {
             postDto.setSlug(post.getSlug());
             postDto.setContent(post.getContent());
             postDto.setSummary(post.getSummary());
-            postDto.setImage(post.getImage());
+            postDto.setThumbnail(post.getImage());
             postDto.setCreateAt(post.getCreateAt());
             postDto.setUpdateAt(post.getUpdateAt());
             postDto.setStatus(post.getStatus());
@@ -318,6 +318,26 @@ public class PostServiceImpl implements PostService {
         postResponse.setTotalPages(posts.getTotalPages());
         postResponse.setLastPage(posts.isLast());
 
+        return postResponse;
+    }
+
+    @Override
+    public PostResponse findAllDraftByUserId(String userId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Post> posts = postRepository.findPostsByStatusDraft(userId, pageable);
+
+        // get content for page object
+        List<Post> listOfPosts = posts.getContent();
+
+        List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+        PostResponse postResponse = new PostResponse();
+        postResponse.setContent(content);
+        postResponse.setPageNumber(posts.getNumber());
+        postResponse.setPageSize(posts.getSize());
+        postResponse.setTotalElements(posts.getTotalElements());
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setLastPage(posts.isLast());
         return postResponse;
     }
 

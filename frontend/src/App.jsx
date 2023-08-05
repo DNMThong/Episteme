@@ -29,9 +29,9 @@ function App() {
    const { theme } = useMode();
    return (
       <ThemeProvider theme={theme}>
-         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <CssBaseline />
-            <AuthProvider>
+         <AuthProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+               <CssBaseline />
                <Routes>
                   <Route path="/admin" element={<AdminLayout />}>
                      <Route index element={<HomePage />} />
@@ -68,20 +68,20 @@ function App() {
                   </Route>
                   <Route path="*" element={<ErrorPage />} />
                </Routes>
-            </AuthProvider>
-            <ToastContainer
-               position="top-right"
-               autoClose={5000}
-               hideProgressBar={false}
-               newestOnTop={false}
-               closeOnClick
-               rtl={false}
-               pauseOnFocusLoss
-               draggable
-               pauseOnHover
-               theme={theme.palette.mode}
-            />
-         </LocalizationProvider>
+               <ToastContainer
+                  position="top-right"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme={theme.palette.mode}
+               />
+            </LocalizationProvider>
+         </AuthProvider>
       </ThemeProvider>
    );
 }
