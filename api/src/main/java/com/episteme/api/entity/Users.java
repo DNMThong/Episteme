@@ -123,7 +123,7 @@ public class Users  implements UserDetails {
     @Override
     // Tài khoản chưa bị khóa ?
     public boolean isAccountNonLocked() {
-        return true;
+        return !"LOCKED".equals(status);
     }
 
     @Override

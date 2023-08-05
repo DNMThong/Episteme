@@ -35,6 +35,7 @@ public class SecurityConfiguration {
                                 "/api/v1/users/**",
                                 "/api/v1/categories/**",
                                 "/api/v1/posts/**",
+                                "/api/v1/social/**",
                                 "/oauth2/authorization/google"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/v1/auth/**").permitAll()

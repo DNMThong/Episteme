@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class AuthorDto {
+    private String id;
     private String fullname;
     private String email;
     private LocalDate birthday;

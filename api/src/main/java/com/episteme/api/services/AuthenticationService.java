@@ -29,50 +29,57 @@ public class AuthenticationService {
     private final UsersRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private  final AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
     UsersServiceImpl usersService;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        var users= Users.builder()
-                .userId(shortUUID())
-                .fullname(request.getFullname())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .email(request.getEmail())
-                .birthday(request.getBirthday())
-                .image(request.getImage())
-                .description(request.getDescription())
-                .role(Role.USER)
-                .build();
-        Users userSaved = repository.save(users);
-        var jwtToken =jwtService.generateToken(users);
-        return AuthenticationResponse.builder().infoUser(usersService.usersToDto(userSaved)).token(jwtToken).build();
+        var user = repository.findByEmail(request.getEmail()).orElse(null);
+        if (user != null) {
+            throw new DuplicateRecordException("Email đã tồn tại");
+        } else {
+            var users = Users.builder()
+                    .userId(shortUUID())
+                    .fullname(request.getFullname())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .email(request.getEmail())
+                    .birthday(request.getBirthday())
+                    .image(request.getImage())
+                    .description(request.getDescription())
+                    .status("ACTIVE")
+                    .role(Role.USER)
+                    .build();
+            Users userSaved = repository.save(users);
+            var jwtToken = jwtService.generateToken(users);
+            return AuthenticationResponse.builder().infoUser(usersService.usersToDto(userSaved)).token(jwtToken).build();
+
+        }
     }
 
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        try{
+        try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),request.getPassword()
+                            request.getEmail(), request.getPassword()
                     )
             );
-            var users = repository.findByEmailAndPasswordNotNull(request.getEmail()).orElseThrow(()-> new NotFoundException("Not found Email of User"));
+            var users = repository.findByEmailAndPasswordNotNull(request.getEmail()).orElseThrow(() -> new NotFoundException("Email không tồn tại"));
 
-            String jwtToken =jwtService.generateToken(users);
+            String jwtToken = jwtService.generateToken(users);
             return AuthenticationResponse.builder().infoUser(usersService.usersToDto(users)).token(jwtToken).build();
         } catch (DuplicateRecordException ex) {
             // Xử lý các lỗi xác thực
-            throw new DuplicateRecordException("Đăng nhập không thành công"
+            throw new DuplicateRecordException("Sai mật khẩu"
             );
         }
 
     }
 
     public AuthenticationResponse loginWithGoogle(OAuth2User oAuth2User) {
-        Map<String,Object> map =  oAuth2User.getAttributes();
-        var users= Users.builder()
+        Map<String, Object> map = oAuth2User.getAttributes();
+        var users = Users.builder()
                 .userId(shortUUID())
                 .fullname(String.valueOf(map.get("name")))
                 .password(null)

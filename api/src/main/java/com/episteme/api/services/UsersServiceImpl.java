@@ -2,6 +2,8 @@ package com.episteme.api.services;
 
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.AuthorDto;
+import com.episteme.api.entity.dto.CountNewUser;
+import com.episteme.api.entity.dto.NumberRegister;
 import com.episteme.api.entity.dto.UsersDto;
 import com.episteme.api.exceptions.DuplicateRecordException;
 import com.episteme.api.exceptions.ApiResponse;
@@ -20,6 +22,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,6 +38,7 @@ public class UsersServiceImpl implements UsersService {
     private UsersRepository usersRepository;
     @Autowired
     private ModelMapper modelMapper;
+
     public static String shortUUID() {
         UUID uuid = UUID.randomUUID();
         long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
@@ -68,8 +76,8 @@ public class UsersServiceImpl implements UsersService {
         users.setPassword(usersDto.getEmail());
         users.setBirthday(usersDto.getBirthday());
         users.setDescription(usersDto.getDescription());
-        Users updateUser =usersRepository.save(users);
-        return this.modelMapper.map(updateUser,UsersDto.class);
+        Users updateUser = usersRepository.save(users);
+        return this.modelMapper.map(updateUser, UsersDto.class);
     }
 
     @Override
@@ -110,9 +118,10 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UsersDto findById(String id) {
-        Users users = this.usersRepository.findById(id).orElseThrow(() ->  new NotFoundException("Không tìm thấy id: "+id));
+        Users users = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy id: " + id));
         return usersToDto(users);
     }
+
     @Override
     public UserResponse getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
@@ -124,7 +133,28 @@ public class UsersServiceImpl implements UsersService {
 
         List<Users> listOfPosts = users.getContent();
 
-        List<AuthorDto> authors= listOfPosts.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
+        List<AuthorDto> authors = listOfPosts.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
+
+        UserResponse userResponse = new UserResponse();
+        userResponse.setData(authors);
+        userResponse.setPageNumber(users.getNumber());
+        userResponse.setPageSize(users.getSize());
+        userResponse.setTotalElements(users.getTotalElements());
+        userResponse.setTotalPages(users.getTotalPages());
+        userResponse.setLastPage(users.isLast());
+
+        return userResponse;
+    }
+
+    public UserResponse getUserMostFollow(Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Users> users = usersRepository.findUsersMostFollow(pageable);
+
+        List<Users> listOfPosts = users.getContent();
+
+        List<AuthorDto> authors = listOfPosts.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
 
         UserResponse userResponse = new UserResponse();
         userResponse.setData(authors);
@@ -146,20 +176,22 @@ public class UsersServiceImpl implements UsersService {
     }
 
     public List<AuthorDto> findByKeywords(String keywords) {
-            List<Users> users=usersRepository.findByKeywords(keywords);
-            if(users==null) {
-                throw  new NotFoundException("Không tìm thấy"+keywords);
-            }else {
-                List<AuthorDto> authors= users.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
-                return authors;
-            }
+        List<Users> users = usersRepository.findByKeywords(keywords);
+        if (users == null) {
+            throw new NotFoundException("Không tìm thấy" + keywords);
+        } else {
+            List<AuthorDto> authors = users.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
+            return authors;
+        }
     }
 
+    // Post nhieu comment nhat -> <List>Post
+    // Bai viet tac gia co nhieu follow nhat va bat buoc phai co bai viet
     public Users findByIdUser(String id) { // nhận Users
         return this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Can't find user id: " + id));
     }
 
-    public Optional<Users> findUerByEmail(String email){
+    public Optional<Users> findUerByEmail(String email) {
         Optional<Users> user = usersRepository.findByEmailAndPasswordNotNull(email);
         return user;
     }
@@ -172,9 +204,26 @@ public class UsersServiceImpl implements UsersService {
         return this.modelMapper.map(users, UsersDto.class);
     }
 
-    public AuthorDto usersToAuthorDto (Users user) {
-        return this.modelMapper.map(user,AuthorDto.class);
+    public AuthorDto usersToAuthorDto(Users user) {
+        return this.modelMapper.map(user, AuthorDto.class);
     }
 
 
+    //APi moi
+    public NumberRegister numberRegister(LocalDate startDate, LocalDate endDate) {
+        List<CountNewUser> countNewUserList = new ArrayList<>();
+        // Đếm ngày trong khoảng truyền vào
+        long daysBetween = ChronoUnit.DAYS.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59));
+        startDate=startDate.minusDays(1);
+        for (long i = 0; i <=daysBetween; i++) {
+            startDate = startDate.plusDays(1);
+            Integer y = usersRepository.countUsersForDate(startDate.atStartOfDay(),startDate.atTime(23, 59, 59));
+            System.out.println(y);
+            String x = startDate.format(DateTimeFormatter.ofPattern("dd-MM"));
+            countNewUserList.add(new CountNewUser(x.replace("-", "/"), y));
+        }
+        NumberRegister numberRegisters = new NumberRegister();
+        numberRegisters.setData(countNewUserList);
+        return numberRegisters;
+    }
 }
