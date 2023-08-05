@@ -18,12 +18,20 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select p from Post p where p.user.userId = ?1")
     List<Post> findAllPostByUserId(String userId);
-    @Query("select o  from Post o where  o.title like %?1% or o.summary like %?1% ")
+    @Query("select o  from Post o where  o.title like %?1% or o.summary like %?1%")
     List<Post> findByKeywords(String keywords);
 
     @Query("select p from Post p where p.slug = ?1")
     Optional<Post> findBySlug(String slug);
     List<Post> findByStatus(PostStatus postStatus);
+    @Query("select o from Post o where o.status= 'Published' and o.createAt >= CURRENT_DATE - 7")
+    Page<Post> findPostByNewest(Pageable pageable);
+    @Query("SELECT o FROM Post o where o.status= 'Published' GROUP BY o.postId ORDER BY o.view DESC")
+    Page<Post> findPostsPopular(Pageable pageable);
+    @Query("select p from Post p where p.user.userId = ?1")
+    Page<Post> findPostsByUserId(String userId,Pageable pageable);
+
+
 
     @Modifying
     @Transactional

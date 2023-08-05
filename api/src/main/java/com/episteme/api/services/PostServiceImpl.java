@@ -6,6 +6,8 @@ import com.episteme.api.entity.enums.PostStatus;
 import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.PostRepository;
 import com.episteme.api.repository.PostsCategoriesRepository;
+import com.episteme.api.repository.SocialNetworkRepository;
+import com.episteme.api.repository.UsersRepository;
 import com.episteme.api.response.PostResponse;
 import com.github.slugify.Slugify;
 import jakarta.servlet.http.HttpSession;
@@ -37,9 +39,12 @@ public class PostServiceImpl implements PostService {
     private PostsCategoriesServiceImpl postsCategoriesService;
     @Autowired
     private PostsCategoriesRepository postsCategoriesRepository;
-
+    @Autowired
+    private SocialNetworkRepository socialNetworkRepository;
     @Autowired
     private HttpSession session;
+    @Autowired
+    private UsersRepository usersRepository;
 
 
     public PostDto savePostWithCategories(PostDto postDto, String userId) {
@@ -49,6 +54,7 @@ public class PostServiceImpl implements PostService {
         post.setUpdateAt(LocalDateTime.now());
         post.setSlug("slug");
         post.setView(0L);
+        post.setStatus(PostStatus.Published);
         post.setUser(user);
 
         Post savePost = this.postRepository.save(post);
@@ -176,6 +182,100 @@ public class PostServiceImpl implements PostService {
         return this.postDto(post);
     }
 
+    @Override
+    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        // get content for page object
+        List<Post> listOfPosts = posts.getContent();
+
+        List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+
+        PostResponse postResponse = new PostResponse();
+        postResponse.setContent(content);
+        postResponse.setPageNumber(posts.getNumber());
+        postResponse.setPageSize(posts.getSize());
+        postResponse.setTotalElements(posts.getTotalElements());
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setLastPage(posts.isLast());
+        return postResponse;
+    }
+
+
+    public List<PostDto> findByKeywords(String keywords) {
+        if (keywords != null) {
+            List<Post> posts = postRepository.findByKeywords(keywords);
+            List<PostDto> content = posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+            return content;
+        }
+        return null;
+    }
+
+    public PostResponse findByType(Integer pageNumber, Integer pageSize, String type) {
+        if (type.equals("newest")) {
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+            Page<Post> posts = postRepository.findPostByNewest(pageable);
+
+            // get content for page object
+            List<Post> listOfPosts = posts.getContent();
+
+            List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+            PostResponse postResponse = new PostResponse();
+            postResponse.setContent(content);
+            postResponse.setPageNumber(posts.getNumber());
+            postResponse.setPageSize(posts.getSize());
+            postResponse.setTotalElements(posts.getTotalElements());
+            postResponse.setTotalPages(posts.getTotalPages());
+            postResponse.setLastPage(posts.isLast());
+            return postResponse;
+        } else if (type.equals("popular")) {
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+            Page<Post> posts = postRepository.findPostsPopular(pageable);
+
+            // get content for page object
+            List<Post> listOfPosts = posts.getContent();
+
+            List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+
+            PostResponse postResponse = new PostResponse();
+            postResponse.setContent(content);
+            postResponse.setPageNumber(posts.getNumber());
+            postResponse.setPageSize(posts.getSize());
+            postResponse.setTotalElements(posts.getTotalElements());
+            postResponse.setTotalPages(posts.getTotalPages());
+            postResponse.setLastPage(posts.isLast());
+            return postResponse;
+        } else if (type.equals("follow")) {
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+            Page<Object[]> list = usersRepository.findTop3UsersWithMostFollowersAndHighestViewPost(pageable);
+            List<Long> longList= new ArrayList<>();
+            for (int i=0; i<list.getContent().size();i++){
+                longList.add((Long) list.getContent().get(i)[3]);
+            }
+            List<PostDto>postDtoList= postRepository.findAllById(longList).stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+            PostResponse postResponse = new PostResponse();
+            postResponse.setContent(postDtoList);
+            postResponse.setPageNumber(list.getNumber());
+            postResponse.setPageSize(list.getSize());
+            postResponse.setTotalElements(list.getTotalElements());
+            postResponse.setTotalPages(list.getTotalPages());
+            postResponse.setLastPage(list.isLast());
+            return postResponse;
+        } else {
+
+            throw new NotFoundException("Không tìm thấy Posts theo Type");
+        }
+    }
+
+
     public Post dtoToPost(PostDto postDto) {
         return this.modelMapper.map(postDto, Post.class);
     }
@@ -248,6 +348,7 @@ public class PostServiceImpl implements PostService {
 
         return existingPostOptional.isPresent();
     }
+
     private boolean checkForDuplicateRecordUpdate(PostDto postDto, Long postId) {
         String slug = postDto.getSlug();
 

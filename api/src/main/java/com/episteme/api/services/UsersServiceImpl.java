@@ -2,6 +2,8 @@ package com.episteme.api.services;
 
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.AuthorDto;
+import com.episteme.api.entity.dto.CountNewUser;
+import com.episteme.api.entity.dto.NumberRegister;
 import com.episteme.api.entity.dto.UsersDto;
 import com.episteme.api.entity.enums.UserStatus;
 import com.episteme.api.exceptions.DuplicateRecordException;
@@ -23,6 +25,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.Mapping;
 
 import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,6 +47,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Autowired
     private JwtService jwtService;
+
 
     public static String shortUUID() {
         UUID uuid = UUID.randomUUID();
@@ -194,6 +202,7 @@ public class UsersServiceImpl implements UsersService {
 
 
     public Optional<Users> findUerByEmail(String email){
+    public Optional<Users> findUerByEmail(String email) {
         Optional<Users> user = usersRepository.findByEmailAndPasswordNotNull(email);
         return user;
     }
@@ -206,9 +215,26 @@ public class UsersServiceImpl implements UsersService {
         return this.modelMapper.map(users, UsersDto.class);
     }
 
-    public AuthorDto usersToAuthorDto (Users user) {
-        return this.modelMapper.map(user,AuthorDto.class);
+    public AuthorDto usersToAuthorDto(Users user) {
+        return this.modelMapper.map(user, AuthorDto.class);
     }
 
 
+    //APi moi
+    public NumberRegister numberRegister(LocalDate startDate, LocalDate endDate) {
+        List<CountNewUser> countNewUserList = new ArrayList<>();
+        // Đếm ngày trong khoảng truyền vào
+        long daysBetween = ChronoUnit.DAYS.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59));
+        startDate=startDate.minusDays(1);
+        for (long i = 0; i <=daysBetween; i++) {
+            startDate = startDate.plusDays(1);
+            Integer y = usersRepository.countUsersForDate(startDate.atStartOfDay(),startDate.atTime(23, 59, 59));
+            System.out.println(y);
+            String x = startDate.format(DateTimeFormatter.ofPattern("dd-MM"));
+            countNewUserList.add(new CountNewUser(x.replace("-", "/"), y));
+        }
+        NumberRegister numberRegisters = new NumberRegister();
+        numberRegisters.setData(countNewUserList);
+        return numberRegisters;
+    }
 }

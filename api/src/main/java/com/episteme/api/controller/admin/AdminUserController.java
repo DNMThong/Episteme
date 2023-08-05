@@ -13,7 +13,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin/users")
-@PreAuthorize("hasAuthority('ADMIN')")
+@PreAuthorize
+        ("hasAuthority('ADMIN')")
 public class AdminUserController {
     @Autowired
     private UsersService usersService;
