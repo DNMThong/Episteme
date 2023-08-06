@@ -14,7 +14,6 @@ public interface CategoriesRepository extends JpaRepository<Categories, Integer>
     Optional<Categories> findBySlug(String slug);
     @Query("SELECT c FROM Categories c WHERE c.name LIKE %:name% AND c.slug LIKE :slug")
     List<Categories> findWithParams(String name,String slug);
-
     @Transactional
     void deleteByCategoryId(Integer categoryId);
 

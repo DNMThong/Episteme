@@ -5,4 +5,5 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface BookmarkService extends IService<BookmarkDto, Long> {
+    Integer numberBookmarkOfUser(String userId);
 }

@@ -4,6 +4,7 @@ package com.episteme.api.controller.admin;
 import com.episteme.api.entity.dto.UsersDto;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.services.UsersService;
+import com.episteme.api.services.UsersServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +19,9 @@ import java.util.List;
 public class AdminUserController {
     @Autowired
     private UsersService usersService;
+
+    @Autowired
+    private UsersServiceImpl usersServiceImpl;
 
     @GetMapping("")
     public ApiResponse<List<UsersDto>> getAll(){
