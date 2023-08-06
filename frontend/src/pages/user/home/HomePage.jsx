@@ -67,9 +67,10 @@ const Buttons = ({ setPostType }) => {
             width: "100%",
             flexDirection: "row",
             mb: 3,
-            overflowX: "auto",
             flexWrap: "nowrap",
             alignItems: "center",
+            overflowX: "auto",
+            flexShrink: 0,
          }}
       >
          <ButtonItem
@@ -105,6 +106,7 @@ const ButtonItem = ({ text, onClick = () => {}, active }) => {
          variant="outlined"
          component="span"
          sx={{
+            flexShrink: 0,
             width: "fit-content",
             wordBreak: "normal",
             wordWrap: "normal",

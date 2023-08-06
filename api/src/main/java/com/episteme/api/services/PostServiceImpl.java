@@ -407,23 +407,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse findAllDraftByUserId(String userId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public List<PostDto> findAllDraftByUserId(String userId) {
 
-        Page<Post> posts = postRepository.findPostsByStatusDraft(userId, pageable);
+        List<Post> posts = postRepository.findPostsByStatusDraft(userId);
 
-        // get content for page object
-        List<Post> listOfPosts = posts.getContent();
 
-        List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
-        PostResponse postResponse = new PostResponse();
-        postResponse.setContent(content);
-        postResponse.setPageNumber(posts.getNumber());
-        postResponse.setPageSize(posts.getSize());
-        postResponse.setTotalElements(posts.getTotalElements());
-        postResponse.setTotalPages(posts.getTotalPages());
-        postResponse.setLastPage(posts.isLast());
-        return postResponse;
+        List<PostDto> content = posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+        return content;
     }
 
 }

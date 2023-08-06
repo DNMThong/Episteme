@@ -12,5 +12,6 @@ import java.util.List;
 public interface PostService extends IService<PostDto, Long> {
     PostResponse getAllPosts(Integer pageNumber,Integer pageSize, String sortBy, String sortDir);
 
-    PostResponse findAllDraftByUserId(String userId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+
+    List<PostDto> findAllDraftByUserId(String userId);
 }

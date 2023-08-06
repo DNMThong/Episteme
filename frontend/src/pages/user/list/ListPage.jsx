@@ -1,4 +1,4 @@
-import { Container, Grid, Paper, Typography } from "@mui/material";
+import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import { CardList, CardPost } from "../../../components/CardPost";
 import { CommentBox, ReplyBox } from "../../../components/Comment";
 import { DEFAULT_IMAGE } from "../../../constants/default";
@@ -6,6 +6,14 @@ import { tokens } from "../../../constants/theme";
 import { useTheme } from "@emotion/react";
 import { useEffect, useState } from "react";
 import { getPostsByType } from "../../../services/postService";
+import { getAuthorById } from "../../../services/authService";
+import {
+   addCommentPost,
+   getCommentPost,
+} from "../../../services/commentService";
+import { toast } from "react-toastify";
+import TopComment from "../../../components/Comment/TopComment";
+import ReplyBox2 from "../../../components/Comment/ReplyBox2";
 
 const ListPage = () => {
    const { palette } = useTheme();
@@ -21,14 +29,38 @@ const ListPage = () => {
    useEffect(() => {
       getPostsByType({ pageSize: 8 })
          .then((data) => {
-            console.log(
-               "🚀 ~ file: ListPage.jsx:20 ~ .then ~ data:",
-               data.data
-            );
             setPosts(data.data.content);
          })
          .catch(() => setErrorMessage("Không tìm thấy bài viết nào"));
    }, []);
+
+   // Example
+   const [comments, setComments] = useState([]);
+   console.log("🚀 ~ file: ListPage.jsx:39 ~ ListPage ~ comments:", comments);
+   const [user, setUser] = useState(null);
+
+   useEffect(() => {
+      getAuthorById("123456789")
+         .then((response) => setUser(response?.data))
+         .catch((e) => console.log(e));
+
+      getCommentPost(2).then((response) => {
+         setComments(response);
+      });
+   }, []);
+
+   const handleCommentPost = (value) => {
+      const data = {
+         content: value,
+         userId: user.id,
+      };
+      addCommentPost(2, data)
+         .then((response) => {
+            setComments((comment) => [response.data, ...comment]);
+            toast.success("Thêm bình luận thành công");
+         })
+         .catch(() => toast.error("Thêm bình luận thất bại"));
+   };
 
    return (
       <>
@@ -59,8 +91,25 @@ const ListPage = () => {
          <Container sx={{ marginTop: 3 }}>
             <Grid container>
                <Grid item xs={12} md={9}>
-                  <CommentBox></CommentBox>
-                  <ReplyBox />
+                  {/* <Box mt="12px">
+                     {user && (
+                        <TopComment user={user} onClick={handleCommentPost} />
+                     )}
+                     <Box
+                        display="flex"
+                        flexDirection="column"
+                        gap="16px"
+                        mt="16px"
+                     >
+                        {comments.map((comment) => (
+                           <ReplyBox2
+                              postId={2}
+                              comment={comment}
+                              key={comment.id}
+                           />
+                        ))}
+                     </Box>
+                  </Box> */}
                </Grid>
             </Grid>
          </Container>

@@ -35,11 +35,7 @@ const pages = [
    },
    {
       text: "Bài viết",
-      to: "/posts",
-   },
-   {
-      text: "Tác giả nổi bật",
-      to: "/popularAuthor",
+      to: "/list/posts",
    },
    {
       text: "Về chúng tôi",
@@ -96,6 +92,9 @@ function Navbar() {
                },
                textDecoration: "none",
             },
+            "& .logo--sm .logo-img__container": {
+               display: "none",
+            },
             "& .logo__img": {
                width: 60,
                height: "auto",
@@ -113,6 +112,12 @@ function Navbar() {
                },
                textDecoration: "none",
                columnGap: 2,
+               "& .logo__text": {
+                  marginRight: "auto",
+               },
+               "& .logo__text-sub": {
+                  display: "none",
+               },
             },
             "& .logo__img--sm": {
                width: 60,
@@ -146,9 +151,14 @@ function Navbar() {
                <Toolbar
                   disableGutters
                   sx={{
+                     alignItems: "center",
+                     height: "100%",
                      justifyContent: {
                         xs: "space-between",
                         md: "center",
+                     },
+                     "& .logo__container--sm": {
+                        marginRight: "auto",
                      },
                   }}
                >
@@ -191,7 +201,7 @@ function Navbar() {
                            },
                         }}
                      >
-                        <MenuItem>
+                        {/* <MenuItem>
                            <IconButton
                               className="button__switch-theme"
                               onClick={toggleColorMode}
@@ -214,7 +224,7 @@ function Navbar() {
                                  </Box>
                               )}
                            </IconButton>
-                        </MenuItem>
+                        </MenuItem> */}
                         {pages.map(({ text, to }) => (
                            <MenuItem key={to} onClick={handleCloseNavMenu}>
                               <NavLink to={to}>
@@ -241,7 +251,7 @@ function Navbar() {
                         )}
                      </Menu>
                   </Box>
-                  <Box sx={flexRowMobile()}>
+                  <Box className="logo__container--sm" sx={flexRowMobile()}>
                      <NavbarLogo type="mobile" />
                   </Box>
                   <Box
@@ -301,7 +311,7 @@ function Navbar() {
                            xs: "8px 0",
                            md: 2,
                         },
-                        "& a[href='/tao-bai-viet']": {
+                        "& a[href='/create-post']": {
                            display: {
                               xs: "none",
                               md: "flex",
@@ -316,12 +326,12 @@ function Navbar() {
                               md: "block",
                            },
                         },
-                        "& .button__switch-theme": {
-                           display: {
-                              xs: "none",
-                              md: "inline-flex",
-                           },
-                        },
+                        // "& .button__switch-theme": {
+                        //    display: {
+                        //       xs: "none",
+                        //       md: "inline-flex",
+                        //    },
+                        // },
                      }}
                   >
                      {user ? (

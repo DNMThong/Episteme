@@ -4,12 +4,14 @@ import com.episteme.api.entity.Categories;
 import com.episteme.api.entity.Post;
 import com.episteme.api.entity.dto.CategoriesDto;
 import com.episteme.api.entity.dto.PostDto;
+import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.exceptions.DuplicateRecordException;
 import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.CategoriesRepository;
 import com.episteme.api.repository.PostsCategoriesRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.text.Normalizer;
@@ -133,6 +135,10 @@ public class CategoriesServiceImpl implements CategoriesService {
 
         // Nếu không có slug nào bị trùng hoặc chỉ trùng với chính bài post hiện tại
         return false;
+    }
+
+    public ApiResponse<List<Categories>> getProminentCategoriesOfUserId(String userId){
+        return ApiResponse.success(HttpStatus.OK, "success", categoriesRepository.getProminentCategoriesOfUserId(userId));
     }
 
 }

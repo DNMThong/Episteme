@@ -30,6 +30,8 @@ const CardDraftStyled = styled(Box)(({ theme }) => ({
 }));
 
 const CardDraft = ({ info }) => {
+   console.log("🚀 ~ file: CardDraft.jsx:33 ~ CardDraft ~ info:", info);
+
    return (
       <CardDraftStyled>
          <Typography variant="h5">{info?.title}</Typography>
@@ -42,7 +44,7 @@ const CardDraft = ({ info }) => {
                variant="subtitle1"
                className="card-draft__date"
             >
-               {formatDate(info?.createAt)}
+               {/* {formatDate(info?.createAt)} */}
             </Typography>
             <Box className="card-draft__btns">
                <Button>Chỉnh sửa</Button>

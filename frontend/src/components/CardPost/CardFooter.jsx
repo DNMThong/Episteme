@@ -5,7 +5,10 @@ import { formatDate } from "../../utils/DateUtil";
 const CardFooter = ({ info }) => {
    return (
       <Box className="card__footer">
-         <Typography variant="h5">{formatDate(info?.createAt)}</Typography>
+         <Typography variant="h5">
+            {/* {formatDate(info?.createAt)} */}
+            aasd
+         </Typography>
          <Typography className="dot" />
          <Typography
             variant="h6"
@@ -18,7 +21,7 @@ const CardFooter = ({ info }) => {
                textOverflow: "ellipsis",
             }}
          >
-            {info?.author.fullname || ""}
+            {info?.author?.fullname || ""}
          </Typography>
       </Box>
    );

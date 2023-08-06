@@ -100,14 +100,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}/drafts")
-    public ApiResponse<PostResponse> getDraftsByUserId(@PathVariable("id") String userId,
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = "des", required = false) String sortDir
+    public ApiResponse<List<PostDto>> getDraftsByUserId(@PathVariable("id") String userId
 
     ) {
-        PostResponse posts = postService.findAllDraftByUserId(userId, pageNumber, pageSize, sortBy, sortDir);
+        List<PostDto> posts = postService.findAllDraftByUserId(userId);
         String successMessage = "success";
         return ApiResponse.success(HttpStatus.OK, successMessage, posts);
     }
