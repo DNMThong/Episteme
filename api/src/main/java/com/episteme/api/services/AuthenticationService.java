@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,6 +47,7 @@ public class AuthenticationService {
                 .birthday(request.getBirthday())
                 .image(request.getImage())
                 .description(request.getDescription())
+                .registeredAt(LocalDateTime.now())
                 .status(UserStatus.Active)
                 .role(Role.USER)
                 .build();
@@ -63,8 +65,9 @@ public class AuthenticationService {
                     )
             );
             var users = repository.findByEmailAndPasswordNotNull(request.getEmail()).orElseThrow(() -> new NotFoundException("Email không tồn tại"));
-
+            users.setLastLogin(LocalDateTime.now());
             String jwtToken = jwtService.generateToken(users);
+            Users userSaved = repository.save(users);
             return AuthenticationResponse.builder().infoUser(usersService.usersToDto(users)).token(jwtToken).build();
         } catch (DuplicateRecordException ex) {
             throw new DuplicateRecordException("Sai mật khẩu"

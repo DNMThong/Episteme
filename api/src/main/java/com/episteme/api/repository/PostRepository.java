@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "update post p set p.view = p.view + 1 where p.post_id = ?1", nativeQuery = true)
     void autoIncreaseViews(Long postId);
 
-    @Query("select o from Post o where o.status= 'Published' and o.createAt >= CURRENT_DATE - 7")
+    @Query("select o from Post o where o.status= 'Published' and o.createAt >= CURRENT_DATE - 7 ORDER BY o.createAt DESC")
     Page<Post> findPostByNewest(Pageable pageable);
     @Query("SELECT o FROM Post o where o.status= 'Published' GROUP BY o.postId ORDER BY o.view DESC")
     Page<Post> findPostsPopular(Pageable pageable);
@@ -49,4 +50,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM Post p")
     List<Post> findAllForAdmin();
+    // Query 6/8 api
+    @Query("SELECT COUNT(p.postId) FROM Post p WHERE p.createAt >= :startDate AND p.createAt < :endDate")
+    Integer countPostByPostDate(LocalDateTime startDate, LocalDateTime endDate);
+    @Query("select sum(p.view) from Post p where p.user.userId = ?1 ")
+    Integer sumPostsViewOfUser(String id);
+
+    @Query("select count (p.user.userId) from Post p where p.user.userId = ?1 ")
+    Integer numberPostsOfUser(String id);
 }

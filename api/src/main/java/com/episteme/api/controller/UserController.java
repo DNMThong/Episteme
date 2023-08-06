@@ -3,6 +3,7 @@ package com.episteme.api.controller;
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.*;
 import com.episteme.api.exceptions.ApiResponse;
+import com.episteme.api.repository.UsersRepository;
 import com.episteme.api.response.PostResponse;
 import com.episteme.api.response.UserResponse;
 import com.episteme.api.services.BookmarkServiceImpl;
@@ -16,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +35,8 @@ public class UserController {
 
     @Autowired
     SocialNetworkServiceImpl socialNetworkService;
+    @Autowired
+    UsersRepository usersRepository;
 
     @GetMapping("")
     public ApiResponse<UserResponse> getUsers(
@@ -101,10 +105,10 @@ public class UserController {
 
     @GetMapping("/{id}/drafts")
     public ApiResponse<PostResponse> getDraftsByUserId(@PathVariable("id") String userId,
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = "des", required = false) String sortDir
+                                                       @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+                                                       @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+                                                       @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+                                                       @RequestParam(value = "sortDir", defaultValue = "des", required = false) String sortDir
 
     ) {
         PostResponse posts = postService.findAllDraftByUserId(userId, pageNumber, pageSize, sortBy, sortDir);
@@ -112,4 +116,26 @@ public class UserController {
         return ApiResponse.success(HttpStatus.OK, successMessage, posts);
     }
 
+    //Tác giả nổi bật -done
+    @GetMapping("/poppular/authors")
+    public ApiResponse<List<AuthorDto>> getPopularOfAuthors() {
+        return ApiResponse.success(HttpStatus.OK, "success", usersService.getPopularAuthor());
+    }
+
+    //Số lượng bài viết của một User -done
+    @GetMapping("/{id}/post-number")
+    public ApiResponse<Integer> numberPostsOfUser(@PathVariable("id") String id) {
+        return ApiResponse.success(HttpStatus.OK, "success", postService.numberPostsOfUser(id));
+    }
+
+    //Tổng số lượt xem của một User -done
+    @GetMapping("/{id}/posts-views")
+    public ApiResponse<Integer> sumPostsViewOfUser(@PathVariable("id") String id) {
+        return ApiResponse.success(HttpStatus.OK, "success", postService.sumPostsViewOfUser(id));
+    }
+    //Bài viết đã lưu của một User
+    @GetMapping("/{id}/bookmarks-number")
+    public ApiResponse<Integer> sumBookmarkViewOfUser(@PathVariable("id") String id) {
+        return ApiResponse.success(HttpStatus.OK, "success", bookmarkService.numberBookmarkOfUser(id));
+    }
 }

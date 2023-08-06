@@ -108,4 +108,10 @@ public class BookmarkServiceImpl implements BookmarkService {
 	public BookmarkDto findById(Long aLong) {
 		return null;
 	}
+	// code 6/8
+	@Override
+	public Integer numberBookmarkOfUser(String userId){
+		usersService.findById(userId);
+		return bookmarkRepository.numberBookMarkOfUser(userId);
+	}
 }

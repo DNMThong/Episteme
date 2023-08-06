@@ -1,14 +1,13 @@
 package com.episteme.api.services;
 
+import com.episteme.api.entity.Post;
 import com.episteme.api.entity.Users;
-import com.episteme.api.entity.dto.AuthorDto;
-import com.episteme.api.entity.dto.CountNewUser;
-import com.episteme.api.entity.dto.NumberRegister;
-import com.episteme.api.entity.dto.UsersDto;
+import com.episteme.api.entity.dto.*;
 import com.episteme.api.entity.enums.UserStatus;
 import com.episteme.api.exceptions.DuplicateRecordException;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.exceptions.NotFoundException;
+import com.episteme.api.repository.PostRepository;
 import com.episteme.api.repository.UsersRepository;
 import com.episteme.api.response.UserResponse;
 import org.modelmapper.ModelMapper;
@@ -29,10 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,8 +83,8 @@ public class UsersServiceImpl implements UsersService {
         Users u = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy User Id: " + id));
         Users users = this.dtoToUsers(usersDto);
         users.setPassword(passwordEncoder.encode(usersDto.getPassword()));
-        Users updateUser =usersRepository.save(users);
-        return this.modelMapper.map(updateUser,UsersDto.class);
+        Users updateUser = usersRepository.save(users);
+        return this.modelMapper.map(updateUser, UsersDto.class);
     }
 
     @Override
@@ -129,12 +125,12 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UsersDto findById(String id) {
-        Users users = this.usersRepository.findById(id).orElseThrow(() ->  new NotFoundException("Không tìm thấy id: "+id));
+        Users users = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy id: " + id));
         return usersToDto(users);
     }
 
     public AuthorDto findAuthorById(String id) {
-        Users users = this.usersRepository.findById(id).orElseThrow(() ->  new NotFoundException("Không tìm thấy id: "+id));
+        Users users = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy id: " + id));
         return usersToAuthorDto(users);
     }
 
@@ -149,7 +145,7 @@ public class UsersServiceImpl implements UsersService {
 
         List<Users> listOfPosts = users.getContent();
 
-        List<AuthorDto> authors= listOfPosts.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
+        List<AuthorDto> authors = listOfPosts.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
 
         UserResponse userResponse = new UserResponse();
         userResponse.setData(authors);
@@ -180,13 +176,13 @@ public class UsersServiceImpl implements UsersService {
 
 
     public List<AuthorDto> findByKeywords(String keywords) {
-            List<Users> users=usersRepository.findByKeywords(keywords);
-            if(users==null) {
-                throw  new NotFoundException("Không tìm thấy"+keywords);
-            }else {
-                List<AuthorDto> authors= users.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
-                return authors;
-            }
+        List<Users> users = usersRepository.findByKeywords(keywords);
+        if (users == null) {
+            throw new NotFoundException("Không tìm thấy" + keywords);
+        } else {
+            List<AuthorDto> authors = users.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
+            return authors;
+        }
     }
 
     public Users findByIdUser(String id) { // nhận Users
@@ -200,8 +196,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
 
-
-    public Optional<Users> findUerByEmail(String email){
+    public Optional<Users> findUerByEmail(String email) {
         Optional<Users> user = usersRepository.findByEmailAndPasswordNotNull(email);
         return user;
     }
@@ -219,15 +214,15 @@ public class UsersServiceImpl implements UsersService {
     }
 
 
-    //APi moi
+    @Override
     public NumberRegister numberRegister(LocalDate startDate, LocalDate endDate) {
         List<CountNewUser> countNewUserList = new ArrayList<>();
         // Đếm ngày trong khoảng truyền vào
         long daysBetween = ChronoUnit.DAYS.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59));
-        startDate=startDate.minusDays(1);
-        for (long i = 0; i <=daysBetween; i++) {
+        startDate = startDate.minusDays(1);
+        for (long i = 0; i <= daysBetween; i++) {
             startDate = startDate.plusDays(1);
-            Integer y = usersRepository.countUsersForDate(startDate.atStartOfDay(),startDate.atTime(23, 59, 59));
+            Integer y = usersRepository.countUsersForDate(startDate.atStartOfDay(), startDate.atTime(23, 59, 59));
             System.out.println(y);
             String x = startDate.format(DateTimeFormatter.ofPattern("dd-MM"));
             countNewUserList.add(new CountNewUser(x.replace("-", "/"), y));
@@ -236,7 +231,6 @@ public class UsersServiceImpl implements UsersService {
         numberRegisters.setData(countNewUserList);
         return numberRegisters;
     }
-
     public UserResponse getUserMostFollow(Integer pageNumber, Integer pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -258,4 +252,24 @@ public class UsersServiceImpl implements UsersService {
         return userResponse;
     }
 
+    // code 6/8 -done
+    @Override
+    public Integer numberRegisterNow() {
+        LocalDate startDate = LocalDate.now();
+        return usersRepository.countUsersForDate(startDate.atStartOfDay(), startDate.atTime(23, 59, 59));
+    }
+
+    @Override
+    public List<AuthorDto> getPopularAuthor() {
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<Object[]> list = usersRepository.findTop3UsersWithMostFollowersAndHighestViewPost(pageable);
+        Set<String> longList = new HashSet<>();
+        List<AuthorDto> authorDtoList = new ArrayList<>();
+        for (int i = 0; i < list.getContent().size(); i++) {
+            longList.add((String) list.getContent().get(i)[0]);
+        }
+        List<Users> listOfPosts = usersRepository.findAllById(longList);
+        List<AuthorDto> authors = listOfPosts.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
+        return authors;
+    }
 }

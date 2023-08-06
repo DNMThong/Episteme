@@ -19,7 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -272,7 +275,7 @@ public class PostServiceImpl implements PostService {
             postDto.setTotal_comment(post.getCommentList()==null ? 0 : post.getCommentList().size());
             postDto.setTotal_bookmark(post.getBookmarkList()==null ? 0 : post.getBookmarkList().size());
 //            UsersDto usersDto = this.usersService.findById(post.getUser().getUserId());
-            postDto.setAuthor(modelMapper.map(post.getUser(),AuthorDto.class));
+            postDto.setAuthor(this.modelMapper.map(post.getUser(),AuthorDto.class));
             List<CategoriesDto> categoriesDtoList = this.postsCategoriesService.findAllCategoriesNameByPostId(post.getPostId());
             postDto.setCategories(categoriesDtoList);
             return postDto;
@@ -426,4 +429,36 @@ public class PostServiceImpl implements PostService {
         return postResponse;
     }
 
+    //Api 6/8
+    @Override
+    public Integer sumPostsViewOfUser(String id) {
+        usersRepository.findById(id).orElseThrow( ()-> new NotFoundException("Không tìm thấy id của User"));
+        return postRepository.sumPostsViewOfUser(id);
+    }
+    @Override
+    public Integer numberPostsOfUser(String id) {
+        usersRepository.findById(id).orElseThrow( ()-> new NotFoundException("Không tìm thấy id của User"));
+        return postRepository.numberPostsOfUser(id);
+    }
+    @Override
+    public Integer numberCreateAtNow() {
+        LocalDate startDate = LocalDate.now();
+        return postRepository.countPostByPostDate(startDate.atStartOfDay(), startDate.atTime(23, 59, 59));
+    }
+    @Override
+    public NumberCreate numberCreate(LocalDate startDate, LocalDate endDate) {
+        List<CounterNewPost> countNewUserList = new ArrayList<>();
+        // Đếm ngày trong khoảng truyền vào
+        long daysBetween = ChronoUnit.DAYS.between(startDate.atStartOfDay(), endDate.atTime(23, 59, 59));
+        startDate = startDate.minusDays(1);
+        for (long i = 0; i <= daysBetween; i++) {
+            startDate = startDate.plusDays(1);
+            Integer y = postRepository.countPostByPostDate(startDate.atStartOfDay(), startDate.atTime(23, 59, 59));
+            String x = startDate.format(DateTimeFormatter.ofPattern("dd-MM"));
+            countNewUserList.add(new CounterNewPost(x.replace("-", "/"), y));
+        }
+        NumberCreate numberRegisters = new NumberCreate();
+        numberRegisters.setData(countNewUserList);
+        return numberRegisters;
+    }
 }

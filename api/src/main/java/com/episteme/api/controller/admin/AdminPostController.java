@@ -15,13 +15,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin/posts")
-@PreAuthorize("hasAuthority('ADMIN')")
+//@PreAuthorize("hasAuthority('ADMIN')")
 public class AdminPostController {
     @Autowired
     PostServiceImpl postService;
+
+
 
     @GetMapping("")
     public ApiResponse<List<PostDto>> getAllPostForAdmin() {
         return ApiResponse.success(HttpStatus.OK, "success", postService.findAllForAdmin());
     }
+
 }
