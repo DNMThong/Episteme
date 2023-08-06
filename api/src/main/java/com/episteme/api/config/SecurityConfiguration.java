@@ -22,14 +22,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-
     private final EntryPointExceptionHandler entryPointExceptionHandler;
+
     @Bean
-    public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(entryPointExceptionHandler))
-                .authorizeHttpRequests((request)-> request
+                .authorizeHttpRequests((request) -> request
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/auth/**",
                                 "/api/v1/users/**",
@@ -38,11 +38,11 @@ public class SecurityConfiguration {
                                 "/api/v1/bookmark/**",
                                 "/oauth2/authorization/google"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2Login(configurer -> configurer.defaultSuccessUrl("/api/v1/auth/login-google"))
-                .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2Login(configurer -> configurer.defaultSuccessUrl("/"))
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

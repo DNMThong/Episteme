@@ -10,6 +10,7 @@ import com.episteme.api.request.AuthenticationRequest;
 import com.episteme.api.request.RegisterRequest;
 import com.episteme.api.response.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +19,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,7 +31,7 @@ public class AuthenticationService {
     private final UsersRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private  final AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
     UsersServiceImpl usersService;
@@ -38,7 +40,7 @@ public class AuthenticationService {
         var user = repository.findByEmailAndPasswordNotNull(request.getEmail()).orElse(null);
         if (user != null) throw new DuplicateRecordException("Email đã tồn tại");
 
-        var users= Users.builder()
+        var users = Users.builder()
                 .userId(shortUUID())
                 .fullname(request.getFullname())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -50,7 +52,7 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .build();
         Users userSaved = repository.save(users);
-        var jwtToken =jwtService.generateToken(users);
+        var jwtToken = jwtService.generateToken(users);
         return AuthenticationResponse.builder().infoUser(usersService.usersToDto(userSaved)).token(jwtToken).build();
     }
 
@@ -67,27 +69,29 @@ public class AuthenticationService {
             String jwtToken = jwtService.generateToken(users);
             return AuthenticationResponse.builder().infoUser(usersService.usersToDto(users)).token(jwtToken).build();
         } catch (DuplicateRecordException ex) {
-            throw new DuplicateRecordException("Sai mật khẩu"
-            );
+            throw new DuplicateRecordException("Sai mật khẩu");
         }
 
     }
 
-    public AuthenticationResponse loginWithGoogle(OAuth2User oAuth2User) {
-        Map<String,Object> map =  oAuth2User.getAttributes();
-        var users= Users.builder()
+    public AuthenticationResponse loginWithGoogle(String token) {
+        JSONObject jsonObject = new JSONObject(token);
+        var users = Users.builder()
                 .userId(shortUUID())
-                .fullname(String.valueOf(map.get("name")))
-                .password(null)
+                .fullname(jsonObject.getString("name"))
+                .password(" ")
                 .birthday(null)
-                .image(String.valueOf(map.get("picture")))
-                .description("")
+                .email(jsonObject.getString("email"))
+                .image(jsonObject.getString("imageUrl"))
+                .description(null)
+                .registeredAt(LocalDateTime.now())
+                .status(UserStatus.Active)
                 .role(Role.USER)
                 .build();
-        Optional<Users> optional = repository.findByEmailAndPasswordNull(users.getEmail());
+        Optional<Users> optional = repository.findByEmail(users.getEmail());
 
         var userSaved = optional.isPresent() ? optional.get() : repository.save(users);
-        var jwtToken = jwtService.generateToken(users);
+        var jwtToken = jwtService.generateToken(userSaved);
 
         return AuthenticationResponse.builder().infoUser(usersService.usersToDto(userSaved)).token(jwtToken).build();
     }
