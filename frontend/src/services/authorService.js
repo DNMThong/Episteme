@@ -14,9 +14,9 @@ export const getPostsOfAuthor = async (userId) => {
 };
 
 export const getAuthor = async (id) => {
-  const response = await callGetAPI(`${API_USER}/${id}`);
+   const response = await callGetAPI(`${API_USER}/${id}`);
 
-  return response.data;
+   return response.data;
 };
 
 export const searchAuthors = async (value) => {
@@ -46,5 +46,10 @@ export const getFollowingsOfAuthor = async (id) => {
 export const getFollowersOfAuthor = async (id) => {
    const response = await callGetAPI(`${API_USER}/${id}/followers`);
 
+   return response.data;
+};
+
+export const getAllCardByType = async (type, id) => {
+   const response = await callGetAPI(`${API_USER}/${id}/${type}`);
    return response.data;
 };

@@ -74,7 +74,7 @@ const CreatePostPage = () => {
       title: titleRef.current.value,
       categories: selectedCategories,
       content: JSON.stringify(dataPost?.blocks || []),
-      summary: descriptionRef.current.value,
+      summary: descriptionRef.current.value || "",
       status: STATUS_POST.PUBLISHED,
       thumbnail: image,
     };
@@ -96,7 +96,7 @@ const CreatePostPage = () => {
       title: titleRef.current.value,
       categories: selectedCategories,
       content: JSON.stringify(dataPost?.blocks || []),
-      summary: descriptionRef.current.value,
+      summary: "",
       status: STATUS_POST.DRAFT,
     };
     createPost(post, user.id)

@@ -28,62 +28,75 @@ import FormUpdateCategoryPage from "./pages/admin/FormUpdateCategoryPage";
 import FormUpdateUserPage from "./pages/admin/FormUpdateUserPage";
 
 function App() {
-  const { theme } = useMode();
-  return (
-    <ThemeProvider theme={theme}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <CssBaseline />
-        <AuthProvider>
-          <Routes>
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<HomePage />} />
-              <Route path="users" element={<ListUsersPage />} />
-              <Route path="users/add" element={<FormAddUserPage />} />
-              <Route path="users/update/:id" element={<FormUpdateUserPage />} />
-              <Route path="posts" element={<ListPostPage />} />
-              <Route path="categories" element={<ListCategoryPage />} />
-              <Route path="categories/add" element={<FormAddCategoryPage />} />
-              <Route
-                path="categories/update/:id"
-                element={<FormUpdateCategoryPage />}
-              />
-              <Route path="*" element={<Box p="20px">Not found</Box>} />
-            </Route>
-            <Route element={<Main />}>
-              <Route index element={<HomePageUser />} />
-              <Route path="/create-post" element={<CreatePostPage />}></Route>
-              <Route path="/p/:slug" element={<ViewPostPage />}></Route>
-              <Route path="/aboutUs" element={<About />} />
-              <Route path="/profile/:userId" element={<ProfilePage />}></Route>
-              <Route
-                path="/update-profile/:userId"
-                element={<UpdateProfilePage />}
-              />
-            </Route>
-            <Route path="/login" element={<LoginPage />}>
-              Login
-            </Route>
-            <Route path="/register" element={<RegisterPage />}>
-              Register
-            </Route>
-            <Route path="*" element={<ErrorPage />} />
-          </Routes>
-        </AuthProvider>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme={theme.palette.mode}
-        />
-      </LocalizationProvider>
-    </ThemeProvider>
-  );
+   const { theme } = useMode();
+   return (
+      <ThemeProvider theme={theme}>
+         <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <CssBaseline />
+            <AuthProvider>
+               <Routes>
+                  <Route path="/admin" element={<AdminLayout />}>
+                     <Route index element={<HomePage />} />
+                     <Route path="users" element={<ListUsersPage />} />
+                     <Route path="users/add" element={<FormAddUserPage />} />
+                     <Route
+                        path="users/update/:id"
+                        element={<FormUpdateUserPage />}
+                     />
+                     <Route path="posts" element={<ListPostPage />} />
+                     <Route path="categories" element={<ListCategoryPage />} />
+                     <Route
+                        path="categories/add"
+                        element={<FormAddCategoryPage />}
+                     />
+                     <Route
+                        path="categories/update/:id"
+                        element={<FormUpdateCategoryPage />}
+                     />
+                     <Route path="*" element={<Box p="20px">Not found</Box>} />
+                  </Route>
+                  <Route element={<Main />}>
+                     <Route index element={<HomePageUser />} />
+                     <Route
+                        path="/create-post"
+                        element={<CreatePostPage />}
+                     ></Route>
+                     <Route path="/p/:slug" element={<ViewPostPage />} />
+                     <Route path="/list/:slug" element={<ListPage />} />
+                     <Route path="/aboutUs" element={<About />} />
+                     <Route
+                        path="/profile/:userId"
+                        element={<ProfilePage />}
+                     ></Route>
+                     <Route
+                        path="/update-profile/:userId"
+                        element={<UpdateProfilePage />}
+                     />
+                  </Route>
+                  <Route path="/login" element={<LoginPage />}>
+                     Login
+                  </Route>
+                  <Route path="/register" element={<RegisterPage />}>
+                     Register
+                  </Route>
+                  <Route path="*" element={<ErrorPage />} />
+               </Routes>
+            </AuthProvider>
+            <ToastContainer
+               position="top-right"
+               autoClose={5000}
+               hideProgressBar={false}
+               newestOnTop={false}
+               closeOnClick
+               rtl={false}
+               pauseOnFocusLoss
+               draggable
+               pauseOnHover
+               theme={theme.palette.mode}
+            />
+         </LocalizationProvider>
+      </ThemeProvider>
+   );
 }
 
 export default App;

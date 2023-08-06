@@ -1,10 +1,13 @@
 package com.episteme.api.controller;
 
+import com.episteme.api.entity.Categories;
 import com.episteme.api.entity.dto.CategoriesDto;
 import com.episteme.api.exceptions.ApiResponse;
+import com.episteme.api.repository.CategoriesRepository;
 import com.episteme.api.services.CategoriesServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +18,9 @@ import java.util.List;
 public class CategoryController {
     @Autowired
     CategoriesServiceImpl categoriesService;
+
+    @Autowired
+    CategoriesRepository categoriesRepository;
 
     @GetMapping("")
     public ApiResponse<List<CategoriesDto>> getAllCategory() {
@@ -36,5 +42,10 @@ public class CategoryController {
     ) {
         List<CategoriesDto> categoriesDto = categoriesService.findWithParams(name,slug);
         return ApiResponse.success(HttpStatus.OK, "", categoriesDto);
+    }
+
+    @GetMapping("/{userId}/pominent-categories")
+    public ResponseEntity<?> getProminentCategoriesOfUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(categoriesService.getProminentCategoriesOfUserId(userId));
     }
 }

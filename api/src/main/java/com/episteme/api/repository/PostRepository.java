@@ -39,7 +39,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findPostsPopular(Pageable pageable);
 
     @Query("SELECT o FROM Post o WHERE o.status = 'Draft'")
-    Page<Post> findPostsByStatusDraft(String userId, Pageable pageable);
+    List<Post> findPostsByStatusDraft(String userId);
 
     @Query(value="SELECT * FROM Post p where p.status like 'Published'", nativeQuery = true)
     List<Post> findAll();
