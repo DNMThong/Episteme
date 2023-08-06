@@ -1,13 +1,11 @@
 package com.episteme.api.controller;
 
-import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.PostDto;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.response.PostResponse;
 import com.episteme.api.services.PostServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

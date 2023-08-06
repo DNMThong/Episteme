@@ -419,6 +419,8 @@ public class PostServiceImpl implements PostService {
         return content;
     }
 
+
+
     //Api 6/8
     @Override
     public Integer sumPostsViewOfUser(String id) {

@@ -17,7 +17,6 @@ public interface PostService extends IService<PostDto, Long> {
 
 
     List<PostDto> findAllDraftByUserId(String userId);
-    PostResponse findAllDraftByUserId(String userId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
     Integer sumPostsViewOfUser(String id);
     Integer numberPostsOfUser(String id);
     Integer numberCreateAtNow();
