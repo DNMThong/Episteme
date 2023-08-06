@@ -100,6 +100,7 @@ const ViewPostPage = () => {
         </Box>
       </Box>
       <ActionPost
+        url={window.location.href}
         breakPoint="sm"
         post={post}
         display={{ sm: "none", xs: "flex" }}></ActionPost>

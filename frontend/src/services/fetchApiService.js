@@ -15,7 +15,7 @@ export const callGetAPIAuthorization = async (url) => {
   const response = await axios({
     method: "GET",
     url,
-    headers: { Authorization: tokenAuthorization },
+    headers: { Authorization: tokenAuthorization() },
   });
   return response;
 };
@@ -32,11 +32,12 @@ export const callPostAPI = async (url, data) => {
 };
 
 export const callPostAPIAuthorization = async (url, data) => {
+  console.log("token", tokenAuthorization());
   const response = await axios({
     method: "POST",
     url,
     data,
-    headers: { Authorization: tokenAuthorization },
+    headers: { Authorization: tokenAuthorization() },
   });
   return response;
 };
@@ -57,7 +58,7 @@ export const callPutAPIAuthorization = async (url, data) => {
     method: "PUT",
     url,
     data,
-    headers: { Authorization: tokenAuthorization },
+    headers: { Authorization: tokenAuthorization() },
   });
   return response;
 };
@@ -78,7 +79,7 @@ export const callDeleteAPIAuthorization = async (url, data) => {
     method: "DELETE",
     url,
     data,
-    headers: { Authorization: tokenAuthorization },
+    headers: { Authorization: tokenAuthorization() },
   });
   return response;
 };

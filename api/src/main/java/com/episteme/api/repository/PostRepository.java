@@ -33,7 +33,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "update post p set p.view = p.view + 1 where p.post_id = ?1", nativeQuery = true)
     void autoIncreaseViews(Long postId);
 
-    @Query("select o from Post o where o.status= 'Published' and o.createAt >= CURRENT_DATE - 7")
+    @Query("select o from Post o where o.status= 'Published' and o.createAt >= CURRENT_DATE - 7 ORDER BY o.createAt DESC")
     Page<Post> findPostByNewest(Pageable pageable);
     @Query("SELECT o FROM Post o where o.status= 'Published' GROUP BY o.postId ORDER BY o.view DESC")
     Page<Post> findPostsPopular(Pageable pageable);
