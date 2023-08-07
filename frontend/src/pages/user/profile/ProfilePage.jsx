@@ -36,57 +36,56 @@ const ProfilePage = () => {
    // const [loading, setLoading] = useState(true);
 
    useEffect(() => {
-      getAuthorById(userId)
-         .then((response) => setUserInfo(response.data))
-         .catch((e) => console.log(e));
-      getStatisticByType(userId, "posts-views")
-         .then((response) =>
-            setStatistic((prev) => {
-               return { ...prev, totalView: response.data };
-            })
-         )
-         .catch((e) =>
-            console.log("ProfilePage - GetStatisticByType-postviews", e)
-         );
-      getStatisticByType(userId, "post-number")
-         .then((response) =>
-            setStatistic((prev) => {
-               return { ...prev, totalPost: response.data };
-            })
-         )
-         .catch((e) =>
-            console.log("ProfilePage - GetStatisticByType-posts", e)
-         );
-      getStatisticByType(userId, "bookmarks-number")
-         .then((response) =>
-            setStatistic((prev) => {
-               return {
-                  ...prev,
-                  totalBookmark: response.data,
-               };
-            })
-         )
-         .catch((e) =>
-            console.log("ProfilePage - GetStatisticByType-bookmarks", e)
-         );
-      getStatisticByType(userId, "follows/count")
-         .then((response) =>
-            setStatistic((prev) => {
-               return { ...prev, totalFollower: response.data };
-            })
-         )
-         .catch((e) =>
-            console.log("ProfilePage - GetStatisticByType-followers", e)
-         );
-      getStatisticByType(userId, "pominent-categories")
-         .then((response) => setCategoriesPosted(response.data))
-         .catch((e) =>
-            console.log("ProfilePage - GetStatisticByType-categories", e)
-         );
+      if (userId) {
+         getAuthorById(userId)
+            .then((response) => setUserInfo(response.data))
+            .catch((e) => console.log(e));
+         getStatisticByType(userId, "posts-views")
+            .then((response) =>
+               setStatistic((prev) => {
+                  return { ...prev, totalView: response.data };
+               })
+            )
+            .catch((e) =>
+               console.log("ProfilePage - GetStatisticByType-postviews", e)
+            );
+         getStatisticByType(userId, "post-number")
+            .then((response) =>
+               setStatistic((prev) => {
+                  return { ...prev, totalPost: response.data };
+               })
+            )
+            .catch((e) =>
+               console.log("ProfilePage - GetStatisticByType-posts", e)
+            );
+         getStatisticByType(userId, "bookmarks-number")
+            .then((response) =>
+               setStatistic((prev) => {
+                  return {
+                     ...prev,
+                     totalBookmark: response.data,
+                  };
+               })
+            )
+            .catch((e) =>
+               console.log("ProfilePage - GetStatisticByType-bookmarks", e)
+            );
+         getStatisticByType(userId, "follows/count")
+            .then((response) =>
+               setStatistic((prev) => {
+                  return { ...prev, totalFollower: response.data };
+               })
+            )
+            .catch((e) =>
+               console.log("ProfilePage - GetStatisticByType-followers", e)
+            );
+         getStatisticByType(userId, "pominent-categories")
+            .then((response) => setCategoriesPosted(response.data))
+            .catch((e) =>
+               console.log("ProfilePage - GetStatisticByType-categories", e)
+            );
+      }
    }, []);
-
-   console.log(statistic);
-   useEffect(() => {}, []);
 
    const handleFollowClick = (e) => {
       e.preventDefault();

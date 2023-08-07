@@ -16,7 +16,7 @@ const CardAuthor = ({ data }) => {
    const { theme } = useMode();
    const token = tokens(theme.palette.mode);
    return (
-      <NavLink to={"/author/add"}>
+      <NavLink to={`/profile/${data?.id}`}>
          <Card
             sx={{
                ...cardStyle.style,
@@ -26,7 +26,7 @@ const CardAuthor = ({ data }) => {
                <CardMedia
                   component="img"
                   sx={cardStyle.cardMedia}
-                  image={data.image || DEFAULT_IMAGE.USER_AVATAR}
+                  image={data?.image || DEFAULT_IMAGE.USER_AVATAR}
                   title="green iguana"
                />
             </Box>
@@ -40,7 +40,7 @@ const CardAuthor = ({ data }) => {
                         fontSize: "14px",
                      }}
                   >
-                     Lizard
+                     {data?.fullname}
                   </Typography>
                   <Button
                      variant="outlined"
@@ -61,8 +61,7 @@ const CardAuthor = ({ data }) => {
                   color="text.secondary"
                   sx={cardStyle.cardText}
                >
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
+                  {data?.description}
                </Typography>
             </CardContent>
          </Card>

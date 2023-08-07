@@ -75,10 +75,6 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
       };
       updateUsers(userInfo.id, data)
          .then((response) => {
-            console.log(
-               "🚀 ~ file: UpdateAuthorInfoTab.jsx:86 ~ .then ~ response:",
-               response
-            );
             toast.success("Cập nhật người dùng thành công");
          })
          .catch((error) => {

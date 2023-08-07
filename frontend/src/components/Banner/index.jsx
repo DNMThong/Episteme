@@ -1,8 +1,12 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import banner from "../../assets/img/episteme.mp4";
 import overlay from "../../assets/img/episteme.jpg";
+import { useMode } from "../../context/mode-context";
+import { tokens } from "../../constants/theme";
 
 const Banner = () => {
+   const { theme } = useMode();
+   const token = tokens(theme.palette.mode);
    return (
       <Container
          sx={{
@@ -71,16 +75,27 @@ const Banner = () => {
                   left: "60%",
                   right: 5,
                   zIndex: 100000,
+                  color: "#fff",
                }}
             >
-               <Typography variant="h2" component="p">
+               <Typography variant="h2" component="p" sx={{ color: "inherit" }}>
                   Kết nối tri thức
                </Typography>
-               <Typography variant="h5" component="p" width="75%">
+               <Typography
+                  variant="h5"
+                  component="p"
+                  width="75%"
+                  sx={{ color: "inherit" }}
+               >
                   Khi chúng ta chia sẻ tri thức, chúng ta không chỉ giúp người
                   khác mọc cánh bay cao,
                </Typography>
-               <Typography variant="h5" component="p" width="70%">
+               <Typography
+                  variant="h5"
+                  component="p"
+                  width="70%"
+                  sx={{ color: "inherit" }}
+               >
                   mà còn làm cho chính mình thăng hoa trong biển cả tri thức vô
                   tận
                </Typography>
