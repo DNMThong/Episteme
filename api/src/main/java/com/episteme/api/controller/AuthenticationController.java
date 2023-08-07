@@ -1,11 +1,14 @@
 package com.episteme.api.controller;
 
+import com.episteme.api.exceptions.ApiResponse;
+import com.episteme.api.request.ChangePasswordRequest;
 import com.episteme.api.services.AuthenticationService;
 import com.episteme.api.request.AuthenticationRequest;
 import com.episteme.api.request.RegisterRequest;
 import com.episteme.api.response.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +41,13 @@ public class AuthenticationController {
     ){
         OAuth2User oAuth2User = auth2AuthenticationToken.getPrincipal();
         return ResponseEntity.ok(service.loginWithGoogle(oAuth2User));
+    }
+
+    @PutMapping("/change-password")
+    public ApiResponse<AuthenticationResponse> changePassword(
+            @RequestBody ChangePasswordRequest request
+    ){
+        return ApiResponse.success(HttpStatus.OK,"Đổi mật khẩu thành công",service.changePassword(request));
     }
 
 

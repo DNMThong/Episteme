@@ -7,6 +7,7 @@ import com.episteme.api.exceptions.DuplicateRecordException;
 import com.episteme.api.exceptions.NotFoundException;
 import com.episteme.api.repository.UsersRepository;
 import com.episteme.api.request.AuthenticationRequest;
+import com.episteme.api.request.ChangePasswordRequest;
 import com.episteme.api.request.RegisterRequest;
 import com.episteme.api.response.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
@@ -99,5 +100,24 @@ public class AuthenticationService {
         UUID uuid = UUID.randomUUID();
         long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
         return Long.toString(l, Character.MAX_RADIX);
+    }
+
+    public AuthenticationResponse changePassword(ChangePasswordRequest request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(), request.getOldPassword()
+                    )
+            );
+            var users = repository.findByEmailAndPasswordNotNull(request.getEmail()).orElseThrow(() -> new NotFoundException("Email không tồn tại"));
+            users.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            String jwtToken = jwtService.generateToken(users);
+            Users userSaved = repository.save(users);
+            return AuthenticationResponse.builder().infoUser(usersService.usersToDto(users)).token(jwtToken).build();
+        } catch (DuplicateRecordException ex) {
+            throw new DuplicateRecordException("Sai mật khẩu"
+            );
+        }
+
     }
 }
