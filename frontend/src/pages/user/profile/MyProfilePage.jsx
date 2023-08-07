@@ -34,48 +34,50 @@ const MyProfilePage = () => {
   // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getStatisticByType(user?.id, "posts-views")
-      .then((response) =>
-        setStatistic((prev) => {
-          return { ...prev, totalView: response.data };
-        })
-      )
-      .catch((e) =>
-        console.log("ProfilePage - GetStatisticByType-postviews", e)
-      );
-    getStatisticByType(user?.id, "post-number")
-      .then((response) =>
-        setStatistic((prev) => {
-          return { ...prev, totalPost: response.data };
-        })
-      )
-      .catch((e) => console.log("ProfilePage - GetStatisticByType-posts", e));
-    getStatisticByType(user?.id, "bookmarks-number")
-      .then((response) =>
-        setStatistic((prev) => {
-          return {
-            ...prev,
-            totalBookmark: response.data,
-          };
-        })
-      )
-      .catch((e) =>
-        console.log("ProfilePage - GetStatisticByType-bookmarks", e)
-      );
-    getStatisticByType(user?.id, "follows/count")
-      .then((response) =>
-        setStatistic((prev) => {
-          return { ...prev, totalFollower: response.data };
-        })
-      )
-      .catch((e) =>
-        console.log("ProfilePage - GetStatisticByType-followers", e)
-      );
-    getStatisticByType(user?.id, "pominent-categories")
-      .then((response) => setCategoriesPosted(response.data))
-      .catch((e) =>
-        console.log("ProfilePage - GetStatisticByType-categories", e)
-      );
+    if (user?.id) {
+      getStatisticByType(user?.id, "posts-views")
+        .then((response) =>
+          setStatistic((prev) => {
+            return { ...prev, totalView: response.data };
+          })
+        )
+        .catch((e) =>
+          console.log("ProfilePage - GetStatisticByType-postviews", e)
+        );
+      getStatisticByType(user?.id, "post-number")
+        .then((response) =>
+          setStatistic((prev) => {
+            return { ...prev, totalPost: response.data };
+          })
+        )
+        .catch((e) => console.log("ProfilePage - GetStatisticByType-posts", e));
+      getStatisticByType(user?.id, "bookmarks-number")
+        .then((response) =>
+          setStatistic((prev) => {
+            return {
+              ...prev,
+              totalBookmark: response.data,
+            };
+          })
+        )
+        .catch((e) =>
+          console.log("ProfilePage - GetStatisticByType-bookmarks", e)
+        );
+      getStatisticByType(user?.id, "follows/count")
+        .then((response) =>
+          setStatistic((prev) => {
+            return { ...prev, totalFollower: response.data };
+          })
+        )
+        .catch((e) =>
+          console.log("ProfilePage - GetStatisticByType-followers", e)
+        );
+      getStatisticByType(user?.id, "pominent-categories")
+        .then((response) => setCategoriesPosted(response.data))
+        .catch((e) =>
+          console.log("ProfilePage - GetStatisticByType-categories", e)
+        );
+    }
   }, []);
 
   const handleUpdateProfile = () => {
@@ -107,8 +109,13 @@ const MyProfilePage = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 marginX: "auto",
-                width: "80px",
+                maxWidth: "80px",
+                width: "100%",
                 height: "80px",
+                marginBottom: {
+                  sm: 2,
+                  md: 0,
+                },
               }}
             />
           </Grid>
@@ -184,12 +191,21 @@ const ListData = ({ type, userId }) => {
   useEffect(() => {
     async function fetchData() {
       await getAllPostOfAuthor(userId).then((response) => {
+        console.log(
+          "🚀 ~ file: MyProfilePage.jsx:321 ~ getAllCardByType ~ response:",
+          response
+        );
         setData(response.data);
       });
     }
     fetchData();
   }, []);
-
+  console.log("🚀 ~ file: MyProfilePage.jsx:250 ~ ListData ~ type:", type);
+  useEffect(() => {
+    getAllCardByType(type, userId)
+      .then((response) => setData(response.data))
+      .catch((e) => console.log(e));
+  }, [type]);
   console.log(data);
   if (!data) return null;
   return (
@@ -218,7 +234,7 @@ const ListData = ({ type, userId }) => {
 };
 
 const ListButtons = ({ setCardType }) => {
-  const [active, setActive] = useState("");
+  const [active, setActive] = useState("posts");
   useEffect(() => {
     setCardType("posts");
     setActive("posts");

@@ -55,9 +55,9 @@ const AuthorList = ({ authors }) => {
         }}>
         {authors &&
           authors.length > 0 &&
-          authors.map((item) => (
+          authors.map((item, index) => (
             <>
-              <CardAuthor key={item.id} data={item} />
+              <CardAuthor key={index} data={item} />
             </>
           ))}
       </Box>

@@ -181,9 +181,9 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
                     </Typography>
                     <TextField
                       name="fullname"
+                      onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.fullname}
-                      onChange={handleChange}
                       error={!!touched.fullname && !!errors.fullname}
                       helperText={
                         !!touched.fullname && errors.fullname
@@ -203,8 +203,11 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
                     <TextField
                       name="email"
                       id="email"
-                      disabled
-                      value={values.email}></TextField>
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.email}
+                      error={!!touched.email && !!errors.email}
+                      helperText={!!touched.email && errors.email}></TextField>
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>

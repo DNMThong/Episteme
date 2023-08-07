@@ -39,10 +39,6 @@ const ChangePasswordTab = ({ user, value, index }) => {
       await changePassword(_value)
          .then((response) => {
             toast.success("Đổi mật khẩu thành công");
-            console.log(
-               "🚀 ~ file: ChangePasswordTab.jsx:43 ~ .then ~ response.data?.infoUser:",
-               response.data?.infoUser
-            );
             setUser(response.data?.infoUser);
             localStorage.setItem("token_episteme", response.data?.token);
          })
