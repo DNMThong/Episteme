@@ -19,7 +19,7 @@ import { updateUsers } from "../../services/userService";
 
 const userInitialValues = {
   id: "",
-  gmail: "",
+  email: "",
   avatar: "",
   birthday: "",
   description: "",
@@ -174,16 +174,16 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
                       gap: 1,
                     }}>
                     <Typography
-                      htmlFor="fullName"
+                      htmlFor="fullname"
                       variant="h5"
                       component="label">
                       Họ và tên
                     </Typography>
                     <TextField
-                      name="fullName"
-                      onChange={handleChange}
+                      name="fullname"
                       onBlur={handleBlur}
                       value={values.fullname}
+                      onChange={handleChange}
                       error={!!touched.fullname && !!errors.fullname}
                       helperText={
                         !!touched.fullname && errors.fullname

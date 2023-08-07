@@ -3,10 +3,7 @@ package com.episteme.api.controller;
 import com.episteme.api.entity.dto.*;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.response.UserResponse;
-import com.episteme.api.services.BookmarkServiceImpl;
-import com.episteme.api.services.PostServiceImpl;
-import com.episteme.api.services.SocialNetworkServiceImpl;
-import com.episteme.api.services.UsersServiceImpl;
+import com.episteme.api.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +26,9 @@ public class UserController {
 
     @Autowired
     SocialNetworkServiceImpl socialNetworkService;
+
+    @Autowired
+    CategoriesServiceImpl categoriesService;
 
     @GetMapping("")
     public ApiResponse<UserResponse> getUsers(
@@ -127,6 +127,11 @@ public class UserController {
     @GetMapping("/{id}/bookmarks-number")
     public ApiResponse<Integer> sumBookmarkViewOfUser(@PathVariable("id") String id) {
         return ApiResponse.success(HttpStatus.OK, "success", bookmarkService.numberBookmarkOfUser(id));
+    }
+
+    @GetMapping("/{userId}/pominent-categories")
+    public ResponseEntity<?> getProminentCategoriesOfUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(categoriesService.getProminentCategoriesOfUserId(userId));
     }
 
 }

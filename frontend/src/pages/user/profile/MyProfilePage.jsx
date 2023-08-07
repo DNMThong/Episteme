@@ -184,21 +184,12 @@ const ListData = ({ type, userId }) => {
   useEffect(() => {
     async function fetchData() {
       await getAllPostOfAuthor(userId).then((response) => {
-        console.log(
-          "🚀 ~ file: MyProfilePage.jsx:321 ~ getAllCardByType ~ response:",
-          response
-        );
         setData(response.data);
       });
     }
     fetchData();
   }, []);
-  console.log("🚀 ~ file: MyProfilePage.jsx:250 ~ ListData ~ type:", type);
-  useEffect(() => {
-    getAllCardByType(type, userId)
-      .then((response) => setData(response.data))
-      .catch((e) => console.log(e));
-  }, [type]);
+
   console.log(data);
   if (!data) return null;
   return (

@@ -57,7 +57,7 @@ public class PostServiceImpl implements PostService {
         post.setUpdateAt(LocalDateTime.now());
         post.setSlug("slug");
         post.setView(0L);
-        post.setStatus(PostStatus.Published);
+        post.setStatus(postDto.getStatus());
         post.setUser(user);
 
         Post savePost = this.postRepository.save(post);
