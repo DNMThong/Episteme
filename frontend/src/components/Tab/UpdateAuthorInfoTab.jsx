@@ -39,10 +39,6 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
    const [avatar, setAvatar] = useState(null);
    const [urlAvatar, setUrlAvatar] = useState("");
    const [userInfo, setUserInfo] = useState(null);
-   console.log(
-      "🚀 ~ file: UpdateProfilePage.jsx:40 ~ UpdateProfilePage ~ userInfo:",
-      userInfo
-   );
 
    useEffect(() => {
       setUserInfo(user);
@@ -71,10 +67,6 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
    const handleDeleteAvatar = () => {};
 
    const handleSubmitForm = async (values) => {
-      console.log(
-         "🚀 ~ file: UpdateProfilePage.jsx:96 ~ handleSubmitForm ~ urlAvatar:",
-         urlAvatar
-      );
       const cloneValue = { ...values };
       const data = {
          ...cloneValue,
@@ -198,14 +190,14 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
                               }}
                            >
                               <Typography
-                                 htmlFor="fullName"
+                                 htmlFor="fullname"
                                  variant="h5"
                                  component="label"
                               >
                                  Họ và tên
                               </Typography>
                               <TextField
-                                 name="fullName"
+                                 name="fullname"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
                                  value={values.fullname}
