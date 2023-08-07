@@ -46,7 +46,7 @@ const ListHeading = ({ title, slug }) => {
    );
 };
 
-const AuthorList = () => {
+const AuthorList = ({ authors }) => {
    return (
       <Box>
          <ListHeading title="Tác giả nổi bật" slug="/popularAuthor" />
@@ -57,9 +57,13 @@ const AuthorList = () => {
                rowGap: 2,
             }}
          >
-            {/* {[1, 2, 3, 4].map((item, index) => (
-               <><CardAuthor key={item + "k" + index} /></>
-            ))} */}
+            {authors &&
+               authors.length > 0 &&
+               authors.map((item) => (
+                  <>
+                     <CardAuthor key={item.id} data={item} />
+                  </>
+               ))}
          </Box>
       </Box>
    );

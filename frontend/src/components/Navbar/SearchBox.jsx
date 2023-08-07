@@ -12,7 +12,7 @@ const SearchBox = ({ onClose, handleCloseSearch }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     navigate(`/posts?q=${searchValue}`);
-    handleCloseSearch();
+    onClose();
   };
   return (
     <Box

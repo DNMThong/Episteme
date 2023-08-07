@@ -143,12 +143,7 @@ function Navbar() {
         sx={{
           height: "100%",
         }}>
-        {showSearchBox && (
-          <SearchBox
-            handleCloseSearch={handleCloseSearch}
-            onClose={handleCloseSearch}
-          />
-        )}
+        {showSearchBox && <SearchBox onClose={handleCloseSearch} />}
 
         {!showSearchBox && (
           <Toolbar
@@ -305,16 +300,16 @@ function Navbar() {
                   xs: "8px 0",
                   md: 2,
                 },
-                "& a[href='/create-post']": {
+                "& a[href='#/create-post']": {
                   display: {
                     xs: "none",
                     md: "flex",
                   },
                 },
-                "& a[href^='/']": {
+                "& a[href^='#/']": {
                   textDecoration: "none",
                 },
-                "& a[href='/register']": {
+                "& a[href='#/register']": {
                   display: {
                     xs: "none",
                     md: "block",
@@ -365,12 +360,6 @@ function Navbar() {
                     <NotificationsIcon />
                   </Badge> */}
                   <NavLinkButton
-                    sx={{
-                      display: {
-                        md: "flex",
-                        xs: "none",
-                      },
-                    }}
                     to="/create-post"
                     buttonText="Viết bài"
                     variant="outlined"
@@ -380,7 +369,10 @@ function Navbar() {
 
                   <Tooltip title={user.id}>
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <Avatar alt={user.fullname} src={user.avatar || ""} />
+                      <Avatar
+                        alt={user.fullname || user.email}
+                        src={user.image || ""}
+                      />
                     </IconButton>
                   </Tooltip>
                   <ListMenuItemAccount

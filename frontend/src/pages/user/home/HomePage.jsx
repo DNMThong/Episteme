@@ -5,33 +5,38 @@ import { CardList, CardListHeader } from "../../../components/CardPost";
 import { useMode } from "../../../context/mode-context";
 import { tokens } from "../../../constants/theme";
 import { useEffect, useState } from "react";
+import { getPopularAuthors } from "../../../services/authorService";
 
 const HomePageUser = () => {
   const [postType, setPostType] = useState("");
+  const [popularAuthors, setPopularAuthors] = useState([]);
   useEffect(() => {
     document.title = "Trang chủ";
+    getPopularAuthors()
+      .then((response) => setPopularAuthors(response?.data))
+      .catch((e) => console.log("HomePage - getPopularAuthor", e));
   }, []);
   return (
     <>
       <Banner></Banner>
 
       <Container sx={{ mb: 10 }}>
-        <CardListHeader text="Bài viết mới" slug="/posts/newest" />
+        <CardListHeader text="Bài viết mới" slug="/newest" />
         <CardList type="newest" />
       </Container>
       <Container sx={{ mb: 10 }}>
-        <CardListHeader text="Bài viết nổi bật" slug="/posts/popular" />
+        <CardListHeader text="Bài viết nổi bật" slug="/popular" />
         <CardList type="popular" />
       </Container>
       <Container sx={{ mb: 10 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12} display="flex" flexDirection="column">
+          <Grid item xs={9} display="flex" flexDirection="column">
             <Buttons setPostType={setPostType} />
             <CardList direction="horizontal" type={postType} pageSize={8} />
           </Grid>
-          {/* <Grid item xs={12} md={3}>
-                  <AuthorList />
-               </Grid> */}
+          <Grid item xs={12} md={3}>
+            <AuthorList authors={popularAuthors} />
+          </Grid>
         </Grid>
       </Container>
     </>
@@ -83,11 +88,11 @@ const Buttons = ({ setPostType }) => {
         onClick={handleGetPostPopular}
         active={activePostType === "popular"}
       />
-      <ButtonItem
-        text="Đánh giá cao"
-        onClick={handleGetPostHighestRate}
-        active={activePostType === "highestRate"}
-      />
+      {/* <ButtonItem
+            text="Đánh giá cao"
+            onClick={handleGetPostHighestRate}
+            active={activePostType === "highestRate"}
+         /> */}
     </Box>
   );
 };
