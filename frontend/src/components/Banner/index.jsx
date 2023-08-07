@@ -1,4 +1,4 @@
-import { Box, Container } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import banner from "../../assets/img/episteme.mp4";
 import overlay from "../../assets/img/episteme.jpg";
 
@@ -41,7 +41,7 @@ const Banner = () => {
                "& .backgroundImage": {
                   position: "absolute",
                   objectPosition: {
-                     xs: "-15px",
+                     xs: "0px",
                      md: 0,
                   },
                   filter: {
@@ -54,6 +54,37 @@ const Banner = () => {
                },
             }}
          >
+            <Grid
+               item
+               xs={6}
+               sx={{
+                  display: {
+                     sm: "flex",
+                     xs: "none",
+                  },
+                  position: "absolute",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  gap: 1,
+                  left: "60%",
+                  right: 5,
+                  zIndex: 100000,
+               }}
+            >
+               <Typography variant="h2" component="p">
+                  Kết nối tri thức
+               </Typography>
+               <Typography variant="h5" component="p" width="75%">
+                  Khi chúng ta chia sẻ tri thức, chúng ta không chỉ giúp người
+                  khác mọc cánh bay cao,
+               </Typography>
+               <Typography variant="h5" component="p" width="70%">
+                  mà còn làm cho chính mình thăng hoa trong biển cả tri thức vô
+                  tận
+               </Typography>
+            </Grid>
             <video muted autoPlay loop className="video">
                <source src={banner} type="video/mp4" />
             </video>

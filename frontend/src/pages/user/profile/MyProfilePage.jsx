@@ -10,10 +10,9 @@ import {
 } from "@mui/material";
 import { useMode } from "../../../context/mode-context";
 import { tokens } from "../../../constants/theme";
-import { useParams } from "react-router-dom";
+import { useAuth } from "../../../context/auth-context";
+import { useNavigate } from "react-router-dom";
 import { CardPost } from "../../../components/CardPost";
-import { DEFAULT_IMAGE } from "../../../constants/default";
-import { getAuthorById } from "../../../services/authService";
 import {
    getAllCardByType,
    getAllPostOfAuthor,
@@ -26,20 +25,16 @@ import {
    ProfileStatistic,
 } from "../../../components/ProfileStatistic";
 
-const ProfilePage = () => {
-   const { userId } = useParams();
-   const [userInfo, setUserInfo] = useState(null);
+const MyProfilePage = () => {
+   const navigate = useNavigate();
+   const { user } = useAuth();
    const [cardType, setCardType] = useState("");
    const [statistic, setStatistic] = useState({});
    const [categoriesPosted, setCategoriesPosted] = useState([]);
-   // const [data, setData] = useState(null);
    // const [loading, setLoading] = useState(true);
 
    useEffect(() => {
-      getAuthorById(userId)
-         .then((response) => setUserInfo(response.data))
-         .catch((e) => console.log(e));
-      getStatisticByType(userId, "posts-views")
+      getStatisticByType(user?.id, "posts-views")
          .then((response) =>
             setStatistic((prev) => {
                return { ...prev, totalView: response.data };
@@ -48,7 +43,7 @@ const ProfilePage = () => {
          .catch((e) =>
             console.log("ProfilePage - GetStatisticByType-postviews", e)
          );
-      getStatisticByType(userId, "post-number")
+      getStatisticByType(user?.id, "post-number")
          .then((response) =>
             setStatistic((prev) => {
                return { ...prev, totalPost: response.data };
@@ -57,7 +52,7 @@ const ProfilePage = () => {
          .catch((e) =>
             console.log("ProfilePage - GetStatisticByType-posts", e)
          );
-      getStatisticByType(userId, "bookmarks-number")
+      getStatisticByType(user?.id, "bookmarks-number")
          .then((response) =>
             setStatistic((prev) => {
                return {
@@ -69,7 +64,7 @@ const ProfilePage = () => {
          .catch((e) =>
             console.log("ProfilePage - GetStatisticByType-bookmarks", e)
          );
-      getStatisticByType(userId, "follows/count")
+      getStatisticByType(user?.id, "follows/count")
          .then((response) =>
             setStatistic((prev) => {
                return { ...prev, totalFollower: response.data };
@@ -78,19 +73,15 @@ const ProfilePage = () => {
          .catch((e) =>
             console.log("ProfilePage - GetStatisticByType-followers", e)
          );
-      getStatisticByType(userId, "pominent-categories")
+      getStatisticByType(user?.id, "pominent-categories")
          .then((response) => setCategoriesPosted(response.data))
          .catch((e) =>
             console.log("ProfilePage - GetStatisticByType-categories", e)
          );
    }, []);
 
-   console.log(statistic);
-   useEffect(() => {}, []);
-
-   const handleFollowClick = (e) => {
-      e.preventDefault();
-      console.log("FOLLOW");
+   const handleUpdateProfile = () => {
+      navigate("/update-profile");
    };
    return (
       <Fragment>
@@ -112,10 +103,12 @@ const ProfilePage = () => {
             >
                <Grid item md={1} sm={2}>
                   <Avatar
-                     alt={userInfo?.fullname || userInfo?.id || userInfo?.email}
-                     src={userInfo?.image || DEFAULT_IMAGE.USER_AVATAR}
+                     alt={user?.fullname || user?.id || user?.email}
+                     src={user?.image}
                      sx={{
-                        display: "block",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                         marginX: "auto",
                         maxWidth: "80px",
                         width: "100%",
@@ -162,16 +155,19 @@ const ProfilePage = () => {
                         },
                      }}
                   >
-                     <Typography variant="h5">{userInfo?.fullname}</Typography>
+                     <Typography variant="h5">{user?.fullname}</Typography>
                      <Typography
                         variant="subtitle2"
                         component="span"
                         sx={{ fontSize: "12px" }}
                      >
-                        @{userInfo?.email}
+                        @{user?.email}
                      </Typography>
                   </Box>
-                  <MyButton onClick={handleFollowClick} label="+ Theo dõi" />
+                  <MyButton
+                     onClick={handleUpdateProfile}
+                     label="Chỉnh sửa thông tin cá nhân"
+                  />
                </Grid>
             </Grid>
          </Container>
@@ -183,7 +179,7 @@ const ProfilePage = () => {
             <Grid container spacing={2}>
                <Grid item md={9} xs={12}>
                   <ListButtons setCardType={setCardType} />
-                  <ListData type={cardType} userId={userId} />
+                  <ListData type={cardType} userId={user?.id} />
                </Grid>
                <Grid item md={3} xs={12}>
                   <ProfileStatistic statistic={statistic} />
@@ -201,7 +197,7 @@ const ListData = ({ type, userId }) => {
       async function fetchData() {
          await getAllPostOfAuthor(userId).then((response) => {
             console.log(
-               "🚀 ~ file: ProfilePage.jsx:321 ~ getAllCardByType ~ response:",
+               "🚀 ~ file: MyProfilePage.jsx:321 ~ getAllCardByType ~ response:",
                response
             );
             setData(response.data);
@@ -209,6 +205,7 @@ const ListData = ({ type, userId }) => {
       }
       fetchData();
    }, []);
+   console.log("🚀 ~ file: MyProfilePage.jsx:250 ~ ListData ~ type:", type);
    useEffect(() => {
       getAllCardByType(type, userId)
          .then((response) => setData(response.data))
@@ -218,6 +215,12 @@ const ListData = ({ type, userId }) => {
    if (!data) return null;
    return (
       <Grid container spacing={2}>
+         {!data ||
+            (data.length <= 0 && (
+               <Grid item xs={12} textAlign="center">
+                  Không có thông tin
+               </Grid>
+            ))}
          {data &&
             data.length > 0 &&
             data.map((item) => {
@@ -236,7 +239,7 @@ const ListData = ({ type, userId }) => {
 };
 
 const ListButtons = ({ setCardType }) => {
-   const [active, setActive] = useState("posts");
+   const [active, setActive] = useState("");
    useEffect(() => {
       setCardType("posts");
       setActive("posts");
@@ -331,10 +334,6 @@ const MyButton = ({ onClick = () => {}, label }) => {
             color: token.textColor,
             height: "fit-content",
             borderColor: "currentColor",
-            // ":hover": {
-            //    color: token.greenAccent,
-            //    borderColor: "currentColor",
-            // },
             order: {
                md: 2,
                xs: 1,
@@ -346,4 +345,4 @@ const MyButton = ({ onClick = () => {}, label }) => {
    );
 };
 
-export default ProfilePage;
+export default MyProfilePage;

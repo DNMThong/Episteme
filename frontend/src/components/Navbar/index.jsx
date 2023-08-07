@@ -311,16 +311,16 @@ function Navbar() {
                            xs: "8px 0",
                            md: 2,
                         },
-                        "& a[href='/create-post']": {
+                        "& a[href='#/create-post']": {
                            display: {
                               xs: "none",
                               md: "flex",
                            },
                         },
-                        "& a[href^='/']": {
+                        "& a[href^='#/']": {
                            textDecoration: "none",
                         },
-                        "& a[href='/register']": {
+                        "& a[href='#/register']": {
                            display: {
                               xs: "none",
                               md: "block",
@@ -387,8 +387,8 @@ function Navbar() {
                                  sx={{ p: 0 }}
                               >
                                  <Avatar
-                                    alt={user.fullname}
-                                    src={user.avatar || ""}
+                                    alt={user.fullname || user.email}
+                                    src={user.image || ""}
                                  />
                               </IconButton>
                            </Tooltip>

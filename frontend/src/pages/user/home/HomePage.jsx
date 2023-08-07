@@ -5,11 +5,16 @@ import { CardList, CardListHeader } from "../../../components/CardPost";
 import { useMode } from "../../../context/mode-context";
 import { tokens } from "../../../constants/theme";
 import { useEffect, useState } from "react";
+import { getPopularAuthors } from "../../../services/authorService";
 
 const HomePageUser = () => {
    const [postType, setPostType] = useState("");
+   const [popularAuthors, setPopularAuthors] = useState([]);
    useEffect(() => {
       document.title = "Trang chủ";
+      getPopularAuthors()
+         .then((response) => setPopularAuthors(response?.data))
+         .catch((e) => console.log("HomePage - getPopularAuthor", e));
    }, []);
    return (
       <>
@@ -25,7 +30,7 @@ const HomePageUser = () => {
          </Container>
          <Container sx={{ mb: 10 }}>
             <Grid container spacing={2}>
-               <Grid item xs={12} display="flex" flexDirection="column">
+               <Grid item xs={9} display="flex" flexDirection="column">
                   <Buttons setPostType={setPostType} />
                   <CardList
                      direction="horizontal"
@@ -33,9 +38,9 @@ const HomePageUser = () => {
                      pageSize={8}
                   />
                </Grid>
-               {/* <Grid item xs={12} md={3}>
-                  <AuthorList />
-               </Grid> */}
+               <Grid item xs={12} md={3}>
+                  <AuthorList authors={popularAuthors} />
+               </Grid>
             </Grid>
          </Container>
       </>
@@ -88,11 +93,11 @@ const Buttons = ({ setPostType }) => {
             onClick={handleGetPostPopular}
             active={activePostType === "popular"}
          />
-         <ButtonItem
+         {/* <ButtonItem
             text="Đánh giá cao"
             onClick={handleGetPostHighestRate}
             active={activePostType === "highestRate"}
-         />
+         /> */}
       </Box>
    );
 };

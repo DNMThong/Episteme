@@ -142,8 +142,8 @@ const RegisterPage = () => {
                               <TextField
                                  id="password"
                                  name="password"
-                                 label="Mật khẩu"
                                  type="password"
+                                 label="Mật khẩu"
                                  sx={{
                                     width: "100%",
                                     marginBottom: 2,

@@ -26,6 +26,7 @@ import CreatePostPage from "./pages/user/post/CreatePostPage";
 import ViewPostPage from "./pages/user/post/ViewPostPage";
 import FormUpdateCategoryPage from "./pages/admin/FormUpdateCategoryPage";
 import FormUpdateUserPage from "./pages/admin/FormUpdateUserPage";
+import MyProfilePage from "./pages/user/profile/MyProfilePage";
 
 function App() {
    const { theme } = useMode();
@@ -65,11 +66,15 @@ function App() {
                      <Route path="/list/:slug" element={<ListPage />} />
                      <Route path="/aboutUs" element={<About />} />
                      <Route
+                        path="/profile/me"
+                        element={<MyProfilePage />}
+                     ></Route>
+                     <Route
                         path="/profile/:userId"
                         element={<ProfilePage />}
                      ></Route>
                      <Route
-                        path="/update-profile/:userId"
+                        path="/update-profile"
                         element={<UpdateProfilePage />}
                      />
                   </Route>
