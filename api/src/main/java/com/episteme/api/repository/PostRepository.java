@@ -19,8 +19,8 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select p from Post p where p.user.userId = ?1")
     List<Post> findAllPostByUserId(String userId);
-    @Query("select o  from Post o where  o.title like %?1% or o.summary like %?1%")
-    List<Post> findByKeywords(String keywords);
+    @Query("select o  from Post o where o.status = 'Published' and (o.title like %?1% or o.summary like %?1%)")
+    Page<Post> findByKeywords(String keywords, Pageable pageable);
 
     @Query("select p from Post p where p.slug = ?1")
     Optional<Post> findBySlug(String slug);
@@ -34,9 +34,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "update post p set p.view = p.view + 1 where p.post_id = ?1", nativeQuery = true)
     void autoIncreaseViews(Long postId);
 
-    @Query("select o from Post o where o.status= 'Published' and o.createAt >= CURRENT_DATE - 7 ORDER BY o.createAt DESC")
+    @Query("select o from Post o where o.status = 'Published' and o.createAt >= CURRENT_DATE - 7 ORDER BY o.createAt DESC")
     Page<Post> findPostByNewest(Pageable pageable);
-    @Query("SELECT o FROM Post o where o.status= 'Published' GROUP BY o.postId ORDER BY o.view DESC")
+    @Query("SELECT o FROM Post o where o.status = 'Published' GROUP BY o.postId ORDER BY o.view DESC")
     Page<Post> findPostsPopular(Pageable pageable);
 
     @Query("SELECT o FROM Post o WHERE o.status = 'Draft'")

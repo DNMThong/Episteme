@@ -40,7 +40,7 @@
 /* Reply */
 .reply-box__container {
   display: flex;
-  gap: 50px;
+  gap: 30px;
 }
 
 .reply__info,

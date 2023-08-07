@@ -24,3 +24,5 @@ export const API_USER_ADMIN = `${domainApi}/api/v1/admin/users`;
 export const API_CATEGORY_ADMIN = `${domainApi}/api/v1/admin/categories`;
 
 export const API_POST_ADMIN = `${domainApi}/api/v1/admin/posts`;
+
+export const API_REPORT_ADMIN = `${domainApi}/api/v1/admin/report`;

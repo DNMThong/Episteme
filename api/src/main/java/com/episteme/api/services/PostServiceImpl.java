@@ -8,7 +8,7 @@ import com.episteme.api.repository.PostRepository;
 import com.episteme.api.repository.PostsCategoriesRepository;
 import com.episteme.api.repository.SocialNetworkRepository;
 import com.episteme.api.repository.UsersRepository;
-import com.episteme.api.response.PostResponse;
+import com.episteme.api.response.PostResponseDto;
 import com.github.slugify.Slugify;
 import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
@@ -187,16 +187,30 @@ public class PostServiceImpl implements PostService {
 
 
 
-    public List<PostDto> findByKeywords(String keywords) {
-        if (keywords != null) {
-            List<Post> posts = postRepository.findByKeywords(keywords);
-            List<PostDto> content = posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-            return content;
-        }
-        return null;
+    @Override
+    public PostResponseDto findByKeywords(Integer pageNumber, Integer pageSize,String keywords) {
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Post> posts = postRepository.findByKeywords(keywords,pageable);
+
+        // get content for page object
+        List<Post> listOfPosts = posts.getContent();
+
+        List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+        PostResponseDto postResponse = new PostResponseDto();
+        postResponse.setContent(content);
+        postResponse.setPageNumber(posts.getNumber());
+        postResponse.setPageSize(posts.getSize());
+        postResponse.setTotalElements(posts.getTotalElements());
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setLastPage(posts.isLast());
+        return postResponse;
+
+
     }
 
-    public PostResponse findByType(Integer pageNumber, Integer pageSize, String type) {
+    public PostResponseDto findByType(Integer pageNumber, Integer pageSize, String type) {
         if (type.equals("newest")) {
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
@@ -206,7 +220,7 @@ public class PostServiceImpl implements PostService {
             List<Post> listOfPosts = posts.getContent();
 
             List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
-            PostResponse postResponse = new PostResponse();
+            PostResponseDto postResponse = new PostResponseDto();
             postResponse.setContent(content);
             postResponse.setPageNumber(posts.getNumber());
             postResponse.setPageSize(posts.getSize());
@@ -224,7 +238,7 @@ public class PostServiceImpl implements PostService {
 
             List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
 
-            PostResponse postResponse = new PostResponse();
+            PostResponseDto postResponse = new PostResponseDto();
             postResponse.setContent(content);
             postResponse.setPageNumber(posts.getNumber());
             postResponse.setPageSize(posts.getSize());
@@ -240,7 +254,7 @@ public class PostServiceImpl implements PostService {
                 longList.add((Long) list.getContent().get(i)[3]);
             }
             List<PostDto>postDtoList= postRepository.findAllById(longList).stream().map(post -> this.postDto(post)).collect(Collectors.toList());
-            PostResponse postResponse = new PostResponse();
+            PostResponseDto postResponse = new PostResponseDto();
             postResponse.setContent(postDtoList);
             postResponse.setPageNumber(list.getNumber());
             postResponse.setPageSize(list.getSize());
@@ -384,7 +398,7 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+    public PostResponseDto getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
@@ -398,7 +412,7 @@ public class PostServiceImpl implements PostService {
 
         List<PostDto> content = listOfPosts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
 
-        PostResponse postResponse = new PostResponse();
+        PostResponseDto postResponse = new PostResponseDto();
         postResponse.setContent(content);
         postResponse.setPageNumber(posts.getNumber());
         postResponse.setPageSize(posts.getSize());

@@ -39,6 +39,20 @@ export const getPostsByType = async ({
   return response.data;
 };
 
+export const searchPost = async ({
+  q = "",
+  pageNumber = 0,
+  pageSize = 8,
+  sortBy = "title",
+  sortDir = "asc",
+}) => {
+  const response = await callGetAPI(
+    `${API_POST}/search?q=${q}&pageNumber=${pageNumber}&pageSize=${pageSize}`
+  );
+
+  return response.data;
+};
+
 export const getPostById = async (id) => {
   const response = await callGetAPI(`${API_POST}/${id}`);
 

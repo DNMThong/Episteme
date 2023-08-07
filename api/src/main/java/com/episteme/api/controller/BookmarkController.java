@@ -18,7 +18,7 @@ public class BookmarkController {
 
     @PostMapping("")
     @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
-    public ApiResponse<BookmarkDto> addBookmark(@RequestBody  BookmarkDto bookmarkDto) {
+    public ApiResponse<BookmarkDto> addBookmark(@RequestBody BookmarkDto bookmarkDto) {
         return ApiResponse.success(HttpStatus.CREATED,"Thêm bookmark thành công",bookmarkService.save(bookmarkDto));
     }
 

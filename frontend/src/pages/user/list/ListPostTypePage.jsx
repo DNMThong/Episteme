@@ -16,10 +16,9 @@ import { useSearchParams } from "react-router-dom";
 
 const PAGE_SZIE = 8;
 
-const ListPage = () => {
+const ListPostTypePage = ({ type = "", title = "" }) => {
   const { palette } = useTheme();
   const token = tokens(palette.mode);
-  const [searchParam, setSearchParam] = useSearchParams();
 
   const [posts, setPosts] = useState([]);
   const [error, setErrorMessage] = useState("");
@@ -31,12 +30,8 @@ const ListPage = () => {
   }, []);
 
   useEffect(() => {
-    setPage(1);
-  }, [searchParam]);
-
-  useEffect(() => {
-    searchPost({
-      q: searchParam.get("q") || "",
+    getPostsByType({
+      type,
       pageSize: PAGE_SZIE,
       pageNumber: page - 1,
     })
@@ -47,7 +42,7 @@ const ListPage = () => {
         setPosts(content);
       })
       .catch(() => setErrorMessage("Không tìm thấy bài viết nào"));
-  }, [page, searchParam]);
+  }, [page]);
 
   const handleChangePagination = (e, value) => {
     setPage(value);
@@ -63,7 +58,7 @@ const ListPage = () => {
           color: "#fff",
           background: `${token.paper} url(${DEFAULT_IMAGE.BACKGROUND}) no-repeat center`,
         }}>
-        <Typography variant="h2">Danh sách bài viết</Typography>
+        <Typography variant="h2">{title}</Typography>
       </Paper>
       <Container>
         <Grid container spacing="20px" rowSpacing="50px">
@@ -95,4 +90,4 @@ const ListPage = () => {
   );
 };
 
-export default ListPage;
+export default ListPostTypePage;

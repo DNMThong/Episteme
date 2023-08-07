@@ -26,6 +26,7 @@ import Editor from "./../../../components/Editor/index";
 import { STATUS_POST } from "../../../constants/status";
 import { useAuth } from "../../../context/auth-context";
 import ErrorPage from "./../error/ErrorPage";
+import { useNavigate } from "react-router-dom";
 
 const CreatePostPage = () => {
   const theme = useTheme();
@@ -34,10 +35,11 @@ const CreatePostPage = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchCategory, setSearchCategory] = useState("");
+  const [description, setDescription] = useState("");
   const editorRef = useRef(null);
   const titleRef = useRef(null);
-  const descriptionRef = useRef(null);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAPI = async () => {
@@ -74,7 +76,7 @@ const CreatePostPage = () => {
       title: titleRef.current.value,
       categories: selectedCategories,
       content: JSON.stringify(dataPost?.blocks || []),
-      summary: descriptionRef.current.value || "",
+      summary: description,
       status: STATUS_POST.PUBLISHED,
       thumbnail: image,
     };
@@ -82,6 +84,7 @@ const CreatePostPage = () => {
     setOpenModal(false);
     createPost(post, user.id)
       .then((response) => {
+        navigate(`/profile/${user.id}`);
         toast.success("Tạo bài viết thành công");
       })
       .catch((error) => {
@@ -96,11 +99,12 @@ const CreatePostPage = () => {
       title: titleRef.current.value,
       categories: selectedCategories,
       content: JSON.stringify(dataPost?.blocks || []),
-      summary: "",
+      summary: description,
       status: STATUS_POST.DRAFT,
     };
     createPost(post, user.id)
       .then((response) => {
+        navigate(`/profile/${user.id}`);
         toast.success("Lưu nháp thành công");
       })
       .catch((error) => {
@@ -196,7 +200,8 @@ const CreatePostPage = () => {
               multiline
               rows={4}
               maxRows={4}
-              inputRef={descriptionRef}
+              onChange={(e) => setDescription(e.target.value)}
+              value={description}
               sx={{
                 width: "100%",
                 backgroundColor: colors.background,

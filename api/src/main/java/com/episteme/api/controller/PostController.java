@@ -2,7 +2,7 @@ package com.episteme.api.controller;
 
 import com.episteme.api.entity.dto.PostDto;
 import com.episteme.api.exceptions.ApiResponse;
-import com.episteme.api.response.PostResponse;
+import com.episteme.api.response.PostResponseDto;
 import com.episteme.api.services.PostServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,42 +19,43 @@ public class PostController {
     PostServiceImpl postService;
 
     @GetMapping("")
-    public ApiResponse<PostResponse> getPostsByType(
-            @RequestParam(value = "pageNumber",defaultValue = "0",required = false) Integer pageNumber,
-            @RequestParam(value="pageSize",defaultValue = "8",required = false) Integer pageSize,
+    public ApiResponse<PostResponseDto> getPostsByType(
+            @RequestParam(value = "q", defaultValue = "", required = false) String keywords,
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "8", required = false) Integer pageSize,
             @RequestParam(value = "sortBy", defaultValue = "title", required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir,
-            @RequestParam(value = "type",required = false) Optional<String> type)  {
-        if(type.isPresent()){
-            PostResponse postResponse = this.postService.findByType(pageNumber,pageSize,type.get());
-            return ApiResponse.success(HttpStatus.OK,"success",postResponse);
+            @RequestParam(value = "type", required = false) Optional<String> type) {
+        if (type.isPresent()) {
+            PostResponseDto postResponse = this.postService.findByType(pageNumber, pageSize, type.get());
+            return ApiResponse.success(HttpStatus.OK, "success", postResponse);
         }
-        return ApiResponse.success(HttpStatus.OK,"success",postService.getAllPosts(pageNumber,pageSize,sortBy,sortDir));
+        return ApiResponse.success(HttpStatus.OK, "success", postService.getAllPosts(pageNumber, pageSize, sortBy, sortDir));
     }
 
     @GetMapping("/{id}")
-    public  ApiResponse<PostDto> getPost(
-                                            @PathVariable("id") Long id) {
+    public ApiResponse<PostDto> getPost(
+            @PathVariable("id") Long id) {
         PostDto post = postService.findById(id);
         String successMessage = "Tìm thấy post có id " + id;
-        return  ApiResponse.success(HttpStatus.OK,successMessage, post);
+        return ApiResponse.success(HttpStatus.OK, successMessage, post);
     }
 
     @GetMapping("/by-slug/{slug}")
-    public  ApiResponse<PostDto> getPostBySlug(
+    public ApiResponse<PostDto> getPostBySlug(
             @PathVariable("slug") String slug) {
         PostDto post = postService.findBySlug(slug);
         String successMessage = "Tìm thấy post có slug " + slug;
-        return  ApiResponse.success(HttpStatus.OK,successMessage, post);
+        return ApiResponse.success(HttpStatus.OK, successMessage, post);
     }
 
     @PutMapping("/{postId}")
     @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
-    public  ApiResponse<PostDto> updatePost(@RequestBody PostDto postDto,
-                                        @PathVariable Long postId) {
+    public ApiResponse<PostDto> updatePost(@RequestBody PostDto postDto,
+                                           @PathVariable Long postId) {
         PostDto updatePost = postService.updatePostWithCategories(postDto, postId);
         String successMessage = "Cập nhật bài đăng thành công!";
-        return  ApiResponse.success(HttpStatus.OK,successMessage, updatePost);
+        return ApiResponse.success(HttpStatus.OK, successMessage, updatePost);
     }
 
     @DeleteMapping("/{postId}")
@@ -62,7 +63,7 @@ public class PostController {
     public ApiResponse<PostDto> deletePost(@PathVariable("postId") Long postId) {
         postService.delete(postId);
         String successMessage = "Xóa bài đăng thành công!";
-        return  ApiResponse.success(HttpStatus.OK,successMessage, null);
+        return ApiResponse.success(HttpStatus.OK, successMessage, null);
     }
 
     @GetMapping("/draft")
@@ -72,6 +73,12 @@ public class PostController {
         return ApiResponse.success(HttpStatus.OK, "", postDto);
     }
 
-
+    @GetMapping("/search")
+    public ApiResponse<PostResponseDto> search(@RequestParam(value = "q", defaultValue = "", required = false) String keywords,
+                                               @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+                                               @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize
+                                               ) {
+        return ApiResponse.success(HttpStatus.OK, "sucesss", postService.findByKeywords(pageNumber, pageSize, keywords));
+    }
 
 }

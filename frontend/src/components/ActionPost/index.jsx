@@ -13,33 +13,40 @@ import { useAuth } from "../../context/auth-context";
 import { addBookmark, removeBookmark } from "../../services/bookmarkService";
 import { toast } from "react-toastify";
 
-const ActionPost = ({ breakPoint = "md", display, post }) => {
+const ActionPost = ({ breakPoint = "md", display, slug, post }) => {
+  const [url, setUrl] = useState("");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [like, setLike] = useState(false);
   const [bookmark, setBookmark] = useState(false);
   const { user } = useAuth();
 
-  useEffect(() => {
-    console.log(post);
-  }, []);
-
   const handleBookmark = async () => {
-    setBookmark((prev) => !prev);
-    if (user) {
+    if (user && post) {
       const data = {
-        user,
-        post,
+        user: {
+          id: user.id,
+        },
+        post: {
+          id: post.id,
+        },
       };
-      if (bookmark) {
+      setBookmark((prev) => !prev);
+      if (!bookmark) {
+        console.log("Add");
         const response = await addBookmark(data);
       } else {
+        console.log("Update");
         const response = await removeBookmark(data);
       }
     } else {
       toast.warning("Vui lòng đăng nhập để lưu bài viết");
     }
   };
+
+  useEffect(() => {
+    setUrl(`${window.location.href}/#/p/${slug}`);
+  }, [slug]);
 
   return (
     <Stack
@@ -105,16 +112,20 @@ const ActionPost = ({ breakPoint = "md", display, post }) => {
         onClick={handleBookmark}>
         {bookmark ? <BookmarkOutlinedIcon /> : <BookmarkBorderOutlinedIcon />}
       </IconButton>
-      <FacebookShareButton
-        url={window.location.href}
-        style={{ width: "40px", height: "40px" }}>
-        <FacebookOutlinedIcon />
-      </FacebookShareButton>
-      <TwitterShareButton
-        url={window.location.href}
-        style={{ width: "40px", height: "40px" }}>
-        <TwitterIcon />
-      </TwitterShareButton>
+      {url && (
+        <>
+          <FacebookShareButton
+            url={url}
+            style={{ width: "40px", height: "40px" }}>
+            <FacebookOutlinedIcon />
+          </FacebookShareButton>
+          <TwitterShareButton
+            url={url}
+            style={{ width: "40px", height: "40px" }}>
+            <TwitterIcon />
+          </TwitterShareButton>
+        </>
+      )}
     </Stack>
   );
 };

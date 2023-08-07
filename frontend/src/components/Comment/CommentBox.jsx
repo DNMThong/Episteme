@@ -1,13 +1,14 @@
-import { Avatar, Box, Button } from "@mui/material";
+import { Avatar, Box, Button, TextField } from "@mui/material";
 import "./style.css";
 import InputComment from "./InputComment";
 import { useState } from "react";
 import { addCommentPost } from "../../services/commentService";
 import { toast } from "react-toastify";
+import { useAuth } from "../../context/auth-context";
 
-// https://www.gravatar.com/avatar/a1ebce7ca559986dd18d4c94ef56e37b?d=wavatar&f=y
-const CommentBox = ({ type = "comment", user, handleCommentPost, onClose }) => {
+const CommentBox = ({ type = "comment", handleCommentPost, onClose }) => {
   const [value, setValue] = useState("");
+  const { user } = useAuth();
 
   return (
     <Box className="comment-box__container">
@@ -15,12 +16,16 @@ const CommentBox = ({ type = "comment", user, handleCommentPost, onClose }) => {
         {type === "comment" && (
           <Avatar className="form-group__avatar" src={user?.image} />
         )}
-        <InputComment
-          defaultValue={value}
-          multiline={true}
-          maxRows={3}
-          placeholder="Nhận xét..."
+        <TextField
+          value={value}
           onChange={(e) => setValue(e.target.value)}
+          className="form-group__input-container"
+          maxRows={3}
+          multiline
+          fullWidth
+          InputProps={{ className: "form-group__input" }}
+          placeholder="Nhận xét..."
+          variant="standard"
         />
       </Box>
       <div className="comment-box__buttons">
@@ -29,6 +34,7 @@ const CommentBox = ({ type = "comment", user, handleCommentPost, onClose }) => {
           variant="contained"
           onClick={() => {
             handleCommentPost(value);
+            setValue("");
           }}
           disabled={!value}>
           Bình luận

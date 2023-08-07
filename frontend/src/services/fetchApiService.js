@@ -32,7 +32,6 @@ export const callPostAPI = async (url, data) => {
 };
 
 export const callPostAPIAuthorization = async (url, data) => {
-  console.log("token", tokenAuthorization());
   const response = await axios({
     method: "POST",
     url,

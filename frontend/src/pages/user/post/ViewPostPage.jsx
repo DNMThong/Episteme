@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography, useMediaQuery } from "@mui/material";
 import InfoAuthor from "../../../components/InfoAuthor";
 import ActionPost from "../../../components/ActionPost";
 import PostRender from "../../../components/PostRender";
 import { getPostBySlug } from "../../../services/postService";
 import { useParams } from "react-router-dom";
-import { CommentBox, ReplyBox } from "../../../components/Comment";
 import { addBookmark, removeBookmark } from "../../../services/bookmarkService";
 import { useAuth } from "../../../context/auth-context";
 import {
@@ -13,6 +12,7 @@ import {
   getCommentPost,
 } from "../../../services/commentService";
 import { toast } from "react-toastify";
+import Comment from "../../../components/Comment";
 
 const ViewPostPage = () => {
   const [post, setPost] = useState();
@@ -20,6 +20,9 @@ const ViewPostPage = () => {
   const [comments, setComments] = useState([]);
   const { slug } = useParams();
   const { user } = useAuth();
+  const matches = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+
+  console.log(matches);
 
   useEffect(() => {
     getPostBySlug(slug)
@@ -31,27 +34,7 @@ const ViewPostPage = () => {
       });
   }, [slug]);
 
-  useEffect(() => {
-    if (post?.id) {
-      getCommentPost(post?.id).then((response) => {
-        setComments(response);
-      });
-    }
-  }, [post]);
-  console.log(comments);
-
-  const handleCommentPost = (value) => {
-    const data = {
-      content: value,
-      userId: user.id,
-    };
-    addCommentPost(post.id, data)
-      .then((response) => {
-        setComments((comment) => [response.data, ...comment]);
-        toast.success("Thêm bình luận thành công");
-      })
-      .catch(() => toast.error("Thêm bình luận thất bại"));
-  };
+  const handleCommentPost = (value) => {};
 
   if (notFound) return <Typography>404</Typography>;
 
@@ -64,10 +47,13 @@ const ViewPostPage = () => {
         mx="auto"
         gap="30px"
         alignItems="start">
-        <ActionPost
-          post={post}
-          breakPoint="sm"
-          display={{ sm: "flex", xs: "none" }}></ActionPost>
+        {matches && (
+          <ActionPost
+            post={post}
+            slug={slug}
+            breakPoint="sm"
+            display={{ sm: "flex", xs: "none" }}></ActionPost>
+        )}
         <Box
           sx={{
             maxWidth: "650px",
@@ -85,25 +71,18 @@ const ViewPostPage = () => {
           </Typography>
           <Typography variant="caption">{post?.description}</Typography>
           <PostRender blocks={JSON.parse(post?.content || "[]")}></PostRender>
-          <Box mt="12px">
-            {user && (
-              <CommentBox
-                user={user}
-                handleCommentPost={handleCommentPost}></CommentBox>
-            )}
-            <Box display="flex" flexDirection="column" gap="16px" mt="16px">
-              {comments.map((comment) => (
-                <ReplyBox postId={post.id} comment={comment} key={comment.id} />
-              ))}
-            </Box>
+          <Box m="20px 0">
+            <Comment post={post}></Comment>
           </Box>
         </Box>
       </Box>
-      <ActionPost
-        url={window.location.href}
-        breakPoint="sm"
-        post={post}
-        display={{ sm: "none", xs: "flex" }}></ActionPost>
+      {!matches && (
+        <ActionPost
+          breakPoint="sm"
+          post={post}
+          slug={slug}
+          display={{ sm: "none", xs: "flex" }}></ActionPost>
+      )}
     </Container>
   );
 };
