@@ -15,8 +15,7 @@ import { useEffect, useState } from "react";
 import { uploadImage } from "../../services/uploadService";
 import * as yup from "yup";
 import { toast } from "react-toastify";
-import { updateUsers } from "../../services/userService";
-import { updateAuthorInfo } from "../../services/authService";
+import { updateAuthorInfo } from "../../services/authorService";
 
 const userInitialValues = {
   id: "",
