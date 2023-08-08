@@ -134,4 +134,14 @@ public class UserController {
         return ResponseEntity.ok(categoriesService.getProminentCategoriesOfUserId(userId));
     }
 
+    @PutMapping("/{id}")
+    public ApiResponse<?> update(@RequestBody AuthorDto authorDto, @PathVariable String id){
+        try {
+            AuthorDto user = usersService.updateForUser(authorDto,id);
+            return ApiResponse.success(HttpStatus.OK,"Update success",user);
+        }catch (Exception e) {
+            return ApiResponse.error(HttpStatus.BAD_REQUEST,e.getMessage());
+        }
+    }
+
 }

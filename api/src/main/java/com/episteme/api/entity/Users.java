@@ -52,7 +52,7 @@ public class Users  implements UserDetails {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime registeredAt;
 
-    @Column(name = "last_login", nullable = false)
+    @Column(name = "last_login", nullable = true)
     private LocalDateTime lastLogin;
 
     @Column(name = "token", nullable = true, length = -1)

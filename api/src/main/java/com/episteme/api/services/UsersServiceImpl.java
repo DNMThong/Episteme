@@ -272,4 +272,15 @@ public class UsersServiceImpl implements UsersService {
         List<AuthorDto> authors = listOfPosts.stream().map(user -> this.usersToAuthorDto(user)).collect(Collectors.toList());
         return authors;
     }
+
+    public AuthorDto updateForUser(AuthorDto authorDto, String id) {
+        Users user = this.usersRepository.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy User Id: " + id));
+        user.setEmail(authorDto.getEmail());
+        user.setBirthday(authorDto.getBirthday());
+        user.setImage(authorDto.getImage());
+        user.setFullname(authorDto.getFullname());
+        user.setDescription(authorDto.getDescription());
+        Users updateUser = usersRepository.save(user);
+        return this.modelMapper.map(updateUser, AuthorDto.class);
+    }
 }
