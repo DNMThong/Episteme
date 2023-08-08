@@ -16,6 +16,7 @@ import { uploadImage } from "../../services/uploadService";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import { updateUsers } from "../../services/userService";
+import { updateAuthorInfo } from "../../services/authService";
 
 const userInitialValues = {
   id: "",
@@ -68,7 +69,7 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
       birthday: dayjs(values.birthday).format("DD/MM/YYYY"),
       image: urlAvatar,
     };
-    updateUsers(userInfo.id, data)
+    updateAuthorInfo(userInfo.id, data)
       .then((response) => {
         toast.success("Cập nhật người dùng thành công");
       })
