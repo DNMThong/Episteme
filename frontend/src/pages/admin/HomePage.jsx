@@ -3,6 +3,7 @@ import HeaderAdmin from "../../components/HeaderAdmin";
 import StatBox from "./../../components/StatBox/index";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import { tokens } from "../../constants/theme";
 import { useTheme } from "@emotion/react";
@@ -13,6 +14,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getReportPostNew } from "../../services/reportService";
 import { getReportUserNew } from "./../../services/reportService";
+import { getPostsPedingForAdmin } from "../../services/postService";
 
 const getPrevDay = (about) => {
   // Lấy ngày hiện tại
@@ -40,6 +42,12 @@ const HomePage = () => {
     total: 0,
     prescent: 0,
   });
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    getPostsPedingForAdmin().then((response) => setPosts(response?.data));
+  }, []);
+
   const [reportPostrDay, setReportPostrDay] = useState({
     total: 0,
     prescent: 0,
@@ -78,15 +86,14 @@ const HomePage = () => {
       <Grid container spacing="20px">
         <Grid item md={4} sm={4} xs={12}>
           <StatBox
-            progress={0.12}
+            progress={1}
             icon={
-              <VisibilityIcon
+              <ConfirmationNumberIcon
                 sx={{ color: colors.greenAccent, fontSize: "26px" }}
               />
             }
-            title="112"
-            increase="+12%"
-            subtitle="Lượng truy cập"></StatBox>
+            title={posts.length}
+            subtitle="Bài viết chờ duyệt"></StatBox>
         </Grid>
         <Grid item md={4} sm={4} xs={12}>
           <StatBox

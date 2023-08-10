@@ -18,6 +18,12 @@ export const getPosts = async () => {
   return response.data;
 };
 
+export const incrementView = async (id) => {
+  const response = await callGetAPI(`${API_POST}/increase-view/${id}`);
+
+  return response.data;
+};
+
 export const getPostsForAdmin = async () => {
   const response = await callGetAPIAuthorization(API_POST_ADMIN);
 

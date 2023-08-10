@@ -39,6 +39,13 @@ public class PostController {
         return ApiResponse.success(HttpStatus.OK, "success", postService.getAllPosts(pageNumber, pageSize, sortBy, sortDir));
     }
 
+    @GetMapping("/increase-view/{id}")
+    public ApiResponse<?> increaseViews(
+            @PathVariable("id") Long id) {
+        postService.autoIncreaseViews(id);
+        return ApiResponse.success(HttpStatus.OK, "View đã tăng", null);
+    }
+
     @GetMapping("/{id}")
     public ApiResponse<PostDto> getPost(
             @PathVariable("id") Long id) {

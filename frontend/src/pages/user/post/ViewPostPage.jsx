@@ -3,7 +3,7 @@ import { Box, Container, Grid, Typography, useMediaQuery } from "@mui/material";
 import InfoAuthor from "../../../components/InfoAuthor";
 import ActionPost from "../../../components/ActionPost";
 import PostRender from "../../../components/PostRender";
-import { getPostBySlug } from "../../../services/postService";
+import { getPostBySlug, incrementView } from "../../../services/postService";
 import { useParams } from "react-router-dom";
 import { addBookmark, removeBookmark } from "../../../services/bookmarkService";
 import { useAuth } from "../../../context/auth-context";
@@ -17,7 +17,7 @@ import { STATUS_POST } from "../../../constants/status";
 import ErrorPage from "./../error/ErrorPage";
 
 const ViewPostPage = () => {
-  const [post, setPost] = useState();
+  const [post, setPost] = useState(null);
   const [notFound, setNotFound] = useState(true);
   const { slug } = useParams();
   const { user } = useAuth();
@@ -41,6 +41,21 @@ const ViewPostPage = () => {
         setNotFound(true);
       });
   }, [slug, user]);
+
+  useEffect(() => {
+    if (post && post?.id) {
+      const historyPost = JSON.parse(
+        sessionStorage.getItem("historyPost") || "[]"
+      );
+      if (!historyPost.includes(post.id)) {
+        sessionStorage.setItem(
+          "historyPost",
+          JSON.stringify([...historyPost, post.id])
+        );
+        incrementView(post.id).then(() => {});
+      }
+    }
+  }, [post]);
 
   if (notFound) return <ErrorPage />;
 
