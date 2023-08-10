@@ -57,7 +57,13 @@ public class PostServiceImpl implements PostService {
         post.setUpdateAt(LocalDateTime.now());
         post.setSlug("slug");
         post.setView(0L);
-        post.setStatus(postDto.getStatus());
+        if (postDto.getStatus()==PostStatus.Pending) {
+            post.setStatus(PostStatus.Pending);
+        }else if(postDto.getStatus()==PostStatus.Draft) {
+            post.setStatus(PostStatus.Draft);
+        }else {
+            post.setStatus(PostStatus.Pending);
+        }
         post.setUser(user);
 
         Post savePost = this.postRepository.save(post);
@@ -69,7 +75,7 @@ public class PostServiceImpl implements PostService {
         return this.postDto(savePost);
     }
 
-    public PostDto updatePostWithCategories(PostDto postDto, Long postId) {
+    public PostDto updatePostForAdmin(PostDto postDto, Long postId) {
         // Kiểm tra nếu bài đăng không tồn tại thì không tiến hành cập nhật
         Post existingPost = postRepository.findById(postId).orElseThrow(() ->
                 new NotFoundException("Không tìm thấy bài đăng với ID: " + postId)
@@ -78,8 +84,39 @@ public class PostServiceImpl implements PostService {
         existingPost.setTitle(postDto.getTitle());
         existingPost.setContent(postDto.getContent());
         existingPost.setSummary(postDto.getSummary());
+        existingPost.setThumbnail(postDto.getThumbnail());
         existingPost.setUpdateAt(LocalDateTime.now());
         existingPost.setStatus(postDto.getStatus());
+
+        Post updatedPost = postRepository.save(existingPost);
+        convertSlugAndSave(existingPost, updatedPost);
+
+        List<Categories> categories = new ArrayList<>();
+        postDto.getCategories().forEach(c -> categories.add(categoriesService.findByIdCategories(c.getId())));
+        postsCategoriesService.deleteAllByPost(updatedPost);
+        savePostCategoriesForPost(categories, existingPost);
+        return this.postDto(updatedPost);
+    }
+
+    public PostDto updatePostWithCategories(PostDto postDto, Long postId) {
+        // Kiểm tra nếu bài đăng không tồn tại thì không tiến hành cập nhật
+        Post existingPost = postRepository.findById(postId).orElseThrow(() ->
+                new NotFoundException("Không tìm thấy bài đăng với ID: " + postId)
+        );
+        Post post = dtoToPost(postDto);
+        // Cập nhật thông tin bài đăng từ PostDto
+        existingPost.setTitle(postDto.getTitle());
+        existingPost.setContent(postDto.getContent());
+        existingPost.setThumbnail(postDto.getThumbnail());
+        existingPost.setSummary(postDto.getSummary());
+        existingPost.setUpdateAt(LocalDateTime.now());
+        if (postDto.getStatus()==PostStatus.Pending) {
+            existingPost.setStatus(PostStatus.Pending);
+        }else if(postDto.getStatus()==PostStatus.Draft) {
+            existingPost.setStatus(PostStatus.Draft);
+        }else {
+            existingPost.setStatus(PostStatus.Pending);
+        }
 
         Post updatedPost = postRepository.save(existingPost);
         convertSlugAndSave(existingPost, updatedPost);
@@ -178,6 +215,11 @@ public class PostServiceImpl implements PostService {
     }
 
 
+    public List<PostDto> findPostPending() {
+        List<Post> posts = this.postRepository.findByStatusPending();
+        List<PostDto> postDtos = posts.stream().map(post -> this.postDto(post)).collect(Collectors.toList());
+        return postDtos;
+    }
 
     @Override
     public PostDto findById(Long id) {

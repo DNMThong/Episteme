@@ -21,44 +21,19 @@ import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.services.CommentServiceImpl;
 
 @RestController
-@RequestMapping("/api/v1/posts")
+@RequestMapping("/api/v1/comments")
 public class CommentController {
 	@Autowired
 	private CommentServiceImpl commentService;
 
-	// with post
-	@GetMapping("/{postId}/comments")
-	public ResponseEntity<List<CommentDto>> getListComment(@PathVariable Long postId) {
-		List<CommentDto> commentDtoList = commentService.findAllCommentByPostId(postId);
-		return ResponseEntity.ok(commentDtoList);
-	}
-
-
-	@PostMapping("/{postId}/comments")
-	@PreAuthorize("hasAnyAuthority('USER','ADMIN')")
-	public ApiResponse<CommentDto> create(@PathVariable Long postId, @PathVariable Optional<Long> commentId,
-			@RequestBody CommentDto commentDto) {
-		return ApiResponse.success(HttpStatus.OK, "success",
-				commentService.saveNewComment(commentDto, postId, commentId));
-	}
-
-
-	@PostMapping("/{postId}/comments/reply/{commentId}")
-	@PreAuthorize("hasAnyAuthority('USER','ADMIN')")
-	public ApiResponse<CommentDto> reply(@PathVariable Long postId, @PathVariable Optional<Long> commentId,
-			@RequestBody CommentDto commentDto) {
-		return ApiResponse.success(HttpStatus.OK, "success",
-				commentService.saveNewComment(commentDto, postId, commentId));
-	}
-
-	@PutMapping("/{postId}/comments/{commentId}")
+	@PutMapping("/{commentId}")
 	public ApiResponse<CommentDto> update(@RequestBody CommentDto commentDto, @PathVariable Long postId,
 			@PathVariable Long commentId) {
 		return ApiResponse.success(HttpStatus.OK, "success",
 				commentService.UpdateComment(commentDto, postId, commentId));
 	}
 
-	@DeleteMapping("/{postId}/comments/{cmtId}")
+	@DeleteMapping("/{cmtId}")
 	public ApiResponse<Void> delete(@PathVariable Long cmtId) {
 		commentService.delete(cmtId);
 		return ApiResponse.success(HttpStatus.OK, "success", null);

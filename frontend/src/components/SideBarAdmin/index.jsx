@@ -15,8 +15,10 @@ import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import BookmarksOutlinedIcon from "@mui/icons-material/BookmarksOutlined";
 import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
+import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 import { tokens } from "../../constants/theme";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useAuth } from "../../context/auth-context";
 
 const Item = ({ title, to, icon }) => {
   const theme = useTheme();
@@ -40,6 +42,7 @@ const SidebarAdmin = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const { toggleSidebar, collapseSidebar, collapsed, broken } = useProSidebar();
 
@@ -117,7 +120,7 @@ const SidebarAdmin = () => {
                 <Avatar
                   sx={{ width: "100px", height: "100px", mx: "auto" }}
                   alt="profile-user"
-                  src="https://upload.wikimedia.org/wikipedia/en/b/bd/Doraemon_character.png"
+                  src={user?.image}
                 />
               </Box>
               <Box textAlign="center">
@@ -127,7 +130,7 @@ const SidebarAdmin = () => {
                   color={colors.greyAccent}
                   fontWeight="bold"
                   mt="10px">
-                  Thong
+                  {user?.fullname}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent}>
                   Admin
@@ -163,6 +166,11 @@ const SidebarAdmin = () => {
               to="/admin/posts"
               icon={<ReceiptLongOutlinedIcon />}
             />
+            <Item
+              title="Chờ duyệt"
+              to="/admin/posts/pending"
+              icon={<PendingOutlinedIcon />}
+            />
             <Typography variant="subtitle1" sx={{ margin: "15px 0 5px 20px" }}>
               Danh mục
             </Typography>
@@ -186,7 +194,7 @@ const SidebarAdmin = () => {
             />
             <Item
               title="Người dùng mới"
-              to="/admin//pie"
+              to="/admin/pie"
               icon={<PieChartOutlineOutlinedIcon />}
             />
           </Box>

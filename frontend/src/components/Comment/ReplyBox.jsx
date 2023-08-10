@@ -3,15 +3,21 @@ import InputComment from "./InputComment";
 import { useEffect, useState } from "react";
 import CommentBox from "./CommentBox";
 import { getAuthor } from "../../services/authorService";
-import { addCommentReplyPost } from "../../services/commentService";
+import {
+  addCommentReplyPost,
+  deleteComment,
+} from "../../services/commentService";
 import { toast } from "react-toastify";
 import ReplyBoxSub from "./ReplyBoxSub";
+import { useAuth } from "../../context/auth-context";
+import Swal from "sweetalert2";
 
-const ReplyBox = ({ comment, postId }) => {
+const ReplyBox = ({ comment, postId, onDelete }) => {
   const { id, content, userId, createAt, comments } = comment;
   const [openReplyInput, setOpenReplyInput] = useState(false);
   const [userComment, setUserComment] = useState();
   const [listSubCmtReply, setListSubCmtReply] = useState(comments || []);
+  const { user } = useAuth();
 
   useEffect(() => {
     getAuthor(userId).then((response) => setUserComment(response.data));
@@ -37,10 +43,35 @@ const ReplyBox = ({ comment, postId }) => {
   const handleReplyClick = () => {
     setOpenReplyInput(true);
   };
+
+  const handleDeleteCmt = (idCmtSub) => {
+    Swal.fire({
+      title: `Bạn có chắc muốn xóa bình luận này?`,
+      text: "Khi xóa không thể hoàn tác lại!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteComment(idCmtSub)
+          .then((response) => {
+            setListSubCmtReply((prev) =>
+              prev.filter((cmtItem) => cmtItem.id !== idCmtSub)
+            );
+            toast.success("Xóa bình luận thành công");
+          })
+          .catch(() => toast.error("Xóa bình luận thất bại"));
+      }
+    });
+  };
+
   return (
     <div className="reply-box__container">
       <div className="reply__info">
-        <Avatar className="reply-info__avatar" src={userComment?.avatar} />
+        <Avatar className="reply-info__avatar" src={userComment?.image} />
         <div className="reply-info__bottom">
           <Typography
             className="reply-info__username"
@@ -64,9 +95,16 @@ const ReplyBox = ({ comment, postId }) => {
             display: "flex",
             justifyContent: "space-between",
           }}>
-          <Button variant="text" onClick={handleReplyClick}>
-            Trả lời
-          </Button>
+          <Box>
+            <Button variant="text" onClick={handleReplyClick}>
+              Trả lời
+            </Button>
+            {user.id === userId && (
+              <Button variant="text" onClick={onDelete}>
+                Xóa
+              </Button>
+            )}
+          </Box>
           <Typography
             className="reply-info__create-date"
             variant="subtitle2"
@@ -78,7 +116,10 @@ const ReplyBox = ({ comment, postId }) => {
           {listSubCmtReply &&
             listSubCmtReply.length > 0 &&
             listSubCmtReply.map((item) => (
-              <ReplyBoxSub key={item.id} comment={item}></ReplyBoxSub>
+              <ReplyBoxSub
+                key={item.id}
+                comment={item}
+                onDelete={() => handleDeleteCmt(item.id)}></ReplyBoxSub>
             ))}
         </Stack>
         {openReplyInput && (

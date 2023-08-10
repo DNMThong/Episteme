@@ -86,12 +86,15 @@ public class CommentServiceImpl implements CommentService {
 	public void delete(Long id) {
 		Comment comment = this.commentRepository.findById(id)
 				.orElseThrow(() -> new NotFoundException("Can't find comment has id: " + id));
+		comment.getComments().forEach(cmtSub -> commentRepository.delete(cmtSub));
 		this.commentRepository.delete(comment);
 	}
 
 	@Override
 	public List<CommentDto> findAll() {
 		List<Comment> comments = this.commentRepository.findAll();
+
+
 		List<CommentDto> commentDtos = comments.stream().map(comment -> this.commentToDto(comment))
 				.collect(Collectors.toList());
 		return commentDtos;

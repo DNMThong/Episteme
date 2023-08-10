@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/social")
+@RequestMapping("/api/v1/follow")
+@PreAuthorize("hasAnyAuthority('USER','ADMIN')")
 public class SocialNetworkController {
     @Autowired
     SocialNetworkServiceImpl socialNetworkService;
@@ -25,6 +26,12 @@ public class SocialNetworkController {
     SocialNetworkRepository socialNetworkRepository;
     @Autowired
     UsersServiceImpl usersService;
+
+    @PostMapping("/check")
+    public ApiResponse<Boolean> checkFollow(@RequestBody SocialNetworkDto socialNetworkDto) {
+        return ApiResponse.success(HttpStatus.OK,"success",socialNetworkService.checkFollow(socialNetworkDto));
+    }
+
     @PostMapping("")
     public ApiResponse<SocialNetworkDto> save(@RequestBody SocialNetworkDto socialNetworkDto){
         return ApiResponse.success(HttpStatus.OK,"success",socialNetworkService.save(socialNetworkDto));
@@ -35,5 +42,11 @@ public class SocialNetworkController {
             @RequestParam(value="pageSize",defaultValue = "5",required = false) Integer pageSize
     ){
         return ApiResponse.success(HttpStatus.OK,"success",usersService.getUserMostFollow(pageNumber,pageSize));
+    }
+
+    @DeleteMapping("")
+    public ApiResponse<?> unfollow(@RequestBody SocialNetworkDto socialNetworkDto){
+        socialNetworkService.unfollow(socialNetworkDto);
+        return ApiResponse.success(HttpStatus.OK,"success",null);
     }
 }

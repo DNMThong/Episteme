@@ -8,4 +8,6 @@ export const STATUS_POST = {
   PUBLISHED: "Published",
   DRAFT: "Draft",
   SUSPENDED: "Suspended",
+  PENDING: "Pending",
+  DELETED: "Deleted",
 };

@@ -18,6 +18,10 @@ export const API_REGISTER = `${domainApi}/api/v1/auth/register`;
 
 export const API_BOOKMARK = `${domainApi}/api/v1/bookmarks`;
 
+export const API_COMMENT = `${domainApi}/api/v1/comments`;
+
+export const API_FOLLOW = `${domainApi}/api/v1/follow`;
+
 // api for admin
 export const API_USER_ADMIN = `${domainApi}/api/v1/admin/users`;
 

@@ -8,9 +8,13 @@ function AuthProvider(props) {
   useEffect(() => {
     const token = localStorage.getItem("token_episteme");
     !!token &&
-      getUserWithToken(token).then((response) => {
-        setUser(response.data);
-      });
+      getUserWithToken(token)
+        .then((response) => {
+          setUser(response.data);
+        })
+        .catch((error) => {
+          localStorage.removeItem("token_episteme");
+        });
   }, []);
 
   const value = { user, setUser };

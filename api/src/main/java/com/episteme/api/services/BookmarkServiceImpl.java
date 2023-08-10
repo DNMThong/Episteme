@@ -61,6 +61,12 @@ public class BookmarkServiceImpl implements BookmarkService {
 		return bookmarkDtoList;
 	}
 
+	public BookmarkDto findBookmarkByUserIdAndPostId(String userId,Long postId) {
+		Optional<Bookmark> bookmark = bookmarkRepository.findBookmarkByUserIdAndPostId(userId,postId);
+
+		return bookmark.isPresent() ? bookmarkToDto(bookmark.get()) : null;
+	}
+
     public void removeBookmark(BookmarkDto bookmarkDto) {
        Optional<Bookmark> optional = bookmarkRepository.findByPostAndUser(bookmarkDto.getPost().getId(),bookmarkDto.getUser().getId());
        Bookmark bookmark = optional.orElseThrow(() -> new NotFoundException("Không tìm thấy bookmark"));

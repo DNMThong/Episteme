@@ -28,6 +28,8 @@ import FormUpdateCategoryPage from "./pages/admin/FormUpdateCategoryPage";
 import FormUpdateUserPage from "./pages/admin/FormUpdateUserPage";
 import ListPostTypePage from "./pages/user/list/ListPostTypePage";
 import MyProfilePage from "./pages/user/profile/MyProfilePage";
+import ListPostPendingPage from "./pages/admin/ListPostPendingPage";
+import DraftPostPage from "./pages/user/post/DraftPostPage";
 
 function App() {
   const { theme } = useMode();
@@ -43,6 +45,7 @@ function App() {
               <Route path="users/add" element={<FormAddUserPage />} />
               <Route path="users/update/:id" element={<FormUpdateUserPage />} />
               <Route path="posts" element={<ListPostPage />} />
+              <Route path="posts/pending" element={<ListPostPendingPage />} />
               <Route path="categories" element={<ListCategoryPage />} />
               <Route path="categories/add" element={<FormAddCategoryPage />} />
               <Route
@@ -55,6 +58,7 @@ function App() {
               <Route index element={<HomePageUser />} />
               <Route path="/create-post" element={<CreatePostPage />}></Route>
               <Route path="/p/:slug" element={<ViewPostPage />} />
+              <Route path="/draft/:slug" element={<DraftPostPage />} />
               <Route path="/posts" element={<ListPage />} />
               <Route
                 path="/posts/newest"

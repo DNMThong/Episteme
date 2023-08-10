@@ -10,7 +10,11 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../constants/theme";
 import { useAuth } from "../../context/auth-context";
-import { addBookmark, removeBookmark } from "../../services/bookmarkService";
+import {
+  addBookmark,
+  getBookmarkForUser,
+  removeBookmark,
+} from "../../services/bookmarkService";
 import { toast } from "react-toastify";
 
 const ActionPost = ({ breakPoint = "md", display, slug, post }) => {
@@ -18,7 +22,7 @@ const ActionPost = ({ breakPoint = "md", display, slug, post }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [like, setLike] = useState(false);
-  const [bookmark, setBookmark] = useState(false);
+  const [bookmark, setBookmark] = useState(null);
   const { user } = useAuth();
 
   const handleBookmark = async () => {
@@ -31,13 +35,12 @@ const ActionPost = ({ breakPoint = "md", display, slug, post }) => {
           id: post.id,
         },
       };
-      setBookmark((prev) => !prev);
-      if (!bookmark) {
-        console.log("Add");
-        const response = await addBookmark(data);
+      if (bookmark?.id) {
+        const response = await removeBookmark(bookmark.id);
+        setBookmark(null);
       } else {
-        console.log("Update");
-        const response = await removeBookmark(data);
+        const response = await addBookmark(data);
+        setBookmark(response?.data);
       }
     } else {
       toast.warning("Vui lòng đăng nhập để lưu bài viết");
@@ -45,7 +48,15 @@ const ActionPost = ({ breakPoint = "md", display, slug, post }) => {
   };
 
   useEffect(() => {
-    setUrl(`${window.location.href}/#/p/${slug}`);
+    if (user?.id && post?.id) {
+      getBookmarkForUser(user.id, post.id)
+        .then((response) => setBookmark(response.data))
+        .catch(() => {});
+    }
+  }, [user, post]);
+
+  useEffect(() => {
+    setUrl(`${window.location.href}`);
   }, [slug]);
 
   return (
@@ -110,7 +121,11 @@ const ActionPost = ({ breakPoint = "md", display, slug, post }) => {
       <IconButton
         sx={{ width: "40px", height: "40px" }}
         onClick={handleBookmark}>
-        {bookmark ? <BookmarkOutlinedIcon /> : <BookmarkBorderOutlinedIcon />}
+        {bookmark && bookmark?.id ? (
+          <BookmarkOutlinedIcon />
+        ) : (
+          <BookmarkBorderOutlinedIcon />
+        )}
       </IconButton>
       {url && (
         <>

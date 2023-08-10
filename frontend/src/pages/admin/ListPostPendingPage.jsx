@@ -12,6 +12,7 @@ import {
   deletePost,
   getPosts,
   getPostsForAdmin,
+  getPostsPedingForAdmin,
   updatePost,
   updatePostForAdmin,
 } from "./../../services/postService";
@@ -19,7 +20,7 @@ import { STATUS_POST } from "../../constants/status";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
-const ListPostPage = () => {
+const ListPostPendingPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [posts, setPosts] = useState([]);
@@ -27,8 +28,10 @@ const ListPostPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getPostsForAdmin().then((response) => setPosts(response?.data));
+    getPostsPedingForAdmin().then((response) => setPosts(response?.data));
   }, []);
+
+  console.log(posts);
 
   const columns = [
     {
@@ -82,14 +85,10 @@ const ListPostPage = () => {
       width: 150,
       renderCell: ({ row: { status } }) => {
         switch (status) {
-          case STATUS_POST.PUBLISHED:
-            return <ChipCustom type="success" label={status} />;
-          case STATUS_POST.DRAFT:
+          case STATUS_POST.PENDING:
             return <ChipCustom type="warning" label={status} />;
           case STATUS_POST.SUSPENDED:
             return <ChipCustom type="error" label={status} />;
-          case STATUS_POST.DELETED:
-            return <ChipCustom type="warning" label={status} />;
         }
       },
     },
@@ -99,42 +98,33 @@ const ListPostPage = () => {
       width: 120,
       renderCell: ({ row }) => {
         const { id, slug, status } = row;
-        const [isLock, setIsLock] = useState(status === STATUS_POST.SUSPENDED);
-        useEffect(() => {
-          if (id != null) {
-            if (isLock) {
-              updatePostForAdmin(id, {
-                ...row,
-                status: STATUS_POST.SUSPENDED,
-              }).then(() =>
-                setPosts((prevPosts) =>
-                  prevPosts.map((prevPost) => ({
-                    ...prevPost,
-                    status:
-                      prevPost.id === id
-                        ? STATUS_POST.SUSPENDED
-                        : prevPost.status,
-                  }))
-                )
-              );
-            } else {
+
+        const handleVerification = (idPost) => {
+          Swal.fire({
+            title: `Bạn có chắc muốn phê duyệt cho bài viết có id ${idPost}?`,
+            text: "Bài viết có chắc không vi phạm bản quyền?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Duyệt",
+            cancelButtonText: "Hủy",
+          }).then((result) => {
+            if (result.isConfirmed) {
               updatePostForAdmin(id, {
                 ...row,
                 status: STATUS_POST.PUBLISHED,
-              }).then(() =>
-                setPosts((prevPosts) =>
-                  prevPosts.map((prevPost) => ({
-                    ...prevPost,
-                    status:
-                      prevPost.id === id
-                        ? STATUS_POST.PUBLISHED
-                        : prevPost.status,
-                  }))
-                )
-              );
+              })
+                .then(() => {
+                  setPosts((prevPosts) =>
+                    prevPosts.filter((prevPost) => prevPost.id != idPost)
+                  );
+                  toast.success("Duyệt bài viết thành công");
+                })
+                .catch(() => toast.error("Duyệt bài viết thất bại"));
             }
-          }
-        }, [id, isLock]);
+          });
+        };
 
         const handleRemovePost = (idPost) => {
           Swal.fire({
@@ -148,10 +138,7 @@ const ListPostPage = () => {
             cancelButtonText: "Hủy",
           }).then((result) => {
             if (result.isConfirmed) {
-              updatePostForAdmin(idPost, {
-                ...row,
-                status: STATUS_POST.DELETED,
-              })
+              deletePost(idPost)
                 .then(() => {
                   setPosts((prevPosts) =>
                     prevPosts.filter((prevPost) => prevPost.id != idPost)
@@ -166,8 +153,7 @@ const ListPostPage = () => {
         return (
           <ActionTable
             view={() => navigate(`/p/${slug}`)}
-            lock={() => setIsLock((prev) => !prev)}
-            isLock={isLock}
+            check={() => handleVerification(id)}
             remove={() => handleRemovePost(id)}
           />
         );
@@ -177,7 +163,10 @@ const ListPostPage = () => {
 
   return (
     <Box m="20px">
-      <HeaderAdmin title="Bài viết" subtitle="Danh sách bài viết" />
+      <HeaderAdmin
+        title="Bài viết chờ xét duyệt"
+        subtitle="Danh sách bài viết"
+      />
       <Box
         mt="40px"
         sx={{
@@ -194,8 +183,8 @@ const ListPostPage = () => {
             rows={posts}
             components={{ Toolbar: GridToolbar }}></DataGrid>
         ) : (
-          <Box mx="auto" width="50px">
-            <CircularProgress />
+          <Box mx="auto" textAlign="center">
+            Không có bài đăng nào cần duyệt
           </Box>
         )}
       </Box>
@@ -203,4 +192,4 @@ const ListPostPage = () => {
   );
 };
 
-export default ListPostPage;
+export default ListPostPendingPage;

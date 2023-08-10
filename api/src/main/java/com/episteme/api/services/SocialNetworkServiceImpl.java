@@ -58,7 +58,10 @@ public class SocialNetworkServiceImpl implements SocialNetworkService {
         }
         SocialNetworkPK socialNetworkPK = new SocialNetworkPK(usersFollower, usersFollowing);
         socialNetworkRepository.deleteById(socialNetworkPK);
+    }
 
+    public Boolean checkFollow(SocialNetworkDto socialNetworkDto) {
+        return socialNetworkRepository.getSocialNetworkById(socialNetworkDto.getFollowerUserId(),socialNetworkDto.getFollowingUserId()).isPresent();
     }
 
     @Override
@@ -110,4 +113,6 @@ public class SocialNetworkServiceImpl implements SocialNetworkService {
         SocialNetwork socialNetwork = this.socialNetworkRepository.findById(Id).orElseThrow(() -> new NotFoundException("Can't find Social Network"));
         this.socialNetworkRepository.delete(socialNetwork);
     }
+
+
 }

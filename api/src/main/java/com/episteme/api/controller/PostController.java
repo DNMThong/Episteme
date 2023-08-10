@@ -1,11 +1,14 @@
 package com.episteme.api.controller;
 
+import com.episteme.api.entity.dto.CommentDto;
 import com.episteme.api.entity.dto.PostDto;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.response.PostResponseDto;
+import com.episteme.api.services.CommentServiceImpl;
 import com.episteme.api.services.PostServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +20,9 @@ import java.util.Optional;
 public class PostController {
     @Autowired
     PostServiceImpl postService;
+
+    @Autowired
+    private CommentServiceImpl commentService;
 
     @GetMapping("")
     public ApiResponse<PostResponseDto> getPostsByType(
@@ -79,6 +85,34 @@ public class PostController {
                                                @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize
                                                ) {
         return ApiResponse.success(HttpStatus.OK, "sucesss", postService.findByKeywords(pageNumber, pageSize, keywords));
+    }
+
+
+
+
+    // with post
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<List<CommentDto>> getListComment(@PathVariable Long postId) {
+        List<CommentDto> commentDtoList = commentService.findAllCommentByPostId(postId);
+        return ResponseEntity.ok(commentDtoList);
+    }
+
+
+    @PostMapping("/{postId}/comments")
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+    public ApiResponse<CommentDto> create(@PathVariable Long postId, @PathVariable Optional<Long> commentId,
+                                          @RequestBody CommentDto commentDto) {
+        return ApiResponse.success(HttpStatus.OK, "success",
+                commentService.saveNewComment(commentDto, postId, commentId));
+    }
+
+
+    @PostMapping("/{postId}/comments/reply/{commentId}")
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+    public ApiResponse<CommentDto> reply(@PathVariable Long postId, @PathVariable Optional<Long> commentId,
+                                         @RequestBody CommentDto commentDto) {
+        return ApiResponse.success(HttpStatus.OK, "success",
+                commentService.saveNewComment(commentDto, postId, commentId));
     }
 
 }

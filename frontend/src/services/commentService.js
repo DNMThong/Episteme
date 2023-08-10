@@ -4,7 +4,7 @@ import {
   callPostAPIAuthorization,
   callPutAPIAuthorization,
 } from "./fetchApiService";
-import { API_POST } from "./../constants/api";
+import { API_COMMENT, API_POST } from "./../constants/api";
 
 export const getCommentPost = async (postId) => {
   const response = await callGetAPI(`${API_POST}/${postId}/comments`);
@@ -30,18 +30,18 @@ export const addCommentReplyPost = async (postId, commentReplyId, data) => {
   return response.data;
 };
 
-export const updateComment = async (postId, commentId, data) => {
+export const updateComment = async (commentId, data) => {
   const response = await callPutAPIAuthorization(
-    `${API_POST}/${postId}/comments/${commentId}`,
+    `${API_COMMENT}/${commentId}`,
     data
   );
 
   return response.data;
 };
 
-export const deleteComment = async (postId, commentId) => {
+export const deleteComment = async (commentId) => {
   const response = await callDeleteAPIAuthorization(
-    `${API_POST}/${postId}/comments/${commentId}`
+    `${API_COMMENT}/${commentId}`
   );
 
   return response.data;

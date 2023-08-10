@@ -24,6 +24,12 @@ export const getPostsForAdmin = async () => {
   return response.data;
 };
 
+export const getPostsPedingForAdmin = async () => {
+  const response = await callGetAPIAuthorization(`${API_POST_ADMIN}/pending`);
+
+  return response.data;
+};
+
 export const getPostsByType = async ({
   type = undefined,
   pageNumber = 0,
@@ -68,6 +74,15 @@ export const getPostBySlug = async (slug) => {
 export const createPost = async (data, id) => {
   const response = await callPostAPIAuthorization(
     `${API_USER}/${id}/posts`,
+    data
+  );
+
+  return response.data;
+};
+
+export const updatePostForAdmin = async (id, data) => {
+  const response = await callPutAPIAuthorization(
+    `${API_POST_ADMIN}/${id}`,
     data
   );
 

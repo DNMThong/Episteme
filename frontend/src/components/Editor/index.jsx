@@ -4,7 +4,7 @@ import EditorJS from "react-editor-js";
 import { forwardRef } from "react";
 
 // eslint-disable-next-line react/display-name
-const Editor = forwardRef((props, ref) => {
+const Editor = forwardRef(({ data }, ref) => {
   const theme = useTheme();
 
   return (
@@ -38,6 +38,7 @@ const Editor = forwardRef((props, ref) => {
         },
       }}>
       <EditorJS
+        data={data}
         tools={EDITOR_JS_TOOLS}
         instanceRef={(instance) => (ref.current = instance)}
         placeholder="Nội dung bài viết"></EditorJS>

@@ -44,7 +44,7 @@ export const getFollowingsOfAuthor = async (id) => {
 };
 
 export const getFollowersOfAuthor = async (id) => {
-  const response = await callGetAPI(`${API_USER}/${id}/followers`);
+  const response = await callGetAPI(`${API_USER}/${id}/follower`);
 
   return response.data;
 };

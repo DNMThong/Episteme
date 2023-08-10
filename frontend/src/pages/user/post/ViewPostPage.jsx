@@ -13,30 +13,36 @@ import {
 } from "../../../services/commentService";
 import { toast } from "react-toastify";
 import Comment from "../../../components/Comment";
+import { STATUS_POST } from "../../../constants/status";
+import ErrorPage from "./../error/ErrorPage";
 
 const ViewPostPage = () => {
   const [post, setPost] = useState();
-  const [notFound, setNotFound] = useState(false);
-  const [comments, setComments] = useState([]);
+  const [notFound, setNotFound] = useState(true);
   const { slug } = useParams();
   const { user } = useAuth();
   const matches = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
-  console.log(matches);
-
   useEffect(() => {
     getPostBySlug(slug)
       .then((response) => {
-        setPost(response?.data);
+        if (
+          user?.id !== response?.data?.author.id &&
+          user?.role !== "ADMIN" &&
+          response?.data.status != STATUS_POST.PUBLISHED
+        ) {
+          setNotFound(true);
+        } else {
+          setPost(response?.data);
+          setNotFound(false);
+        }
       })
-      .catch((error) => {
+      .catch(() => {
         setNotFound(true);
       });
-  }, [slug]);
+  }, [slug, user]);
 
-  const handleCommentPost = (value) => {};
-
-  if (notFound) return <Typography>404</Typography>;
+  if (notFound) return <ErrorPage />;
 
   return (
     <Container sx={{ mt: "50px", position: "relative" }}>
@@ -61,7 +67,7 @@ const ViewPostPage = () => {
             position: "relative",
           }}>
           <InfoAuthor
-            name={post?.author.fullname}
+            author={post?.author}
             createAt={post?.createAt}
             amountView={post?.view}
             amountBookmark={post?.total_bookmark}

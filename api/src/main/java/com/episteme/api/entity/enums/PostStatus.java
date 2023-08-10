@@ -3,5 +3,7 @@ package com.episteme.api.entity.enums;
 public enum PostStatus {
     Published,
     Draft,
-    Suspended
+    Suspended,
+    Pending,
+    Deleted
 }

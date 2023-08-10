@@ -19,16 +19,20 @@ import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useRef, useState } from "react";
 import { tokens } from "../../../constants/theme";
-import { createPost } from "../../../services/postService";
+import {
+  createPost,
+  getPostBySlug,
+  updatePost,
+} from "../../../services/postService";
 import { toast } from "react-toastify";
 import { getCategories } from "./../../../services/categoryService";
 import Editor from "./../../../components/Editor/index";
 import { STATUS_POST } from "../../../constants/status";
 import { useAuth } from "../../../context/auth-context";
 import ErrorPage from "./../error/ErrorPage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const CreatePostPage = () => {
+const DraftPostPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [openModal, setOpenModal] = useState(false);
@@ -36,10 +40,15 @@ const CreatePostPage = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchCategory, setSearchCategory] = useState("");
   const [description, setDescription] = useState("");
+  const [notFound, setNotFound] = useState(true);
+  const [post, setPost] = useState();
   const editorRef = useRef(null);
   const titleRef = useRef(null);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { slug } = useParams();
+
+  console.log(post);
 
   useEffect(() => {
     const fetchAPI = async () => {
@@ -49,7 +58,29 @@ const CreatePostPage = () => {
     fetchAPI();
   }, []);
 
-  if (!user) return <ErrorPage />;
+  useEffect(() => {
+    getPostBySlug(slug)
+      .then((response) => {
+        if (
+          user?.id !== response?.data?.author.id &&
+          user?.role !== "ADMIN" &&
+          response?.data.status != STATUS_POST.PUBLISHED
+        ) {
+          setNotFound(true);
+        } else {
+          const postTemp = response?.data;
+          setPost(postTemp);
+          setDescription(postTemp?.summary || "");
+          setSelectedCategories(postTemp?.categories || []);
+          setNotFound(false);
+        }
+      })
+      .catch(() => {
+        setNotFound(true);
+      });
+  }, [slug, user]);
+
+  if (notFound || !user) return <ErrorPage />;
 
   const handleRemoveSelectedCategory = (id) => {
     setSelectedCategories((prev) => prev.filter((item) => item.id !== id));
@@ -72,7 +103,8 @@ const CreatePostPage = () => {
     const image =
       dataPost?.blocks.find((block) => block.type === "image")?.data.file.url ||
       "";
-    const post = {
+    const data = {
+      ...post,
       title: titleRef.current.value,
       categories: selectedCategories,
       content: JSON.stringify(dataPost?.blocks || []),
@@ -80,9 +112,9 @@ const CreatePostPage = () => {
       status: STATUS_POST.PENDING,
       thumbnail: image,
     };
-    console.log(post);
+    console.log(data);
     setOpenModal(false);
-    createPost(post, user.id)
+    updatePost(post.id, data)
       .then((response) => {
         navigate(`/profile/${user.id}`);
         toast.success("Tạo bài viết thành công");
@@ -95,14 +127,14 @@ const CreatePostPage = () => {
 
   const handleSaveDraft = async () => {
     const dataPost = await editorRef.current.save();
-    const post = {
+    const data = {
       title: titleRef.current.value,
       categories: selectedCategories,
       content: JSON.stringify(dataPost?.blocks || []),
       summary: description,
       status: STATUS_POST.DRAFT,
     };
-    createPost(post, user.id)
+    updatePost(post.id, data)
       .then((response) => {
         navigate(`/profile/${user.id}`);
         toast.success("Lưu nháp thành công");
@@ -131,6 +163,7 @@ const CreatePostPage = () => {
             inputRef={titleRef}
             placeholder="Tiêu đề bài viết"
             name="title"
+            defaultValue={post?.title}
             autoComplete="off"
             multiline
             spellCheck={false}
@@ -142,7 +175,12 @@ const CreatePostPage = () => {
               width: "100%",
             }}
           />
-          <Editor ref={editorRef} />
+          <Editor
+            data={{
+              blocks: JSON.parse(post?.content || []),
+            }}
+            ref={editorRef}
+          />
         </Box>
       </Container>
       <Box
@@ -340,4 +378,4 @@ const CreatePostPage = () => {
   );
 };
 
-export default CreatePostPage;
+export default DraftPostPage;

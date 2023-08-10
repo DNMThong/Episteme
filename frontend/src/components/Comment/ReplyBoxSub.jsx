@@ -3,17 +3,22 @@ import InputComment from "./InputComment";
 import { Avatar, Box, Button, Typography } from "@mui/material";
 import CommentBox from "./CommentBox";
 import { getAuthor } from "../../services/authorService";
+import { useAuth } from "../../context/auth-context";
+import { deleteComment } from "../../services/commentService";
+import { toast } from "react-toastify";
 
-const ReplyBoxSub = ({ comment }) => {
-  const { content, userId, createAt } = comment;
+const ReplyBoxSub = ({ comment, onDelete }) => {
+  const { id, content, userId, createAt } = comment;
   const [userComment, setUserComment] = useState();
+  const { user } = useAuth();
+
   useEffect(() => {
     getAuthor(userId).then((response) => setUserComment(response.data));
   }, [userId]);
   return (
     <div className="reply-box__container">
       <div className="reply__info">
-        <Avatar className="reply-info__avatar" src={userComment?.avatar} />
+        <Avatar className="reply-info__avatar" src={userComment?.image} />
         <div className="reply-info__bottom">
           <Typography
             className="reply-info__username"
@@ -37,6 +42,11 @@ const ReplyBoxSub = ({ comment }) => {
             display: "flex",
             justifyContent: "end",
           }}>
+          {user.id === userId && (
+            <Button variant="text" onClick={onDelete} sx={{ mr: "auto" }}>
+              Xóa
+            </Button>
+          )}
           <Typography
             className="reply-info__create-date"
             variant="subtitle2"

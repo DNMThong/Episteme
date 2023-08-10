@@ -82,10 +82,16 @@ public class UserController {
         return ApiResponse.success(HttpStatus.CREATED, successMessage, savedPost);
     }
 
-    @GetMapping("/{userId}/bookmark")
-    public ResponseEntity<?> getListPost(@PathVariable String userId) {
+    @GetMapping("/{userId}/bookmarks")
+    public ResponseEntity<?> getListBookmarks(@PathVariable String userId) {
         List<BookmarkDto> bookmarkDtoList = bookmarkService.findBookmarkByUserId(userId);
         return ResponseEntity.ok(bookmarkDtoList);
+    }
+
+    @GetMapping("/{userId}/bookmarks/{postId}")
+    public ApiResponse<?> getBookmark(@PathVariable String userId,@PathVariable Long postId) {
+        BookmarkDto bookmark = bookmarkService.findBookmarkByUserIdAndPostId(userId,postId);
+        return ApiResponse.success(HttpStatus.OK, "Success", bookmark);
     }
 
     @GetMapping("/{id}/posts")

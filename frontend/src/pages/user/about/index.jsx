@@ -23,8 +23,8 @@ const About = () => {
         sx={{
           mt: "20px",
         }}>
-        Chúng tôi chỉ đơn giản là những chú ngỗng bang gang luôn hoàn thành
-        nhiệm vụ cùng nhau
+        Chúng tôi chỉ đơn giản là những chú ngỗng ba gang luôn hoàn thành nhiệm
+        vụ cùng nhau
       </Typography>
       <Box
         sx={{

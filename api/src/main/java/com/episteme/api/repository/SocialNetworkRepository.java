@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SocialNetworkRepository extends JpaRepository<SocialNetwork, SocialNetworkPK> {
@@ -32,4 +33,7 @@ public interface SocialNetworkRepository extends JpaRepository<SocialNetwork, So
     // Số người mình đang theo dõi
     @Query("SELECT COUNT(sn) FROM SocialNetwork sn WHERE sn.id.followers.userId = :followerUserId")
     Long countByFollowingUserId(@Param("followerUserId") String followerUserId);
+
+    @Query("select sn from SocialNetwork sn where sn.followerUser.userId like ?1 and sn.followingUser.userId like ?2")
+    Optional<SocialNetwork> getSocialNetworkById(String followerUserId,String followingUserId);
 }

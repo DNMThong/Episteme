@@ -1,16 +1,58 @@
-import { Avatar, Box, Button, IconButton, Typography } from "@mui/material";
-import React from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CommentIcon from "@mui/icons-material/Comment";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import { Link } from "react-router-dom";
+import { tokens } from "../../constants/theme";
+import { useAuth } from "../../context/auth-context";
+import { checkFollow, follow, unfollow } from "../../services/followService";
+import { toast } from "react-toastify";
 
 const InfoAuthor = ({
-  name,
+  author,
   createAt,
   amountView,
   amountBookmark,
   amountComment,
 }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const { user } = useAuth();
+  const [followed, setFollowed] = useState(false);
+
+  const handleFollowAuthor = () => {
+    if (user?.id) {
+      if (followed) {
+        unfollow({
+          followerUserId: user?.id,
+          followingUserId: author?.id,
+        }).then(() => setFollowed(false));
+      } else {
+        follow({
+          followerUserId: user?.id,
+          followingUserId: author?.id,
+        }).then(() => setFollowed(true));
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (user?.id) {
+      checkFollow({
+        followerUserId: user?.id,
+        followingUserId: author?.id,
+      }).then((response) => setFollowed(response?.data));
+    }
+  }, [user]);
+
   return (
     <Box
       display="flex"
@@ -19,11 +61,19 @@ const InfoAuthor = ({
       flexWrap="wrap"
       gap="8px">
       <Box display="flex" alignItems="center" gap="12px">
-        <Avatar src="https://sm.ign.com/ign_pk/cover/a/avatar-gen/avatar-generations_rpge.jpg" />
+        <Avatar src={author?.image} />
         <Box display="flex" flexDirection="column">
           <Box display="flex" alignItems="center" gap="12px">
-            <Typography variant="h5">{name}</Typography>
-            <Button sx={{ mb: "auto" }}>Theo dõi</Button>
+            <Link
+              to={`/profile/${author?.id == user?.id ? "me" : author?.id}`}
+              style={{ color: colors.text }}>
+              {author?.fullname}
+            </Link>
+            {author?.id !== user?.id && (
+              <Button onClick={handleFollowAuthor} sx={{ mb: "auto" }}>
+                {followed ? "Đã theo dõi" : "Theo dõi"}
+              </Button>
+            )}
           </Box>
           <Typography variant="subtitle2">Ngày tạo {createAt}</Typography>
         </Box>

@@ -203,11 +203,7 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
                     <TextField
                       name="email"
                       id="email"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      error={!!touched.email && !!errors.email}
-                      helperText={!!touched.email && errors.email}></TextField>
+                      disabled={true}></TextField>
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
@@ -235,6 +231,11 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
                       components={["DesktopDatePicker"]}>
                       <DemoItem className="desktop-date-picker-container">
                         <DesktopDatePicker
+                          sx={{
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "unset!important",
+                            },
+                          }}
                           format="DD/MM/YYYY"
                           className="desktop-date-picker"
                           value={dayjs(values.birthday)}
@@ -244,9 +245,6 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
                               dayjs(value).format("DD/MM/YYYY")
                             )
                           }
-                          onBlur={handleBlur}
-                          error={!!touched.birthday && !!errors.birthday}
-                          helperText={!!touched.birthday && errors.birthday}
                         />
                       </DemoItem>
                     </DemoContainer>

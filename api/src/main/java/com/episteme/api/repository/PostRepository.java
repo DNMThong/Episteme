@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    @Query("select p from Post p where p.user.userId = ?1")
+    @Query(value="SELECT * FROM post p where p.user_id = ?1 and p.status not in ('Draft','Deleted') order by p.create_at desc ", nativeQuery = true)
     List<Post> findAllPostByUserId(String userId);
     @Query("select o  from Post o where o.status = 'Published' and (o.title like %?1% or o.summary like %?1%)")
     Page<Post> findByKeywords(String keywords, Pageable pageable);
@@ -42,14 +42,18 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT o FROM Post o WHERE o.status = 'Draft'")
     List<Post> findPostsByStatusDraft(String userId);
 
-    @Query(value="SELECT * FROM Post p where p.status like 'Published'", nativeQuery = true)
+    @Query(value="SELECT * FROM post p where p.status like 'Published'", nativeQuery = true)
     List<Post> findAll();
 
-    @Query(value="SELECT * FROM Post p where p.status like 'Published'", nativeQuery = true)
+    @Query(value="SELECT * FROM post p where p.status like 'Published'", nativeQuery = true)
     Page<Post> findAll(Pageable pageable);
 
-    @Query("SELECT p FROM Post p")
+    @Query(value="SELECT * FROM post p where p.status not in ('Pending','Deleted')", nativeQuery = true)
     List<Post> findAllForAdmin();
+
+    @Query(value="SELECT * FROM post p where p.status like 'Pending'", nativeQuery = true)
+    List<Post> findByStatusPending();
+
     // Query 6/8 api
     @Query("SELECT COUNT(p.postId) FROM Post p WHERE p.createAt >= :startDate AND p.createAt < :endDate")
     Integer countPostByPostDate(LocalDateTime startDate, LocalDateTime endDate);

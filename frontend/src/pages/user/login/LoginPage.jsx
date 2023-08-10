@@ -102,6 +102,7 @@ const LoginPage = () => {
                 {({ errors, touched, handleChange, handleSubmit }) => (
                   <form onSubmit={handleSubmit}>
                     <TextField
+                      autoComplete="off"
                       id="email"
                       name="email"
                       label="Email"

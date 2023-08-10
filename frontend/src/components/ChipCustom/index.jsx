@@ -15,6 +15,10 @@ const ChipCustom = ({ type = "success", label }) => {
       background: "#fff1db",
       text: "#cd8e3b",
     },
+    disable: {
+      background: "#ccc",
+      text: "#666",
+    },
     admin: {
       background: "#F2EBF7",
       text: "#A77ACB",

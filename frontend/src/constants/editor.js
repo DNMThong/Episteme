@@ -66,7 +66,7 @@ export const EDITOR_JS_TOOLS = {
       uploader: {
         async uploadByFile(file) {
           const url = await uploadImage(file);
-          toast.success("Upload image success");
+          toast.success("Tải ảnh lên thành công");
           return {
             success: 1,
             file: {
@@ -75,7 +75,7 @@ export const EDITOR_JS_TOOLS = {
           };
         },
         async uploadByUrl(url) {
-          toast.success("Upload image success");
+          toast.success("Tải ảnh lên thành công");
           return {
             success: 1,
             file: {
@@ -113,7 +113,7 @@ export const EDITOR_JS_TOOLS = {
               success: 0,
             };
           }
-          toast.success("Upload file success");
+          toast.success("Tải file lên thành công");
           return {
             success: 1,
             file: {

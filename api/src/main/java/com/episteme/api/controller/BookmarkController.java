@@ -22,10 +22,10 @@ public class BookmarkController {
         return ApiResponse.success(HttpStatus.CREATED,"Thêm bookmark thành công",bookmarkService.save(bookmarkDto));
     }
 
-    @DeleteMapping("")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
-    public ApiResponse<BookmarkDto> deleteBookmark(@RequestBody BookmarkDto bookmarkDto) {
-        bookmarkService.removeBookmark(bookmarkDto);
+    public ApiResponse<BookmarkDto> deleteBookmark(@PathVariable Long id) {
+        bookmarkService.delete(id);
         return ApiResponse.success(HttpStatus.NO_CONTENT,"Xóa bookmark thành công",null);
     }
 }
