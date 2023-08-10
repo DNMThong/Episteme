@@ -104,7 +104,7 @@ const RegisterPage = () => {
                 validationSchema={userSchema}
                 onSubmit={handleSubmitForm}>
                 {({ touched, errors, handleChange, handleSubmit }) => (
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmit} autoComplete="off">
                     <TextField
                       id="fullname"
                       name="fullname"

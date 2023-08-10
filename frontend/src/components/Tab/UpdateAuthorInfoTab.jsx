@@ -93,7 +93,7 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
             handleBlur,
             setFieldValue,
           }) => (
-            <form id="update-info" onSubmit={handleSubmit}>
+            <form id="update-info" onSubmit={handleSubmit} autoComplete="off">
               <Grid container columnSpacing={2} rowSpacing={3}>
                 <Grid
                   item

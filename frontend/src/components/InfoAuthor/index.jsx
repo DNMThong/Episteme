@@ -41,6 +41,8 @@ const InfoAuthor = ({
           followingUserId: author?.id,
         }).then(() => setFollowed(true));
       }
+    } else {
+      toast.warning("Vui lòng đăng nhập để theo dõi tác giả");
     }
   };
 
