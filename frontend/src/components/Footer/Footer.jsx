@@ -1,7 +1,4 @@
 import {
-   Accordion,
-   AccordionDetails,
-   AccordionSummary,
    Box,
    Container,
    Divider,
@@ -9,10 +6,7 @@ import {
    Paper,
    Typography,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import logoSVG from "../../assets/img/logo.svg";
-import { Height, Troubleshoot } from "@mui/icons-material";
-import { Link } from "react-router-dom";
 import { useMode } from "../../context/mode-context";
 import { tokens } from "../../constants/theme";
 const Footer = () => {
@@ -25,7 +19,7 @@ const Footer = () => {
          }}
       >
          <Container>
-            <Grid container columnGap={2} rowGap={3}>
+            <Grid container spacing={2}>
                <Grid item lg={2} md={2} xs={12}>
                   <Box
                      display="flex"

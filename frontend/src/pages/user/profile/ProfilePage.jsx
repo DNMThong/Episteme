@@ -94,12 +94,16 @@ const ProfilePage = ({ title }) => {
    };
    return (
       <Fragment>
-         <Container>
+         <Container
+            sx={{
+               marginY: "50px",
+            }}
+         >
             <Grid
                container
                spacing={1}
                sx={{
-                  marginBlock: "50px 0",
+                  marginBlock: "50px",
                   flexFlow: {
                      xs: "column",
                      md: "row",
@@ -120,7 +124,10 @@ const ProfilePage = ({ title }) => {
                         justifyContent: "center",
                         marginX: "auto",
                         maxWidth: "80px",
-                        width: "100%",
+                        width: {
+                           md: "100%",
+                           xs: "80px",
+                        },
                         height: "80px",
                         marginBottom: {
                            sm: 2,
@@ -176,8 +183,27 @@ const ProfilePage = ({ title }) => {
                   <MyButton onClick={handleFollowClick} label="+ Theo dõi" />
                </Grid>
             </Grid>
+            <Grid
+               container
+               spacing={2}
+               sx={{
+                  minHeight: {
+                     xs: "300px",
+                     md: "50vh",
+                  },
+               }}
+            >
+               <Grid item md={9} xs={12}>
+                  <ListButtons setCardType={setCardType} />
+                  <ListData type={cardType} userId={userId} />
+               </Grid>
+               <Grid item md={3} xs={12}>
+                  <ProfileStatistic statistic={statistic} />
+                  <PostCategoryStat categories={categoriesPosted} />
+               </Grid>
+            </Grid>
          </Container>
-         <Container
+         {/* <Container
             sx={{
                marginTop: "50px",
             }}
@@ -192,7 +218,7 @@ const ProfilePage = ({ title }) => {
                   <PostCategoryStat categories={categoriesPosted} />
                </Grid>
             </Grid>
-         </Container>
+         </Container> */}
       </Fragment>
    );
 };
@@ -243,10 +269,10 @@ const ListButtons = ({ setCardType }) => {
       setActive("posts");
       setCardType("posts");
    };
-   const handleGetDrafts = () => {
-      setActive("drafts");
-      setCardType("drafts");
-   };
+   // const handleGetDrafts = () => {
+   //    setActive("drafts");
+   //    setCardType("drafts");
+   // };
    const handleGetFollowings = () => {
       setActive("followings");
       setCardType("followings");
@@ -273,11 +299,11 @@ const ListButtons = ({ setCardType }) => {
             onClick={handleGetPosts}
             active={active === "posts"}
          />
-         <ButtonItem
+         {/* <ButtonItem
             text="Bài viết nháp"
             onClick={handleGetDrafts}
             active={active === "drafts"}
-         />
+         /> */}
          <ButtonItem
             text="Theo dõi"
             onClick={handleGetFollowings}
