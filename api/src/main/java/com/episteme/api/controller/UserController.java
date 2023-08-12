@@ -52,7 +52,7 @@ public class UserController {
     }
 
     // Danh sách người minh đang theo dõi
-    @GetMapping("/{id}/following")
+    @GetMapping("/{id}/followings")
     public ApiResponse<List<UsersDto>> listFollowing(@PathVariable String id) {
         return ApiResponse.success(HttpStatus.OK, "success", socialNetworkService.findAllFollowingByUserId(id));
     }
