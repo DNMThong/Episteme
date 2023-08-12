@@ -42,7 +42,7 @@ const ReplyBoxSub = ({ comment, onDelete }) => {
             display: "flex",
             justifyContent: "end",
           }}>
-          {user.id === userId && (
+          {user?.id === userId && (
             <Button variant="text" onClick={onDelete} sx={{ mr: "auto" }}>
               Xóa
             </Button>

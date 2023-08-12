@@ -5,10 +5,14 @@ import { Box } from "@mui/material";
 import TopbarAdmin from "../components/TopBarAdmin";
 import { useAuth } from "../context/auth-context";
 import ErrorPage from "./../pages/user/error/ErrorPage";
+import { useEffect } from "react";
 
 const AdminLayout = () => {
   const { user } = useAuth();
   if (!user || user.role != "ADMIN") return <ErrorPage />;
+  useEffect(() => {
+    document.title = "Admin";
+  });
   return (
     <ProSidebarProvider>
       <Box display="flex" position="relative">

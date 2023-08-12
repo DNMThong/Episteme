@@ -42,6 +42,7 @@ const CreatePostPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "Tạo bài viết";
     const fetchAPI = async () => {
       const response = await getCategories();
       setCategories(response?.data || []);
@@ -80,11 +81,10 @@ const CreatePostPage = () => {
       status: STATUS_POST.PENDING,
       thumbnail: image,
     };
-    console.log(post);
     setOpenModal(false);
     createPost(post, user.id)
       .then((response) => {
-        navigate(`/profile/${user.id}`);
+        navigate(`/profile/me`);
         toast.success("Tạo bài viết thành công");
       })
       .catch((error) => {
@@ -104,7 +104,7 @@ const CreatePostPage = () => {
     };
     createPost(post, user.id)
       .then((response) => {
-        navigate(`/profile/${user.id}`);
+        navigate(`/profile/me`);
         toast.success("Lưu nháp thành công");
       })
       .catch((error) => {

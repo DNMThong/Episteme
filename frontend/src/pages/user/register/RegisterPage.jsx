@@ -43,6 +43,10 @@ const RegisterPage = () => {
   const { setUser } = useAuth();
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    document.title = "Đăng ký";
+  });
+
   const handleSubmitForm = async (values) => {
     const registerData = {
       email: values.email,

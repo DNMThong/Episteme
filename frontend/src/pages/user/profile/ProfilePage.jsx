@@ -21,6 +21,7 @@ import {
 } from "../../../services/authorService";
 import CardDraft from "../../../components/CardDraft/CardDraft";
 import CardAuthor from "../../../components/CardAuthor";
+import { STATUS_POST } from "../../../constants/status";
 import {
   PostCategoryStat,
   ProfileStatistic,
@@ -36,6 +37,7 @@ const ProfilePage = () => {
   // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "Tác giả";
     if (userId) {
       getAuthorById(userId)
         .then((response) => setUserInfo(response.data))
@@ -192,17 +194,20 @@ const ListData = ({ type, userId }) => {
   useEffect(() => {
     async function fetchData() {
       await getAllPostOfAuthor(userId).then((response) => {
-        setData(response.data);
+        setData([
+          ...response.data.filter(
+            (item) => item.status === STATUS_POST.PUBLISHED
+          ),
+        ]);
       });
     }
     fetchData();
   }, []);
-  useEffect(() => {
-    getAllCardByType(type, userId)
-      .then((response) => setData(response.data))
-      .catch((e) => console.log(e));
-  }, [type]);
-  console.log(data);
+  // useEffect(() => {
+  //   getAllCardByType(type, userId)
+  //     .then((response) => setData(response.data))
+  //     .catch((e) => console.log(e));
+  // }, [type]);
   if (!data) return null;
   return (
     <Grid container spacing={2}>
@@ -233,10 +238,10 @@ const ListButtons = ({ setCardType }) => {
     setActive("posts");
     setCardType("posts");
   };
-  const handleGetDrafts = () => {
-    setActive("drafts");
-    setCardType("drafts");
-  };
+  // const handleGetDrafts = () => {
+  //   setActive("drafts");
+  //   setCardType("drafts");
+  // };
   const handleGetFollowings = () => {
     setActive("followings");
     setCardType("followings");
@@ -262,11 +267,11 @@ const ListButtons = ({ setCardType }) => {
         onClick={handleGetPosts}
         active={active === "posts"}
       />
-      <ButtonItem
+      {/* <ButtonItem
         text="Bài viết nháp"
         onClick={handleGetDrafts}
         active={active === "drafts"}
-      />
+      /> */}
       <ButtonItem
         text="Theo dõi"
         onClick={handleGetFollowings}

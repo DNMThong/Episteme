@@ -26,7 +26,7 @@ const ListPostTypePage = ({ type = "", title = "" }) => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    document.title = "Bài viết";
+    document.title = "Danh sách bài viết";
   }, []);
 
   useEffect(() => {

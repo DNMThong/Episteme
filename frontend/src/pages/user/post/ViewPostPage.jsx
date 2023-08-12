@@ -24,8 +24,15 @@ const ViewPostPage = () => {
   const matches = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
   useEffect(() => {
+    document.title = "Bài viết";
+  });
+
+  useEffect(() => {
     getPostBySlug(slug)
       .then((response) => {
+        console.log(user?.id !== response?.data?.author.id);
+        console.log(user?.role !== "ADMIN");
+        console.log(response?.data.status != STATUS_POST.PUBLISHED);
         if (
           user?.id !== response?.data?.author.id &&
           user?.role !== "ADMIN" &&

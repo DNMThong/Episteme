@@ -39,6 +39,10 @@ const LoginPage = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    document.title = "Đăng nhập";
+  });
+
   const handleSubmitForm = async (values) => {
     // 1. Send info to server
     // 2. Set Token from response to LocalStorage

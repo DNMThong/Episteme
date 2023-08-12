@@ -33,8 +33,12 @@ const CommentBox = ({ type = "comment", handleCommentPost, onClose }) => {
           type="submit"
           variant="contained"
           onClick={() => {
-            handleCommentPost(value);
-            setValue("");
+            if (user?.id) {
+              handleCommentPost(value);
+              setValue("");
+            } else {
+              toast.warning("Vui lòng đăng nhập để bình luận");
+            }
           }}
           disabled={!value}>
           Bình luận

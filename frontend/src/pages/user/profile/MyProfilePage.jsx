@@ -34,6 +34,7 @@ const MyProfilePage = () => {
   // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "Trang cá nhân";
     if (user?.id) {
       getStatisticByType(user?.id, "posts-views")
         .then((response) =>

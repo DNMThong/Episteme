@@ -48,9 +48,8 @@ const DraftPostPage = () => {
   const navigate = useNavigate();
   const { slug } = useParams();
 
-  console.log(post);
-
   useEffect(() => {
+    document.title = "Nháp";
     const fetchAPI = async () => {
       const response = await getCategories();
       setCategories(response?.data || []);
@@ -61,11 +60,7 @@ const DraftPostPage = () => {
   useEffect(() => {
     getPostBySlug(slug)
       .then((response) => {
-        if (
-          user?.id !== response?.data?.author.id &&
-          user?.role !== "ADMIN" &&
-          response?.data.status != STATUS_POST.PUBLISHED
-        ) {
+        if (user?.id !== response?.data?.author.id) {
           setNotFound(true);
         } else {
           const postTemp = response?.data;

@@ -41,7 +41,11 @@ const ReplyBox = ({ comment, postId, onDelete }) => {
   };
 
   const handleReplyClick = () => {
-    setOpenReplyInput(true);
+    if (user?.id) {
+      setOpenReplyInput(true);
+    } else {
+      toast.warning("Vui lòng đăng nhập để bình luận");
+    }
   };
 
   const handleDeleteCmt = (idCmtSub) => {
@@ -99,7 +103,7 @@ const ReplyBox = ({ comment, postId, onDelete }) => {
             <Button variant="text" onClick={handleReplyClick}>
               Trả lời
             </Button>
-            {user.id === userId && (
+            {user?.id === userId && (
               <Button variant="text" onClick={onDelete}>
                 Xóa
               </Button>
