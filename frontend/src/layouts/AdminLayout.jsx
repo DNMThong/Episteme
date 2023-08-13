@@ -9,10 +9,10 @@ import { useEffect } from "react";
 
 const AdminLayout = () => {
   const { user } = useAuth();
-  if (!user || user.role != "ADMIN") return <ErrorPage />;
   useEffect(() => {
     document.title = "Admin";
-  });
+  }, []);
+  if (!user || user.role != "ADMIN") return <ErrorPage />;
   return (
     <ProSidebarProvider>
       <Box display="flex" position="relative">

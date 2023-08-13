@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Container, Grid } from "@mui/material";
 import { Box, Button, Divider, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
@@ -8,6 +8,7 @@ import { useMode } from "../../../context/mode-context";
 import { tokens } from "../../../constants/theme";
 import { register } from "../../../services/authService";
 import { useAuth } from "../../../context/auth-context";
+import { toast } from "react-toastify";
 
 const initialValues = {
   fullname: "",
@@ -36,16 +37,15 @@ const userSchema = yup.object().shape({
     .required("Vui lòng nhập xác nhận mật khẩu"),
 });
 
-const RegisterPage = () => {
+const RegisterPage = ({ title }) => {
   const navigate = useNavigate();
   const { theme } = useMode();
   const token = tokens(theme.palette.mode);
   const { setUser } = useAuth();
-  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    document.title = "Đăng ký";
-  });
+    document.title = title;
+  }, []);
 
   const handleSubmitForm = async (values) => {
     const registerData = {
@@ -57,11 +57,11 @@ const RegisterPage = () => {
       .then((res) => {
         setUser(res.data.infoUser);
         localStorage.setItem("token_episteme", res.data.token);
+        toast.success("Đăng ký thành công");
         navigate("/");
-        setErrorMessage("");
       })
-      .catch((error) => {
-        setErrorMessage("Đăng ký thất bại");
+      .catch(() => {
+        toast.error("Đăng ký thất bại");
       });
   };
   return (
@@ -94,15 +94,6 @@ const RegisterPage = () => {
                 }}>
                 Đăng ký
               </Typography>
-              {errorMessage && (
-                <Typography
-                  variant="h6"
-                  component="p"
-                  marginBottom={3}
-                  sx={{ color: "red" }}>
-                  {errorMessage}
-                </Typography>
-              )}
               <Formik
                 initialValues={initialValues}
                 validationSchema={userSchema}

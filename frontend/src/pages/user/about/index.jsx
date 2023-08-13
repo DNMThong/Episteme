@@ -2,10 +2,10 @@ import { Box, Typography } from "@mui/material";
 import image from "../../../assets/img/ngongbagang.png";
 import { useEffect } from "react";
 
-const About = () => {
+const About = ({ title }) => {
   useEffect(() => {
-    document.title = "Về chúng tôi";
-  });
+    document.title = title;
+  }, []);
   return (
     <Box
       sx={{

@@ -1,20 +1,23 @@
 import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
 import HeaderAdmin from "../../components/HeaderAdmin";
 import StatBox from "./../../components/StatBox/index";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import { tokens } from "../../constants/theme";
 import { useTheme } from "@emotion/react";
 import LineChart from "../../components/LineChart";
-import { data } from "../../data/linechart";
 import InfoUserTable from "../../components/InfoUserTable";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getReportPostNew } from "../../services/reportService";
 import { getReportUserNew } from "./../../services/reportService";
-import { getPostsPedingForAdmin } from "../../services/postService";
+import {
+  getPostsByType,
+  getPostsPedingForAdmin,
+} from "../../services/postService";
+import { getPopularAuthors } from "../../services/authorService";
+import { CardPost } from "../../components/CardPost";
 
 const getPrevDay = (about) => {
   // Lấy ngày hiện tại
@@ -43,16 +46,20 @@ const HomePage = () => {
     prescent: 0,
   });
   const [posts, setPosts] = useState([]);
+  const [popularAuthors, setPopularAuthors] = useState([]);
+  const [popularPosts, setPopularPosts] = useState([]);
 
   useEffect(() => {
     getPostsPedingForAdmin().then((response) => setPosts(response?.data));
   }, []);
 
+  console.log(popularAuthors);
+
   const [reportPostrDay, setReportPostrDay] = useState({
     total: 0,
     prescent: 0,
   });
-  console.log(getPrevDay(0));
+
   useEffect(() => {
     getReportPostNew(getPrevDay(6), getPrevDay(0)).then((response) =>
       setReportWeek((prev) => [...prev, response.data])
@@ -76,7 +83,18 @@ const HomePage = () => {
         prescent: precentDownUp(report[0].y, report[1].y),
       });
     });
+
+    getPopularAuthors().then((response) => setPopularAuthors(response.data));
+
+    getPostsByType({
+      type: "popular",
+      pageNumber: 0,
+      pageSize: 5,
+      sortBy: "createAt",
+    }).then((response) => setPopularPosts(response.data.content));
   }, []);
+
+  console.log(popularPosts);
 
   return (
     <Box m="20px">
@@ -135,45 +153,37 @@ const HomePage = () => {
               Tác giả nổi bật
             </Typography>
             <Stack spacing="15px" overflow="hidden">
-              <Link to="/user">
-                <InfoUserTable
-                  online={true}
-                  title="Nguyễn Văn A"
-                  subtitle="nguyenvana@gmail.com"
-                  avatar="https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj"></InfoUserTable>
-              </Link>
-              <Link to="/user">
-                <InfoUserTable
-                  online={true}
-                  title="Nguyễn Văn A"
-                  subtitle="nguyenvana@gmail.com"
-                  avatar="https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj"></InfoUserTable>
-              </Link>
-              <Link to="/user">
-                <InfoUserTable
-                  online={true}
-                  title="Nguyễn Văn A"
-                  subtitle="nguyenvana@gmail.com"
-                  avatar="https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj"></InfoUserTable>
-              </Link>
-              <Link to="/user">
-                <InfoUserTable
-                  online={true}
-                  title="Nguyễn Văn A"
-                  subtitle="nguyenvana@gmail.com"
-                  avatar="https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj"></InfoUserTable>
-              </Link>
-              <Link to="/user">
-                <InfoUserTable
-                  online={true}
-                  title="Nguyễn Văn A"
-                  subtitle="nguyenvana@gmail.com"
-                  avatar="https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj"></InfoUserTable>
-              </Link>
+              {popularAuthors.map((popularAuthor) => (
+                <Link
+                  to={`/profile/${popularAuthor.id}`}
+                  key={popularAuthor.id}>
+                  <InfoUserTable
+                    title={popularAuthor.fullname}
+                    subtitle={popularAuthor.email}
+                    avatar={popularAuthor.image}></InfoUserTable>
+                </Link>
+              ))}
             </Stack>
           </Paper>
           <Paper sx={{ padding: "20px" }}>
-            <Typography variant="h5">Bài viết nổi bật</Typography>
+            <Typography variant="h5" mb="20px">
+              Bài viết nổi bật
+            </Typography>
+            <Stack
+              spacing="20px"
+              overflow="hidden"
+              sx={{
+                "& .MuiPaper-root": {
+                  backgroundColor: "transparent",
+                },
+              }}>
+              {popularPosts.map((popularPost) => (
+                <CardPost
+                  key={popularPost.id}
+                  postInfo={popularPost}
+                  direction="horizontal"></CardPost>
+              ))}
+            </Stack>
           </Paper>
         </Grid>
       </Grid>

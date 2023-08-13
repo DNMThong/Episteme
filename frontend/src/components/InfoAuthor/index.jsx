@@ -73,7 +73,7 @@ const InfoAuthor = ({
             </Link>
             {author?.id !== user?.id && (
               <Button onClick={handleFollowAuthor} sx={{ mb: "auto" }}>
-                {followed ? "Đã theo dõi" : "Theo dõi"}
+                {followed ? "Đang theo dõi" : "Theo dõi"}
               </Button>
             )}
           </Box>

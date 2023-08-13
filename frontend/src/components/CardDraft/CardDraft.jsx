@@ -3,6 +3,9 @@ import { Box, Button, Typography, useTheme } from "@mui/material";
 import { formatDate } from "../../utils/DateUtil";
 import { Link } from "react-router-dom";
 import { tokens } from "../../constants/theme";
+import Swal from "sweetalert2";
+import { deletePost } from "../../services/postService";
+import { toast } from "react-toastify";
 
 const CardDraftStyled = styled(Box)(({ theme }) => ({
   "&": {
@@ -31,9 +34,10 @@ const CardDraftStyled = styled(Box)(({ theme }) => ({
   },
 }));
 
-const CardDraft = ({ info }) => {
+const CardDraft = ({ info, handleDeleteDraftPost }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   return (
     <CardDraftStyled>
       <Typography variant="h5">{info?.title}</Typography>
@@ -53,7 +57,7 @@ const CardDraft = ({ info }) => {
             to={`/draft/${info?.slug}`}>
             Chỉnh sửa
           </Link>
-          <Button>Xóa</Button>
+          <Button onClick={handleDeleteDraftPost}>Xóa</Button>
         </Box>
       </Box>
     </CardDraftStyled>

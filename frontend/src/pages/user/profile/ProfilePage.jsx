@@ -15,7 +15,6 @@ import { CardPost } from "../../../components/CardPost";
 import { DEFAULT_IMAGE } from "../../../constants/default";
 import { getAuthorById } from "../../../services/authService";
 import {
-  getAllCardByType,
   getAllPostOfAuthor,
   getStatisticByType,
 } from "../../../services/authorService";
@@ -26,18 +25,32 @@ import {
   PostCategoryStat,
   ProfileStatistic,
 } from "../../../components/ProfileStatistic";
+import { useAuth } from "../../../context/auth-context";
+import { checkFollow, follow, unfollow } from "../../../services/followService";
+import { toast } from "react-toastify";
 
-const ProfilePage = () => {
+const ProfilePage = ({ title }) => {
   const { userId } = useParams();
   const [userInfo, setUserInfo] = useState(null);
-  const [cardType, setCardType] = useState("");
+  const [cardType, setCardType] = useState("posts");
   const [statistic, setStatistic] = useState({});
   const [categoriesPosted, setCategoriesPosted] = useState([]);
   // const [data, setData] = useState(null);
   // const [loading, setLoading] = useState(true);
+  const [followed, setFollowed] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
-    document.title = "Tác giả";
+    if (user?.id) {
+      checkFollow({
+        followerUserId: user?.id,
+        followingUserId: userInfo?.id,
+      }).then((response) => setFollowed(response?.data));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    document.title = title;
     if (userId) {
       getAuthorById(userId)
         .then((response) => setUserInfo(response.data))
@@ -89,16 +102,33 @@ const ProfilePage = () => {
 
   const handleFollowClick = (e) => {
     e.preventDefault();
-    console.log("FOLLOW");
+    if (user?.id) {
+      if (followed) {
+        unfollow({
+          followerUserId: user?.id,
+          followingUserId: userInfo?.id,
+        }).then(() => setFollowed(false));
+      } else {
+        follow({
+          followerUserId: user?.id,
+          followingUserId: userInfo?.id,
+        }).then(() => setFollowed(true));
+      }
+    } else {
+      toast.warning("Vui lòng đăng nhập để theo dõi tác giả");
+    }
   };
   return (
     <Fragment>
-      <Container>
+      <Container
+        sx={{
+          marginY: "50px",
+        }}>
         <Grid
           container
           spacing={1}
           sx={{
-            marginBlock: "50px 0",
+            marginBlock: "50px",
             flexFlow: {
               xs: "column",
               md: "row",
@@ -113,10 +143,15 @@ const ProfilePage = () => {
               alt={userInfo?.fullname || userInfo?.id || userInfo?.email}
               src={userInfo?.image || DEFAULT_IMAGE.USER_AVATAR}
               sx={{
-                display: "block",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 marginX: "auto",
                 maxWidth: "80px",
-                width: "100%",
+                width: {
+                  md: "100%",
+                  xs: "80px",
+                },
                 height: "80px",
                 marginBottom: {
                   sm: 2,
@@ -166,15 +201,22 @@ const ProfilePage = () => {
                 @{userInfo?.email}
               </Typography>
             </Box>
-            <MyButton onClick={handleFollowClick} label="+ Theo dõi" />
+
+            <MyButton
+              onClick={handleFollowClick}
+              label={`${followed ? "Đang theo dõi" : "+ Theo dõi"}`}
+            />
           </Grid>
         </Grid>
-      </Container>
-      <Container
-        sx={{
-          marginTop: "50px",
-        }}>
-        <Grid container spacing={2}>
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            minHeight: {
+              xs: "300px",
+              md: "50vh",
+            },
+          }}>
           <Grid item md={9} xs={12}>
             <ListButtons setCardType={setCardType} />
             <ListData type={cardType} userId={userId} />
@@ -185,6 +227,22 @@ const ProfilePage = () => {
           </Grid>
         </Grid>
       </Container>
+      {/* <Container
+            sx={{
+               marginTop: "50px",
+            }}
+         >
+            <Grid container spacing={2}>
+               <Grid item md={9} xs={12}>
+                  <ListButtons setCardType={setCardType} />
+                  <ListData type={cardType} userId={userId} />
+               </Grid>
+               <Grid item md={3} xs={12}>
+                  <ProfileStatistic statistic={statistic} />
+                  <PostCategoryStat categories={categoriesPosted} />
+               </Grid>
+            </Grid>
+         </Container> */}
     </Fragment>
   );
 };

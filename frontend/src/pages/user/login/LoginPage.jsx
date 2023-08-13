@@ -17,6 +17,7 @@ import { tokens } from "../../../constants/theme";
 import { useAuth } from "../../../context/auth-context";
 import { login } from "../../../services/authService";
 import "./style.css";
+import { toast } from "react-toastify";
 
 const initialValues = {
   email: "",
@@ -31,7 +32,7 @@ const userSchema = yup.object().shape({
   password: yup.string().required("Vui lòng nhập mật khẩu"),
 });
 
-const LoginPage = () => {
+const LoginPage = ({ title }) => {
   const { theme } = useMode();
   const token = tokens(theme.palette.mode);
   const navigate = useNavigate();
@@ -40,26 +41,21 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    document.title = "Đăng nhập";
-  });
+    document.title = title;
+  }, []);
 
   const handleSubmitForm = async (values) => {
-    // 1. Send info to server
-    // 2. Set Token from response to LocalStorage
-    // 3. Get set user
     await login(values)
       .then((res) => {
         setErrorMessage("");
         const { infoUser, token } = res.data;
         localStorage.setItem("token_episteme", token);
         setUser(infoUser);
+        toast.success("Đăng ký thành công");
         navigate("/");
       })
-      .catch((error) => {
-        console.log(error);
-        setErrorMessage(
-          "Email hoặc mật khẩu không hợp lê! Vui lòng kiểm tra lại!"
-        );
+      .catch(() => {
+        toast.error("Đăng ký thất bại");
       });
   };
   return (

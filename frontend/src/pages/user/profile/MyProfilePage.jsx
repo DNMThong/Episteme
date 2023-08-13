@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 import { CardPost } from "../../../components/CardPost";
 import {
   getAllCardByType,
-  getAllPostOfAuthor,
   getStatisticByType,
 } from "../../../services/authorService";
 import CardDraft from "../../../components/CardDraft/CardDraft";
@@ -24,17 +23,20 @@ import {
   PostCategoryStat,
   ProfileStatistic,
 } from "../../../components/ProfileStatistic";
+import Swal from "sweetalert2";
+import { deletePost } from "../../../services/postService";
+import { toast } from "react-toastify";
 
-const MyProfilePage = () => {
+const MyProfilePage = ({ title }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [cardType, setCardType] = useState("");
+  const [cardType, setCardType] = useState("posts");
   const [statistic, setStatistic] = useState({});
   const [categoriesPosted, setCategoriesPosted] = useState([]);
   // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = "Trang cá nhân";
+    document.title = title;
     if (user?.id) {
       getStatisticByType(user?.id, "posts-views")
         .then((response) =>
@@ -79,7 +81,7 @@ const MyProfilePage = () => {
           console.log("ProfilePage - GetStatisticByType-categories", e)
         );
     }
-  }, []);
+  }, [user]);
 
   const handleUpdateProfile = () => {
     navigate("/update-profile");
@@ -106,9 +108,11 @@ const MyProfilePage = () => {
               alt={user?.fullname || user?.id || user?.email}
               src={user?.image}
               sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                "& .MuiAvatar-root .MuiAvatar-circular": {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                },
                 marginX: "auto",
                 maxWidth: "80px",
                 width: "100%",
@@ -175,7 +179,7 @@ const MyProfilePage = () => {
         <Grid container spacing={2}>
           <Grid item md={9} xs={12}>
             <ListButtons setCardType={setCardType} />
-            <ListData type={cardType} userId={user?.id} />
+            <ListData type={cardType} user={user} />
           </Grid>
           <Grid item md={3} xs={12}>
             <ProfileStatistic statistic={statistic} />
@@ -187,28 +191,59 @@ const MyProfilePage = () => {
   );
 };
 
-const ListData = ({ type, userId }) => {
+const ListData = ({ type, user }) => {
   const [data, setData] = useState([]);
+  // useEffect(() => {
+  //    async function fetchData(id) {
+  //       if (id) {
+  //          await getAllPostOfAuthor(id)
+  //             .then((response) => {
+  //                setData(response.data);
+  //             })
+  //             .catch((e) => console.log(e));
+  //          console.log(
+  //             "🚀 ~ file: MyProfilePage.jsx:200 ~ ListData ~ data:",
+  //             data
+  //          );
+  //       }
+  //    }
+  //    fetchData(userId);
+  // }, []);
   useEffect(() => {
-    async function fetchData() {
-      await getAllPostOfAuthor(userId).then((response) => {
-        console.log(
-          "🚀 ~ file: MyProfilePage.jsx:321 ~ getAllCardByType ~ response:",
-          response
-        );
-        setData(response.data);
-      });
+    if (user?.id) {
+      getAllCardByType(type, user?.id)
+        .then((response) => setData(response.data))
+        .catch((e) => console.log(e));
     }
-    fetchData();
-  }, []);
-  console.log("🚀 ~ file: MyProfilePage.jsx:250 ~ ListData ~ type:", type);
-  useEffect(() => {
-    getAllCardByType(type, userId)
-      .then((response) => setData(response.data))
-      .catch((e) => console.log(e));
-  }, [type]);
-  console.log(data);
-  if (!data) return null;
+  }, [type, user]);
+
+  const handleDeleteDraftPost = (id) => {
+    Swal.fire({
+      title: `Bạn có chắc muốn xóa bài viết nháp này`,
+      text: "Khi xóa không thể hoàn tác lại!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deletePost(id)
+          .then(() => {
+            setData((prevData) =>
+              prevData.filter((prevItem) => prevItem.id !== id)
+            );
+            toast.success("Xóa bài viết nháp thành công");
+          })
+          .catch(() =>
+            toast.error("Đã có lỗi xảy ra! Không xóa được bài viết nháp")
+          );
+      }
+    });
+  };
+
+  if (!data || data.length <= 0) return null;
   return (
     <Grid container spacing={2}>
       {!data ||
@@ -222,7 +257,12 @@ const ListData = ({ type, userId }) => {
         data.map((item) => {
           return (
             <Grid item xs={12} key={item.id}>
-              {type === "drafts" && <CardDraft info={item} />}
+              {type === "drafts" && (
+                <CardDraft
+                  handleDeleteDraftPost={() => handleDeleteDraftPost(item.id)}
+                  info={item}
+                />
+              )}
               {type === "posts" && (
                 <CardPost postInfo={item} direction="horizontal" />
               )}
@@ -235,7 +275,7 @@ const ListData = ({ type, userId }) => {
 };
 
 const ListButtons = ({ setCardType }) => {
-  const [active, setActive] = useState("posts");
+  const [active, setActive] = useState("");
   useEffect(() => {
     setCardType("posts");
     setActive("posts");
