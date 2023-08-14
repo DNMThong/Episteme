@@ -17,10 +17,10 @@ const Main = () => {
          }}
       >
          <Navbar />
-         <Box>
+         <Box minHeight="65vh">
             <Outlet />
          </Box>
-         <Paper mt="auto" sx={{}}>
+         <Paper mt="auto">
             <Footer />
          </Paper>
       </Box>
