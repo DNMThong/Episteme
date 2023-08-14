@@ -27,5 +27,7 @@ public class UsersDto {
     private String image;
     private UserStatus status;
     private String description;
+    @JsonFormat(pattern = "hh:mma dd/MM/yyyy")
+    private LocalDateTime registeredAt;
     private Role role;
 }
