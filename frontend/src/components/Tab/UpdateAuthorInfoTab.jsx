@@ -63,11 +63,13 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
 
   const handleSubmitForm = async (values) => {
     const cloneValue = { ...values };
+    const birthday = dayjs(values.birthday).format("DD/MM/YYYY");
     const data = {
       ...cloneValue,
-      birthday: dayjs(values.birthday).format("DD/MM/YYYY"),
+      birthday: birthday === "Invalid Date" ? null : birthday,
       image: urlAvatar,
     };
+    console.log(data);
     updateAuthorInfo(userInfo.id, data)
       .then((response) => {
         toast.success("Cập nhật người dùng thành công");
@@ -146,12 +148,6 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
                       src={urlAvatar || ""}
                     />
                   </label>
-                  <Button
-                    variant="contained"
-                    className="update-img-btn"
-                    onClick={handleUpdateAvatar}>
-                    Cập nhật ảnh
-                  </Button>
                   <Button
                     variant="outlined"
                     className="update-img-btn"
@@ -239,12 +235,7 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
                           format="DD/MM/YYYY"
                           className="desktop-date-picker"
                           value={dayjs(values.birthday)}
-                          onChange={(value) =>
-                            setFieldValue(
-                              "birthday",
-                              dayjs(value).format("DD/MM/YYYY")
-                            )
-                          }
+                          onChange={(value) => setFieldValue("birthday", value)}
                         />
                       </DemoItem>
                     </DemoContainer>
@@ -271,7 +262,7 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
                       id="description"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.description}
+                      value={values.description || ""}
                       error={!!touched.description && !!errors.description}
                       helperText={!!touched.description && errors.description}
                     />
