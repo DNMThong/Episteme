@@ -1,10 +1,9 @@
 package com.episteme.api.services;
 
-import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.AuthorDto;
 import com.episteme.api.entity.dto.NumberRegister;
 import com.episteme.api.entity.dto.UsersDto;
-import com.episteme.api.response.UserResponse;
+import com.episteme.api.entity.dto.UserResponse;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

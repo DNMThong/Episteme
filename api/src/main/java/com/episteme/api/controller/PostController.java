@@ -3,7 +3,7 @@ package com.episteme.api.controller;
 import com.episteme.api.entity.dto.CommentDto;
 import com.episteme.api.entity.dto.PostDto;
 import com.episteme.api.exceptions.ApiResponse;
-import com.episteme.api.response.PostResponseDto;
+import com.episteme.api.entity.dto.PostResponseDto;
 import com.episteme.api.services.CommentServiceImpl;
 import com.episteme.api.services.PostServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

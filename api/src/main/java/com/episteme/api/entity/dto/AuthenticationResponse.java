@@ -1,4 +1,4 @@
-package com.episteme.api.response;
+package com.episteme.api.entity.dto;
 
 import com.episteme.api.entity.dto.UsersDto;
 import lombok.AllArgsConstructor;

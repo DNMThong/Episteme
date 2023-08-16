@@ -8,7 +8,7 @@ import com.episteme.api.repository.PostRepository;
 import com.episteme.api.repository.PostsCategoriesRepository;
 import com.episteme.api.repository.SocialNetworkRepository;
 import com.episteme.api.repository.UsersRepository;
-import com.episteme.api.response.PostResponseDto;
+import com.episteme.api.entity.dto.PostResponseDto;
 import com.github.slugify.Slugify;
 import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
