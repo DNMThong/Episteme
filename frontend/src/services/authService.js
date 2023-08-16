@@ -14,6 +14,10 @@ export const login = async (data) => {
   return await callPostAPI(`${API_AUTH}/login`, data);
 };
 
+export const loginWithGoogle = async (data) => {
+  return await callPostAPI(`${API_AUTH}/login-google`, data);
+};
+
 export const getUserWithToken = async (token) => {
   const response = await callGetAPI(`${API_USER}/token/${token}`);
 

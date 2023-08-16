@@ -11,13 +11,13 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as yup from "yup";
-import GoogleIcon from "@mui/icons-material/Google";
 import { useMode } from "../../../context/mode-context";
 import { tokens } from "../../../constants/theme";
 import { useAuth } from "../../../context/auth-context";
-import { login } from "../../../services/authService";
+import { login, loginWithGoogle } from "../../../services/authService";
+import GoogleLogin from "@leecheuk/react-google-login";
 import "./style.css";
-import { toast } from "react-toastify";
+import { gapi } from "gapi-script";
 
 const initialValues = {
   email: "",
@@ -37,25 +37,58 @@ const LoginPage = ({ title }) => {
   const token = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const { setUser } = useAuth();
-
-  const [errorMessage, setErrorMessage] = useState("");
+  const clientId =
+    "259512295454-qrekq21mq85vmu8jmuq5cuutohldo0a0.apps.googleusercontent.com";
 
   useEffect(() => {
     document.title = title;
   }, []);
 
+  useEffect(() => {
+    function start() {
+      gapi.client.init({
+        clientId: clientId,
+        scope: "",
+      });
+    }
+    gapi.load("client:auth2", start);
+  }, []);
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSuccess = (response) => {
+    // Gửi thông tin đăng nhập lên server Spring Boot
+    console.log(response);
+    loginWithGoogle(response?.profileObj).then((res) => {
+      setErrorMessage("");
+      const { infoUser, token } = res.data;
+      localStorage.setItem("token_episteme", token);
+      setUser(infoUser);
+      navigate("/");
+    });
+  };
+
+  const handleFailure = (error) => {
+    console.error("Đăng nhập thất bại:", error);
+  };
+
   const handleSubmitForm = async (values) => {
+    // 1. Send info to server
+    // 2. Set Token from response to LocalStorage
+    // 3. Get set user
     await login(values)
       .then((res) => {
         setErrorMessage("");
         const { infoUser, token } = res.data;
         localStorage.setItem("token_episteme", token);
         setUser(infoUser);
-        toast.success("Đăng ký thành công");
         navigate("/");
       })
-      .catch(() => {
-        toast.error("Đăng ký thất bại");
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage(
+          "Email hoặc mật khẩu không hợp lê! Vui lòng kiểm tra lại!"
+        );
       });
   };
   return (
@@ -102,7 +135,6 @@ const LoginPage = ({ title }) => {
                 {({ errors, touched, handleChange, handleSubmit }) => (
                   <form onSubmit={handleSubmit}>
                     <TextField
-                      autoComplete="off"
                       id="email"
                       name="email"
                       label="Email"
@@ -177,17 +209,28 @@ const LoginPage = ({ title }) => {
                   Hoặc
                 </Typography>
               </Box>
-              <Button
-                fullWidth
-                variant="contained"
-                startIcon={<GoogleIcon />}
-                sx={{
-                  color: "#fff",
-                  backgroundColor: "#183dd5",
-                  marginBottom: 2,
-                }}>
-                Google
-              </Button>
+              {/* <a href={GOOGLE_AUTH_URL}>
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    startIcon={<GoogleIcon />}
+                                    sx={{
+                                        color: '#fff',
+                                        backgroundColor: '#183dd5',
+                                        marginBottom: 2,
+                                    }}
+                                >
+                                    Google
+                                </Button>
+                            </a> */}
+              <GoogleLogin
+                clientId={clientId}
+                buttonText="Đăng nhập với Google"
+                onSuccess={handleSuccess}
+                onFailure={handleFailure}
+                cookiePolicy={"single_host_origin"}
+                // isSignedIn={true}
+              />
               <Box
                 sx={{
                   fontSize: "14px",

@@ -1,5 +1,6 @@
 package com.episteme.api.controller;
 
+import com.episteme.api.entity.dto.ProfileGoogle;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.request.ChangePasswordRequest;
 import com.episteme.api.services.AuthenticationService;
@@ -22,33 +23,30 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     private final AuthenticationService service;
+
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
-    ){
+            @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(service.register(request));
     }
+
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
-    ){
+            @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
-    @RequestMapping("/login-google")
+    @PostMapping("/login-google")
     public ResponseEntity<AuthenticationResponse> loginWithGoogle(
-            OAuth2AuthenticationToken auth2AuthenticationToken
-    ){
-        OAuth2User oAuth2User = auth2AuthenticationToken.getPrincipal();
-        return ResponseEntity.ok(service.loginWithGoogle(oAuth2User));
+            @RequestBody ProfileGoogle profileGoogle) {
+        System.out.println(profileGoogle.getEmail());
+        return ResponseEntity.ok(service.loginWithGoogle(profileGoogle));
     }
 
     @PutMapping("/change-password")
     public ApiResponse<AuthenticationResponse> changePassword(
-            @RequestBody ChangePasswordRequest request
-    ){
-        return ApiResponse.success(HttpStatus.OK,"Đổi mật khẩu thành công",service.changePassword(request));
+            @RequestBody ChangePasswordRequest request) {
+        return ApiResponse.success(HttpStatus.OK, "Đổi mật khẩu thành công", service.changePassword(request));
     }
-
 
 }

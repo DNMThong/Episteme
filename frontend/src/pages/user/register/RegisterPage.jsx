@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Container, Grid } from "@mui/material";
 import { Box, Button, Divider, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
@@ -8,7 +8,6 @@ import { useMode } from "../../../context/mode-context";
 import { tokens } from "../../../constants/theme";
 import { register } from "../../../services/authService";
 import { useAuth } from "../../../context/auth-context";
-import { toast } from "react-toastify";
 
 const initialValues = {
   fullname: "",
@@ -42,6 +41,7 @@ const RegisterPage = ({ title }) => {
   const { theme } = useMode();
   const token = tokens(theme.palette.mode);
   const { setUser } = useAuth();
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     document.title = title;
@@ -57,11 +57,11 @@ const RegisterPage = ({ title }) => {
       .then((res) => {
         setUser(res.data.infoUser);
         localStorage.setItem("token_episteme", res.data.token);
-        toast.success("Đăng ký thành công");
         navigate("/");
+        setErrorMessage("");
       })
-      .catch(() => {
-        toast.error("Đăng ký thất bại");
+      .catch((error) => {
+        setErrorMessage("Đăng ký thất bại");
       });
   };
   return (
@@ -76,7 +76,7 @@ const RegisterPage = ({ title }) => {
           alignItems={"center"}
           justifyContent={"center"}
           sx={{
-            position: "relative",
+            position: "absolute",
             top: "50%",
             transform: "translateY(-50%)",
           }}>
@@ -94,12 +94,21 @@ const RegisterPage = ({ title }) => {
                 }}>
                 Đăng ký
               </Typography>
+              {errorMessage && (
+                <Typography
+                  variant="h6"
+                  component="p"
+                  marginBottom={3}
+                  sx={{ color: "red" }}>
+                  {errorMessage}
+                </Typography>
+              )}
               <Formik
                 initialValues={initialValues}
                 validationSchema={userSchema}
                 onSubmit={handleSubmitForm}>
                 {({ touched, errors, handleChange, handleSubmit }) => (
-                  <form onSubmit={handleSubmit} autoComplete="off">
+                  <form onSubmit={handleSubmit}>
                     <TextField
                       id="fullname"
                       name="fullname"
@@ -129,8 +138,8 @@ const RegisterPage = ({ title }) => {
                     <TextField
                       id="password"
                       name="password"
-                      type="password"
                       label="Mật khẩu"
+                      type="password"
                       sx={{
                         width: "100%",
                         marginBottom: 2,

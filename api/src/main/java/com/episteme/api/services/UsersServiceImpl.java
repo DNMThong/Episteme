@@ -169,7 +169,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public UsersDto getUserWithToken(String token) {
         String username = jwtService.extractUsername(token);
-        Optional<Users> optional = usersRepository.findByEmailAndPasswordNotNull(username);
+        Optional<Users> optional = usersRepository.findByEmail(username);
         Users user = optional.orElseThrow(() -> new NotFoundException("Không tìm thấy"));
         return this.usersToDto(user);
     }
@@ -197,7 +197,7 @@ public class UsersServiceImpl implements UsersService {
 
 
     public Optional<Users> findUerByEmail(String email) {
-        Optional<Users> user = usersRepository.findByEmailAndPasswordNotNull(email);
+        Optional<Users> user = usersRepository.findByEmail(email);
         return user;
     }
 

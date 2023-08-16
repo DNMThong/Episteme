@@ -410,7 +410,6 @@ public class PostServiceImpl implements PostService {
 
     public void convertSlugAndSave(Post post, Post savePost) {
         String slug = convertToSlug(post.getTitle(), post.getPostId());
-        System.out.println(slug);
         savePost.setSlug(slug);
         // Cập nhật bài viết lại để lưu slug mới
         this.postRepository.save(savePost);

@@ -1,11 +1,14 @@
 package com.episteme.api.jwt;
 
+import com.episteme.api.exceptions.NotFoundException;
+import com.episteme.api.repository.UsersRepository;
 import com.episteme.api.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +25,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+
+    @Autowired
+    UsersRepository usersRepository;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -39,7 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             userEmail =jwtService.extractUsername(jwt);
             if(userEmail!=null && SecurityContextHolder.getContext().getAuthentication()==null){
 
-                UserDetails userDetails =this.userDetailsService.loadUserByUsername(userEmail);
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
                 if(jwtService.isToKenValid(jwt,userDetails)){
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
