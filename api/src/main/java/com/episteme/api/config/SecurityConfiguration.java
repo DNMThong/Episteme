@@ -32,7 +32,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((request)-> request
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/auth/**",
+                                "/api/v1/linktool/**",
                                 "/api/v1/users/**",
+                                "/api/v1/follow/**",
                                 "/api/v1/categories/**",
                                 "/api/v1/posts/**",
                                 "/api/v1/bookmark/**",
