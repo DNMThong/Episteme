@@ -57,7 +57,7 @@ export const EDITOR_JS_TOOLS = {
     class: LinkTool,
     icon: "",
     config: {
-      endpoint: "http://localhost:8080/api/linktool/process",
+      endpoint: "http://localhost:8080/api/v1/linktool/process",
     },
   },
   image: {

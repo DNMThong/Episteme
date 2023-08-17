@@ -18,12 +18,15 @@ import {
 } from "../../services/postService";
 import { getPopularAuthors } from "../../services/authorService";
 import { CardPost } from "../../components/CardPost";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+import { set } from "date-fns";
 
 const getPrevDay = (about) => {
   // Lấy ngày hiện tại
   var currentDate = new Date();
 
-  // Lấy ngày 7 ngày trước
+  // Lấy ngày ngày trước
   var sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(currentDate.getDate() - about);
 
@@ -48,25 +51,25 @@ const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [popularAuthors, setPopularAuthors] = useState([]);
   const [popularPosts, setPopularPosts] = useState([]);
-
-  useEffect(() => {
-    getPostsPedingForAdmin().then((response) => setPosts(response?.data));
-  }, []);
-
-  console.log(popularAuthors);
-
+  const [toDate, setToDate] = useState(getPrevDay(6));
+  const [fromDate, setFromDate] = useState(getPrevDay(0));
   const [reportPostrDay, setReportPostrDay] = useState({
     total: 0,
     prescent: 0,
   });
 
   useEffect(() => {
-    getReportPostNew(getPrevDay(6), getPrevDay(0)).then((response) =>
+    setReportWeek([]);
+    getReportPostNew(toDate, fromDate).then((response) =>
       setReportWeek((prev) => [...prev, response.data])
     );
-    getReportUserNew(getPrevDay(6), getPrevDay(0)).then((response) =>
+    getReportUserNew(toDate, fromDate).then((response) =>
       setReportWeek((prev) => [...prev, response.data])
     );
+  }, [toDate, fromDate]);
+
+  useEffect(() => {
+    getPostsPedingForAdmin().then((response) => setPosts(response?.data));
 
     getReportPostNew(getPrevDay(1), getPrevDay(0)).then((response) => {
       const report = response.data.data;
@@ -93,8 +96,6 @@ const HomePage = () => {
       sortBy: "createAt",
     }).then((response) => setPopularPosts(response.data.content));
   }, []);
-
-  console.log(popularPosts);
 
   return (
     <Box m="20px">
@@ -141,7 +142,33 @@ const HomePage = () => {
         )}
         <Grid item md={8} sm={12} xs={12}>
           <Paper sx={{ padding: "20px", overflowX: "auto" }}>
-            <Typography variant="h5">Thống kê theo tuần</Typography>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              flexWrap="wrap"
+              gap="20px">
+              <Typography variant="h5">Thống kê theo tuần</Typography>
+              <Box display="flex" alignItems="center" gap="20px">
+                <DatePicker
+                  format="DD/MM/YYYY"
+                  value={dayjs(toDate)}
+                  onChange={(value) =>
+                    setToDate(dayjs(value).format("YYYY-MM-DD"))
+                  }
+                  sx={{ width: "150px" }}
+                />
+                -
+                <DatePicker
+                  format="DD/MM/YYYY"
+                  value={dayjs(fromDate)}
+                  onChange={(value) =>
+                    setFromDate(dayjs(value).format("YYYY-MM-DD"))
+                  }
+                  sx={{ width: "150px" }}
+                />
+              </Box>
+            </Box>
             <Box height="400px" minWidth="400px">
               <LineChart data={reportWeek} />
             </Box>
