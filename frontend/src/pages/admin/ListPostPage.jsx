@@ -43,7 +43,7 @@ const ListPostPage = () => {
     {
       field: "author",
       headerName: "Tác giả",
-      width: 100,
+      width: 200,
       renderCell: ({
         row: {
           author: { fullname },

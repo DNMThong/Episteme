@@ -19,13 +19,17 @@ const CardPost = ({
   handleDeletePost = () => {},
 }) => {
   return (
-    <Box display="flex">
+    <Box
+      display="flex"
+      sx={{
+        height: "100%",
+        maxHeight: direction === "horizontal" ? "140px" : "270px",
+      }}>
       <Link
         to={`/p/${postInfo?.slug}`}
         style={{
           display: "block",
-          height: "100%",
-          maxHeight: direction === "horizontal" ? "140px" : "270px",
+          width: "100%",
         }}>
         <Card
           sx={{
