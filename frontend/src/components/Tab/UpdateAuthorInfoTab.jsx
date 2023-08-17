@@ -199,6 +199,7 @@ const UpdateAuthorInfoTab = ({ user, value, index }) => {
                     <TextField
                       name="email"
                       id="email"
+                      value={values.email.split("--")[0]}
                       disabled={true}></TextField>
                   </Box>
                 </Grid>

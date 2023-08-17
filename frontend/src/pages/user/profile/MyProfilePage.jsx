@@ -163,7 +163,7 @@ const MyProfilePage = ({ title }) => {
                 variant="subtitle2"
                 component="span"
                 sx={{ fontSize: "12px" }}>
-                @{user?.email}
+                @{user?.email.split("--")[0]}
               </Typography>
             </Box>
             <MyButton
