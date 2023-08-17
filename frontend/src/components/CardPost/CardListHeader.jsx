@@ -16,9 +16,10 @@ const CardListHeader = ({ text, slug }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            marginBlock: "0 12px",
          }}
       >
-         <Typography variant="h3" sx={{ marginBlockEnd: 3, fontWeight: 600 }}>
+         <Typography variant="h3" sx={{ marginBlock: 0, fontWeight: 600 }}>
             {text}
          </Typography>
          <Typography

@@ -1,11 +1,10 @@
 import Banner from "../../../components/Banner";
-import { Box, Button, Container, Grid } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import AuthorList from "../../../components/CardAuthor/AuthorList";
 import { CardList, CardListHeader } from "../../../components/CardPost";
-import { useMode } from "../../../context/mode-context";
-import { tokens } from "../../../constants/theme";
 import { useEffect, useState } from "react";
 import { getPopularAuthors } from "../../../services/authorService";
+import { ButtonSwitchList } from "../../../components/Button";
 
 const HomePageUser = () => {
    const [postType, setPostType] = useState("");
@@ -30,7 +29,7 @@ const HomePageUser = () => {
          </Container>
          <Container sx={{ mb: 10 }}>
             <Grid container spacing={2}>
-               <Grid item xs={9} display="flex" flexDirection="column">
+               <Grid item md={9} xs={12} display="flex" flexDirection="column">
                   <Buttons setPostType={setPostType} />
                   <CardList
                      direction="horizontal"
@@ -78,22 +77,22 @@ const Buttons = ({ setPostType }) => {
             flexShrink: 0,
          }}
       >
-         <ButtonItem
+         <ButtonSwitchList
             text="Theo tác giả"
             onClick={handleGetPostByAuthor}
             active={activePostType === ""}
          />
-         <ButtonItem
+         <ButtonSwitchList
             text="Mới nhất"
             onClick={handleGetPostNewest}
             active={activePostType === "newest"}
          />
-         <ButtonItem
+         <ButtonSwitchList
             text="Sôi nổi"
             onClick={handleGetPostPopular}
             active={activePostType === "popular"}
          />
-         {/* <ButtonItem
+         {/* <ButtonSwitchList
             text="Đánh giá cao"
             onClick={handleGetPostHighestRate}
             active={activePostType === "highestRate"}
@@ -102,27 +101,27 @@ const Buttons = ({ setPostType }) => {
    );
 };
 
-const ButtonItem = ({ text, onClick = () => {}, active }) => {
-   const { theme } = useMode();
-   const token = tokens(theme.palette.mode);
+// const ButtonItem = ({ text, onClick = () => {}, active }) => {
+//    const { theme } = useMode();
+//    const token = tokens(theme.palette.mode);
 
-   return (
-      <Button
-         variant="outlined"
-         component="span"
-         sx={{
-            flexShrink: 0,
-            width: "fit-content",
-            wordBreak: "normal",
-            wordWrap: "normal",
-            borderColor: active ? "initial" : "transparent",
-            color: token.text,
-         }}
-         onClick={onClick}
-      >
-         {text}
-      </Button>
-   );
-};
+//    return (
+//       <Button
+//          variant="outlined"
+//          component="span"
+//          sx={{
+//             flexShrink: 0,
+//             width: "fit-content",
+//             wordBreak: "normal",
+//             wordWrap: "normal",
+//             borderColor: active ? "initial" : "transparent",
+//             color: token.text,
+//          }}
+//          onClick={onClick}
+//       >
+//          {text}
+//       </Button>
+//    );
+// };
 
 export default HomePageUser;

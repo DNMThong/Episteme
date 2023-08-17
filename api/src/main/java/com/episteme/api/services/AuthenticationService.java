@@ -12,7 +12,6 @@ import com.episteme.api.entity.dto.ChangePasswordRequest;
 import com.episteme.api.entity.dto.RegisterRequest;
 import com.episteme.api.entity.dto.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
