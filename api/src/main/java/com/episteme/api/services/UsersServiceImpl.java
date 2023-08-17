@@ -1,15 +1,12 @@
 package com.episteme.api.services;
 
-import com.episteme.api.entity.Post;
 import com.episteme.api.entity.Users;
 import com.episteme.api.entity.dto.*;
-import com.episteme.api.entity.enums.UserStatus;
 import com.episteme.api.exceptions.DuplicateRecordException;
 import com.episteme.api.exceptions.ApiResponse;
 import com.episteme.api.exceptions.NotFoundException;
-import com.episteme.api.repository.PostRepository;
 import com.episteme.api.repository.UsersRepository;
-import com.episteme.api.response.UserResponse;
+import com.episteme.api.entity.dto.UserResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,11 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.Mapping;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;

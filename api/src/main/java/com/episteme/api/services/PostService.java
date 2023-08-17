@@ -2,7 +2,7 @@ package com.episteme.api.services;
 
 import com.episteme.api.entity.dto.NumberCreate;
 import com.episteme.api.entity.dto.PostDto;
-import com.episteme.api.response.PostResponseDto;
+import com.episteme.api.entity.dto.PostResponseDto;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

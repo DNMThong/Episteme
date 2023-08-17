@@ -1,4 +1,4 @@
-package com.episteme.api.request;
+package com.episteme.api.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
