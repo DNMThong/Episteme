@@ -24,8 +24,9 @@ import {
   ProfileStatistic,
 } from "../../../components/ProfileStatistic";
 import Swal from "sweetalert2";
-import { deletePost } from "../../../services/postService";
+import { deletePost, updatePost } from "../../../services/postService";
 import { toast } from "react-toastify";
+import { STATUS_POST } from "../../../constants/status";
 
 const MyProfilePage = ({ title }) => {
   const navigate = useNavigate();
@@ -217,6 +218,8 @@ const ListData = ({ type, user }) => {
     }
   }, [type, user]);
 
+  if (!data || data.length <= 0) return null;
+
   const handleDeleteDraftPost = (id) => {
     Swal.fire({
       title: `Bạn có chắc muốn xóa bài viết nháp này`,
@@ -243,7 +246,36 @@ const ListData = ({ type, user }) => {
     });
   };
 
-  if (!data || data.length <= 0) return null;
+  const handleDeletePost = (e, postDeleted) => {
+    const { id, title } = postDeleted;
+    Swal.fire({
+      title: `Bạn có chắc muốn xóa bài viết có tiêu đề ${title}`,
+      text: "Khi xóa không thể hoàn tác lại!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        updatePost(id, {
+          ...postDeleted,
+          status: STATUS_POST.DELETED,
+        })
+          .then(() => {
+            setData((prevData) =>
+              prevData.filter((prevItem) => prevItem.id !== id)
+            );
+            toast.success("Xóa bài viết thành công");
+          })
+          .catch(() =>
+            toast.error("Đã có lỗi xảy ra! Không xóa được bài viết nháp")
+          );
+      }
+    });
+  };
+
   return (
     <Grid container spacing={2}>
       {!data ||
@@ -263,8 +295,16 @@ const ListData = ({ type, user }) => {
                   info={item}
                 />
               )}
-              {(type === "posts" || type === "bookmarks") && (
-                <CardPost postInfo={item} direction="horizontal" />
+              {type === "posts" && (
+                <CardPost
+                  iconDelete
+                  handleDeletePost={(e) => handleDeletePost(e, item)}
+                  postInfo={item}
+                  direction="horizontal"
+                />
+              )}
+              {type === "bookmarks" && (
+                <CardPost postInfo={item?.post} direction="horizontal" />
               )}
               {type.includes("follow") && <CardAuthor data={item} />}
             </Grid>

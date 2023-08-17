@@ -18,6 +18,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiResponse<Void> handlerNotFoundException(NotFoundException ex, WebRequest req) {
+        logger.error(ex.getMessage());
         return ApiResponse.error(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
@@ -25,6 +26,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(DuplicateRecordException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<Void> handlerDuplicateRecordException(DuplicateRecordException ex, WebRequest req) {
+        logger.error(ex.getMessage());
         return  ApiResponse.error(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
@@ -32,6 +34,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResponse<Void> handlerException(Exception ex, WebRequest req) {
+        logger.error(ex.getMessage());
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 }

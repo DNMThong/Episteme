@@ -84,7 +84,7 @@ public class UserController {
     @GetMapping("/{userId}/bookmarks")
     public ApiResponse<List<BookmarkDto>> getListBookmarks(@PathVariable String userId) {
         List<BookmarkDto> bookmarkDtoList = bookmarkService.findBookmarkByUserId(userId);
-        return ApiResponse.success(HttpStatus.CREATED, "success", bookmarkDtoList);
+        return ApiResponse.success(HttpStatus.OK, "success", bookmarkDtoList);
     }
 
     @GetMapping("/{userId}/bookmarks/{postId}")

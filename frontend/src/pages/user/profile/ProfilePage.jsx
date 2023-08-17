@@ -274,6 +274,7 @@ const ListData = ({ type, userId }) => {
       .catch((e) => console.log(e));
   }, [type]);
   if (!data) return null;
+
   return (
     <Grid container spacing={2}>
       {data &&
@@ -281,12 +282,8 @@ const ListData = ({ type, userId }) => {
         data.map((item) => {
           return (
             <Grid item xs={12} key={item.id}>
-              {type === "drafts" && <CardDraft info={item} />}
               {type === "posts" && (
                 <CardPost postInfo={item} direction="horizontal" />
-              )}
-              {type === "bookmarks" && (
-                <CardPost postInfo={item?.post} direction="horizontal" />
               )}
               {type.includes("follow") && <CardAuthor data={item} />}
             </Grid>
@@ -306,10 +303,6 @@ const ListButtons = ({ setCardType }) => {
     setActive("posts");
     setCardType("posts");
   };
-  const handleGetDrafts = () => {
-    setActive("drafts");
-    setCardType("drafts");
-  };
   const handleGetFollowings = () => {
     setActive("followings");
     setCardType("followings");
@@ -318,10 +311,7 @@ const ListButtons = ({ setCardType }) => {
     setActive("followers");
     setCardType("followers");
   };
-  const handleGetBookmarks = () => {
-    setActive("bookmarks");
-    setCardType("bookmarks");
-  };
+
   return (
     <Box
       sx={{
@@ -338,16 +328,6 @@ const ListButtons = ({ setCardType }) => {
         text="Bài viết"
         onClick={handleGetPosts}
         active={active === "posts"}
-      />
-      <ButtonItem
-        text="Bài viết nháp"
-        onClick={handleGetDrafts}
-        active={active === "drafts"}
-      />
-      <ButtonItem
-        text="Đã lưu"
-        onClick={handleGetBookmarks}
-        active={active === "bookmarks"}
       />
       <ButtonItem
         text="Theo dõi"

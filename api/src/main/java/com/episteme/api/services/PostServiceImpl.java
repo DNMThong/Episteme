@@ -114,8 +114,11 @@ public class PostServiceImpl implements PostService {
             existingPost.setStatus(PostStatus.Pending);
         }else if(postDto.getStatus()==PostStatus.Draft) {
             existingPost.setStatus(PostStatus.Draft);
-        }else {
-            existingPost.setStatus(PostStatus.Pending);
+        }else if(postDto.getStatus()==PostStatus.Deleted) {
+            existingPost.setStatus(PostStatus.Deleted);
+        }
+        else {
+            existingPost.setStatus(PostStatus.Deleted);
         }
 
         Post updatedPost = postRepository.save(existingPost);
